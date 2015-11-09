@@ -6,6 +6,7 @@
     autocrlf = false
     symlinks = false
 [alias]
+    aa = add --all
     l = log --oneline
     ld = log --oneline --decorate
     ls = log --oneline --decorate --stat
