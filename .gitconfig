@@ -1,3 +1,5 @@
+[include]
+    path = .gitconfig.local
 [core]
     editer = /usr/bin/vim
     filemode = false
