@@ -22,5 +22,6 @@
     ibn = !sh -c 'git rebase -i HEAD~${1:-$(expr $(git rev-list HEAD | wc -l) - 1)}' -
     rs = rebase --skip
     unstage = reset HEAD --
+    cancel = reset --soft HEAD^
 [color]
     ui = auto
