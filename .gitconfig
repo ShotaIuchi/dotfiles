@@ -6,6 +6,7 @@
 [alias]
     l = log --oneline
     ld = log --oneline --decorate
+    ls = log --oneline --decorate --stat
     s = status
     b = branch
     c = checkout
