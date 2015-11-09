@@ -21,5 +21,6 @@
     ibm = !sh -c 'git rebase -i $(git merge-base ${1:-master} HEAD)' -
     ibn = !sh -c 'git rebase -i HEAD~${1:-$(expr $(git rev-list HEAD | wc -l) - 1)}' -
     rs = rebase --skip
+    unstage = reset HEAD --
 [color]
     ui = auto
