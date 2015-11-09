@@ -5,6 +5,7 @@
     symlinks = false
 [alias]
     l = log --oneline
+    ld = log --oneline --decorate
     s = status
     b = branch
     c = checkout
