@@ -4,7 +4,7 @@
     autocrlf = false
     symlinks = false
 [alias]
-    l = log --oneline -10
+    l = log --oneline
     s = status
     b = branch
     c = checkout
