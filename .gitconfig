@@ -7,6 +7,7 @@
     l = log --oneline
     ld = log --oneline --decorate
     ls = log --oneline --decorate --stat
+    lg = log --oneline --decorate --graph
     s = status
     b = branch
     c = checkout
