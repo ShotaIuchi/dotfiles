@@ -6,6 +6,7 @@
     autocrlf = false
     symlinks = false
 [alias]
+    aliass = config --get-regexp alias
     aa = add --all
     l = log --oneline
     ld = log --oneline --decorate
