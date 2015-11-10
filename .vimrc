@@ -9,6 +9,7 @@ if (&t_Co > 2 || has("gui_running")) && !exists("syntax_on")
 endif
 set list
 set listchars=tab:»-,trail:␠,extends:»,precedes:«,nbsp:%
+set title
 set number
 set cursorline
 set showmatch
