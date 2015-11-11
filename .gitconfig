@@ -9,6 +9,7 @@
     aliass = config --get-regexp alias
     me = config --get-regexp user
     aa = add --all
+    ap = add --patch
     l = log --oneline
     ld = log --oneline --decorate
     ls = log --oneline --decorate --stat
