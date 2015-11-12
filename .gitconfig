@@ -30,5 +30,6 @@
     pick = cherry-pick
     qs = reset HEAD --
     qc = reset --soft HEAD^
+    delspace  = "!f() { git ls-files | xargs sed -i 's/[ ]*$//g'; }; f"
 [color]
     ui = auto
