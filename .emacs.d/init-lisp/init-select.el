@@ -26,5 +26,5 @@
     ("o"        . 'mc/sort-regions)
     ("O"        . 'mc/reverse-regions)))
 
-(provide 'init-select)
+(provide 'sub-select)
 

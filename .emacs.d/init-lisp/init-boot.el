@@ -8,4 +8,4 @@
 ;; スタート時Windowサイズ - maximized(全画面) | fullboth(フルスクリーン)
 (set-frame-parameter nil 'fullscreen 'maximized)
 
-(provide 'init-boot)
+(provide 'sub-boot)

@@ -2,5 +2,5 @@
 
 (global-set-key (kbd "C-x C-g") 'rgrep)
 
-(provide 'init-grep)
+(provide 'sub-grep)
 

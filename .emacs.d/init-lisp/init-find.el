@@ -13,4 +13,4 @@
   (add-hook 'c++-mode-hook (lambda () (gtags-mode 1)))
   )
 
-(provide 'init-find)
+(provide 'sub-find)

@@ -6,4 +6,4 @@
   (line-number-mode t)
   (column-number-mode t))
 
-(provide 'init-frame)
+(provide 'sub-frame)

@@ -43,4 +43,4 @@
 ;(set-clipboard-coding-system 'utf-8)
 ;(setq default-input-method 'japanese-anthy)
 
-(provide 'init-encode)
+(provide 'sub-encode)

@@ -1,4 +1,4 @@
 (require 'popwin)
 (setq display-buffer-function 'popwin:display-buffer)
 
-(provide 'init-window)
+(provide 'sub-window)

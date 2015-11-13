@@ -7,56 +7,56 @@
 ;;----------------------------------------------------------------------------
 ;; Bootstrap config
 ;;----------------------------------------------------------------------------
-(require 'init-boot)
-(require 'init-keyboard)
-(require 'init-keybind)
-(require 'init-proxy)
-(require 'init-pkg-mg)
-(require 'init-windows)
+(require 'sub-boot)
+(require 'sub-keyboard)
+(require 'sub-keybind)
+(require 'sub-proxy)
+(require 'sub-pkg-mg)
+(require 'sub-windows)
 
 ;;----------------------------------------------------------------------------
 ;; Layout config
 ;;----------------------------------------------------------------------------
-(require 'init-highlight)
-(require 'init-frame)
-(require 'init-window)
-(require 'init-theme)
-(require 'init-fonts)
+(require 'sub-highlight)
+(require 'sub-frame)
+(require 'sub-window)
+(require 'sub-theme)
+(require 'sub-fonts)
 
 ;;----------------------------------------------------------------------------
 ;; Input confin
 ;;----------------------------------------------------------------------------
-(require 'init-helm)
-(require 'init-auto-complete)
-(require 'init-select)
-(require 'init-history)
-(require 'init-csharp)
+(require 'sub-helm)
+(require 'sub-auto-complete)
+(require 'sub-select)
+(require 'sub-history)
+(require 'sub-csharp)
 
 ;;----------------------------------------------------------------------------
 ;; Text confin
 ;;----------------------------------------------------------------------------
-(require 'init-encode)
-(require 'init-indent)
+(require 'sub-encode)
+(require 'sub-indent)
 
 ;;----------------------------------------------------------------------------
 ;; Serce config
 ;;----------------------------------------------------------------------------
-(require 'init-tags)
-(require 'init-find)
-(require 'init-grep)
+(require 'sub-tags)
+(require 'sub-find)
+(require 'sub-grep)
 
 ;;----------------------------------------------------------------------------
 ;; History confin
 ;;----------------------------------------------------------------------------
-(require 'init-vcs)
-(require 'init-backup)
+(require 'sub-vcs)
+(require 'sub-backup)
 
 ;;----------------------------------------------------------------------------
 ;; Other confin
 ;;----------------------------------------------------------------------------
-(require 'init-org-mode)
-(require 'init-insert)
-(require 'init-markdown)
+(require 'sub-org-mode)
+(require 'sub-insert)
+(require 'sub-markdown)
 
 
 ;;; TMP

@@ -1,3 +1,3 @@
 (require 'csharp-mode)
 
-(provide 'init-csharp)
+(provide 'sub-csharp)

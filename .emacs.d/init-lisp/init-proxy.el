@@ -2,4 +2,4 @@
 ;      '(("http" . "hoge:xxxx")
 ;	("https" . "hoge:xxxx")))
 
-(provide 'init-proxy)
+(provide 'sub-proxy)

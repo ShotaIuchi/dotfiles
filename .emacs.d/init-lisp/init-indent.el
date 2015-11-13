@@ -2,4 +2,4 @@
 (setq-default indent-tabs-mode nil)
 (setq-default c-basic-offset 4)
 
-(provide 'init-indent)
+(provide 'sub-indent)

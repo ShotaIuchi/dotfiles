@@ -13,4 +13,4 @@
 ;; git-gutter
 ;(global-git-gutter-mode t) !
 
-(provide 'init-vcs)
+(provide 'sub-vcs)

@@ -3,4 +3,4 @@
 (setq auto-save-default nil)
 (setq auto-save-list-file-prefix nil)
 
-(provide 'init-backup)
+(provide 'sub-backup)

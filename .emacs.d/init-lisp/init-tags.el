@@ -14,5 +14,5 @@
 (add-hook 'c-mode-hook (lambda () (gtags-mode t)))
 (add-hook 'c++-mode-hook (lambda () (gtags-mode t)))
 
-(provide 'init-tags)
+(provide 'sub-tags)
 

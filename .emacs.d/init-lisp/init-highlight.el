@@ -17,5 +17,5 @@
 (add-hook 'c++-mode-hook 'rainbow-delimiters-mode)
 
 
-(provide 'init-highlight)
+(provide 'sub-highlight)
 

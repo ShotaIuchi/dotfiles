@@ -9,5 +9,5 @@
   (interactive)
   (insert (format-time-string "%H:%M:%S" (current-time))))
 
-(provide 'init-insert)
+(provide 'sub-insert)
 

@@ -9,4 +9,4 @@
 ;(setq face-font-rescale-alist
 ;      '((".*Consolas.*" . 1.0)))
 
-(provide 'init-fonts)
+(provide 'sub-fonts)

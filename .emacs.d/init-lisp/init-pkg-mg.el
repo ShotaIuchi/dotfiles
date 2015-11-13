@@ -49,4 +49,4 @@
 
 
 
-(provide 'init-pkg-mg)
+(provide 'sub-pkg-mg)
