@@ -6,31 +6,52 @@
     autocrlf = false
     symlinks = false
 [alias]
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; infomation
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     aliass = config --get-regexp alias
     me = config --get-regexp user
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; non-destructive
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     a = add
     aa = add --all
     ap = add --patch
+    b = branch
+    ba = branch --all
     l = log --oneline
     ld = log --oneline --decorate
     lb = log --oneline --decorate --stat
     lg = log --oneline --decorate --graph
     s = status
-    b = branch
     c = checkout
     co = commit
+    com = commit --message
+    coa = commit --amend
     d = diff
-    dn = diff
     ds = diff --cached
     db = diff --stat
     dd = !sh -c 'git diff ${1:-HEAD}~ ${1:-HEAD} $2 $3 $4 $5 $6 $7 $8 $9' -
-    ibm = !sh -c 'git rebase -i $(git merge-base ${1:-master} HEAD)' -
-    ibn = !sh -c 'git rebase -i HEAD~${1:-$(expr $(git rev-list HEAD | wc -l) - 1)}' -
-    rs = rebase --skip
-    pick = cherry-pick
-    qs = reset HEAD --
-    qc = reset --soft HEAD^
-    fclean  = "!f() { git reset --hard HEAD; git clean -f; }; f"
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; state change
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    unstage = reset HEAD --
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; possibility of destruction
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    rb = rebase
+    rbc = rebase --continue
+    rbs = rebase --skip
+    rbim = !sh -c 'git rebase -i $(git merge-base ${1:-master} HEAD)' -
+    rbin = !sh -c 'git rebase -i HEAD~${1:-$(expr $(git rev-list HEAD | wc -l) - 1)}' -
+    pc = cherry-pick
+    pcc = cherry-pick --continue
+    pcq = cherry-pick --quit
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; destructive
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    fback = !sh -c 'git reset --soft HEAD~${1:-1}' -
+    fclean = "!f() { git reset --hard HEAD; git clean --force -d; }; f"
     delspace  = "!f() { git ls-files | xargs sed -i 's/[ ]*$//g'; }; f"
 [color]
     ui = auto
