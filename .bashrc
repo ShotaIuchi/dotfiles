@@ -17,3 +17,12 @@ alias vi='vim'
 alias gg='git l'
 alias gl='git l'
 
+#
+# function
+function replace()
+{
+    find ${3} -type f | grep -v .svn | grep -v .git | xargs sed -i "s/${1}/${2}/g"
+    echo "PATH: ${3}"
+    echo "> \"${1}\" => \"${2}\""
+}
+
