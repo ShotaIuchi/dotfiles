@@ -4,6 +4,7 @@ set encoding=utf-8
 
 
 " display
+set t_Co=256
 if (&t_Co > 2 || has("gui_running")) && !exists("syntax_on")
     syntax on
 endif
