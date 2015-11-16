@@ -55,3 +55,4 @@
     fback = !sh -c 'git reset --soft HEAD~${1:-1}' -
     fclean = "!f() { git reset --hard HEAD; git clean --force -d; }; f"
     daspace  = "!f() { git ls-files | xargs sed -i 's/[ ]*$//g'; }; f"
+    ddspace  = "!f() { git ls-files --modified | xargs sed -i 's/[ ]*$//g'; }; f"
