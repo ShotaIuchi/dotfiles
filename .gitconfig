@@ -5,6 +5,8 @@
     filemode = false
     autocrlf = false
     symlinks = false
+[color]
+    ui = auto
 [alias]
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; infomation
@@ -53,5 +55,3 @@
     fback = !sh -c 'git reset --soft HEAD~${1:-1}' -
     fclean = "!f() { git reset --hard HEAD; git clean --force -d; }; f"
     delspace  = "!f() { git ls-files | xargs sed -i 's/[ ]*$//g'; }; f"
-[color]
-    ui = auto
