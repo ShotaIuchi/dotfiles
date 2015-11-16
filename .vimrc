@@ -1,3 +1,9 @@
+" local
+if filereadable(expand(".vimrc.local"))
+    source .vimrc.local
+endif
+
+
 " char
 set ff=unix
 set encoding=utf-8
