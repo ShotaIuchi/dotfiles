@@ -1,6 +1,16 @@
+"
+" bundle
+if !isdirectory(expand('~/.vim/bundle'))
+    !mkdir -p ~/.vim/bundle
+endif
+
+
+"
+" Neobundle
 if !isdirectory(expand('~/.vim/bundle/neobundle.vim'))
 
-    echomsg "Not Found '~/.vim/bundle/neobundle.vim'"
+    "echomsg "Not Found '~/.vim/bundle/neobundle.vim'"
+    !git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
 
 else
 
@@ -26,9 +36,7 @@ else
     " My Bundles here:
     " Refer to |:NeoBundle-examples|.
     " Note: You don't set neobundle setting in .gvimrc!
-    if filereadable(expand("~/.vim/package.list"))
-        source ~/.vim/package.list
-    endif
+    source ~/.vim/package-list.vim
 
     call neobundle#end()
 

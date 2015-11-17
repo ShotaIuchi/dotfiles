@@ -1,9 +1,3 @@
-"
-" pkg
-NeoBundle 'itchyny/lightline.vim'
-
-"
-" settings
 let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ 'active': {

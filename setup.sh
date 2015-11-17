@@ -16,6 +16,17 @@ function createDir()
     fi
 }
 
+function cloneGit()
+{
+    src=${2}
+    dst=${PATH_DOTFILES}/${1}
+    if [ -d ${dst} ]; then
+        echo "Allready clone '${src}'"
+    else
+        git clone ${src} ${dst}
+    fi
+}
+
 
 #
 # link
@@ -37,19 +48,3 @@ initLink '.emacs.d'
 initLink '.gitconfig'
 initLink '.vim'
 initLink '.vimrc'
-
-
-#
-# thard party
-function cloneGit()
-{
-    src=${2}
-    dst=${PATH_DOTFILES}/${1}
-    if [ -d ${dst} ]; then
-        echo "Allready clone '${src}'"
-    else
-        git clone ${src} ${dst}
-    fi
-}
-createDir '.vim/bundle'
-cloneGit '.vim/bundle/neobundle.vim' 'https://github.com/Shougo/neobundle.vim'
