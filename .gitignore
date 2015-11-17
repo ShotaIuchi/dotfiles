@@ -2,5 +2,7 @@
 # emacs
 elpa/
 .vim/bundle/
+.vim/.netrwhist
+.vim/bugreport.txt
 ac-comphist.dat
 .emacs.d/recentf
