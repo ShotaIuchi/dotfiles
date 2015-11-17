@@ -3,6 +3,10 @@ if filereadable(expand("~/.vimrc.local"))
     source ~/.vimrc.local
 endif
 
+if filereadable(expand("~/.vim/package"))
+    source ~/.vim/package
+endif
+
 
 " char
 set ff=unix
