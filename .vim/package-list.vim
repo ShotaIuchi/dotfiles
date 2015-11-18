@@ -1,5 +1,5 @@
 NeoBundle 'itchyny/lightline.vim'
-NeoBundle 'google/vim-colorscheme-primary'
+"NeoBundle 'google/vim-colorscheme-primary'
 
 " buffer
 NeoBundle 'Shougo/unite.vim'
