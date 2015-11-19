@@ -7,3 +7,6 @@ NeoBundle 'Shougo/neomru.vim'
 
 " color
 NeoBundle 'altercation/vim-colors-solarized'
+
+" version
+NeoBundle 'tpope/vim-fugitive'

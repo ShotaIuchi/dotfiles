@@ -1,5 +1,9 @@
-" It start in input mode
+"
+" Init
+"
 let g:unite_enable_start_insert=1
+let g:unite_source_history_yank_enable =1
+let g:unite_source_file_mru_limit = 200
 
 "
 " Keybind
@@ -10,6 +14,11 @@ noremap <C-B> :Unite buffer<CR>
 noremap <C-E> :Unite -buffer-name=file file<CR>
 " Recents
 noremap <C-Z> :Unite file_mru<CR>
+
+noremap <C-U><C-U> :Unite file_mru buffer<CR>
+noremap <C-U><C-F> :UniteWithBufferDir -buffer-name=files file<CR>
+noremap <C-U><C-R> :Unite -buffer-name=register register<CR>
+noremap <C-U><C-T> :UniteWithBufferDir file<CR>
 
 "
 " Options
@@ -40,3 +49,8 @@ if has('win32') || has('win64')
 else
     call unite#custom#substitute('file', '^;v', '~/.vim/')
 endif
+
+" Execute help.
+nnoremap <C-h>  :<C-u>Unite -start-insert help<CR>
+" Execute help by cursor keyword.
+nnoremap <silent> g<C-h>  :<C-u>UniteWithCursorWord help<CR>
