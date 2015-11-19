@@ -4,3 +4,6 @@ NeoBundle 'itchyny/lightline.vim'
 " buffer
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/neomru.vim'
+
+" color
+NeoBundle 'altercation/vim-colors-solarized'
