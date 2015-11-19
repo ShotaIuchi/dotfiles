@@ -4,12 +4,8 @@ let g:unite_enable_start_insert=1
 "
 " Keybind
 "
-" Open buffers
-noremap <C-B> :Unite buffer<CR>
-" Current files
-noremap <C-E> :Unite -buffer-name=file file<CR>
-" Recents
-noremap <C-Z> :Unite file_mru<CR>
+" Unite(Buffers/Recents/Bookmarks/Files)
+nmap <silent> <C-u><C-u> :<C-u>Unite -buffer-name=files buffer file_mru bookmark file<CR>
 
 "
 " Options
