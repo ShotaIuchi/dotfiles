@@ -57,3 +57,7 @@
     faclean = "!f() { git reset --hard HEAD; git clean --force -d; git ls-files --others | xargs rm -rf; }; f"
     daspace  = "!f() { git ls-files | xargs sed -i 's/[ ]*$//g'; }; f"
     ddspace  = "!f() { git ls-files --modified | xargs sed -i 's/[ ]*$//g'; }; f"
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; other
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ark = "!f() { ~/.git.d/ark-diff.sh ${1:-HEAD} ${2:-${1}}; }; f"
