@@ -1,11 +1,15 @@
-" It start in input mode
+"
+" Init
+"
 let g:unite_enable_start_insert=1
+let g:unite_source_history_yank_enable =1
+let g:unite_source_file_mru_limit = 200
 
 "
 " Keybind
 "
-" Unite(Buffers/Recents/Bookmarks/Files)
-nmap <silent> <C-u><C-u> :<C-u>Unite -buffer-name=files buffer file_mru bookmark file<CR>
+noremap <C-U><C-U> :<C-u>Unite buffer file_mru file bookmark<CR>
+noremap <C-U><C-Y> :<C-u>Unite -buffer-name=register register<CR>
 
 "
 " Options
