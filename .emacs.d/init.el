@@ -26,7 +26,7 @@
 ;;----------------------------------------------------------------------------
 ;; Input confin
 ;;----------------------------------------------------------------------------
-(require 'sub-helm)
+(require 'sub-anything)
 (require 'sub-auto-complete)
 (require 'sub-select)
 (require 'sub-history)

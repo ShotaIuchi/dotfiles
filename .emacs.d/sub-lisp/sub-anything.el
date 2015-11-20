@@ -24,5 +24,5 @@
 (setq helm-c-moccur-enable-initial-pattern t)
 (setq helm-c-moccur-enable-auto-look-flag t)
 
-(provide 'sub-helm)
+(provide 'sub-anything)
 
