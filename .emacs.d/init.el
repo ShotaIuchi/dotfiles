@@ -64,3 +64,9 @@
 ;(setq omnisharp-server-executable-path
 ;      "/home/XXX/server/OmniSharpServer/OmniSharp/bin/Debug/OmniSharp.exe")
 
+;;----------------------------------------------------------------------------
+;; Local setting
+;;----------------------------------------------------------------------------
+(when (file-exists-p "~/.emacs.local.el")
+  (load "~/.emacs.local.el"))
+
