@@ -5,6 +5,13 @@
 
 
 ;;----------------------------------------------------------------------------
+;; Local setting (start)
+;;----------------------------------------------------------------------------
+(when (file-exists-p "~/.emacs.local-start.el")
+  (load "~/.emacs.local-start.el"))
+
+
+;;----------------------------------------------------------------------------
 ;; Bootstrap config
 ;;----------------------------------------------------------------------------
 (require 'sub-boot)
@@ -64,8 +71,8 @@
 ;      "/home/XXX/server/OmniSharpServer/OmniSharp/bin/Debug/OmniSharp.exe")
 
 ;;----------------------------------------------------------------------------
-;; Local setting
+;; Local setting (end)
 ;;----------------------------------------------------------------------------
-(when (file-exists-p "~/.emacs.local.el")
-  (load "~/.emacs.local.el"))
+(when (file-exists-p "~/.emacs.local-end.el")
+  (load "~/.emacs.local-end.el"))
 
