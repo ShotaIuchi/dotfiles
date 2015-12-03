@@ -37,6 +37,7 @@
     tangotango-theme
     markdown-mode
     csharp-mode
+    wgrep
    ))
 
 (let ((not-installed (loop for x in installing-package-list
