@@ -2,5 +2,5 @@
   (require 'cygwin-mount)
   (require 'setup-cygwin))
 
-(provide 'sub-windows)
+(provide 'sub-enviorment)
 

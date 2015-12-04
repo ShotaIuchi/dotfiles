@@ -19,7 +19,7 @@
 (require 'sub-keybind)
 (require 'sub-proxy)
 (require 'sub-pkg-mg)
-(require 'sub-windows)
+(require 'sub-enviorment)
 
 ;;----------------------------------------------------------------------------
 ;; Layout config
