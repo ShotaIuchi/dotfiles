@@ -47,6 +47,7 @@
     rbim = !sh -c 'git rebase -i $(git merge-base ${1:-master} HEAD)' -
     rbin = !sh -c 'git rebase -i HEAD~${1:-$(expr $(git rev-list HEAD | wc -l) - 1)}' -
     pc = cherry-pick
+    pick = cherry-pick
     pcc = cherry-pick --continue
     pcq = cherry-pick --quit
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
