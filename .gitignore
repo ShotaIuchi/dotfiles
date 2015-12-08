@@ -1,8 +1,12 @@
+*~
 #
 # emacs
+ac-comphist.dat
 elpa/
+.emacs.d/viper
+.emacs.d/recentf
+#
+# vim
 .vim/bundle/
 .vim/.netrwhist
 .vim/bugreport.txt
-ac-comphist.dat
-.emacs.d/recentf

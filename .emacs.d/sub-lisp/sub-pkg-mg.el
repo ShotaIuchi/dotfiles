@@ -38,6 +38,7 @@
     markdown-mode
     csharp-mode
     wgrep
+    ddskk
    ))
 
 (let ((not-installed (loop for x in installing-package-list
