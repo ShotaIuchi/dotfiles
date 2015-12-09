@@ -38,7 +38,6 @@
 (require 'sub-auto-complete)
 (require 'sub-select)
 (require 'sub-history)
-(require 'sub-csharp)
 
 ;;----------------------------------------------------------------------------
 ;; Text confin
@@ -65,11 +64,6 @@
 (require 'sub-insert)
 (require 'sub-markdown)
 
-
-;;; TMP
-;(require 'omnisharp)
-;(setq omnisharp-server-executable-path
-;      "/home/XXX/server/OmniSharpServer/OmniSharp/bin/Debug/OmniSharp.exe")
 
 ;;----------------------------------------------------------------------------
 ;; Local setting (end)
