@@ -19,7 +19,6 @@
 ;;----------------------------------------------------------------------------
 ;; Bootstrap config
 ;;----------------------------------------------------------------------------
-(require 'sub-boot)
 (require 'sub-keyboard)
 (require 'sub-keybind)
 (require 'sub-pkg-mg)
@@ -29,7 +28,6 @@
 ;; Layout config
 ;;----------------------------------------------------------------------------
 (require 'sub-highlight)
-(require 'sub-frame)
 (require 'sub-window)
 (require 'sub-theme)
 (require 'sub-fonts)
