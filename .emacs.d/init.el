@@ -6,6 +6,11 @@
 
 ;;----------------------------------------------------------------------------
 ;; Local setting (start)
+;;
+;; ------
+;;  (setq url-proxy-services
+;;      '(("http" . "hoge:xxxx")
+;;        ("https" . "hoge:xxxx")))
 ;;----------------------------------------------------------------------------
 (when (file-exists-p "~/.emacs.local-start.el")
   (load "~/.emacs.local-start.el"))
@@ -17,7 +22,6 @@
 (require 'sub-boot)
 (require 'sub-keyboard)
 (require 'sub-keybind)
-(require 'sub-proxy)
 (require 'sub-pkg-mg)
 (require 'sub-enviorment)
 
