@@ -5,6 +5,8 @@
 ;; ~!@#$%^&*()_+|{}:"<>?
 ;;
 ;; 壱弐参四五壱弐参四五壱弐参四五壱弐参四五壱弐参四五壱弐参四五
+;; あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほ
+;; アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホ
 ;; 123456789012345678901234567890123456789012345678901234567890
 ;; ABCdeＡＢＣｄｅ
 ;;
@@ -30,10 +32,9 @@
   (global-set-key [M-kanji] 'ignore)
 
   ; font
-  (set-face-attribute 'default nil :family "Consolas" :height 100)
-  (set-fontset-font (frame-parameter nil 'font)
-                    'japanese-jisx0208
-                    (font-spec :family "ＭＳ ゴシック" :size 14))
+  (set-face-attribute 'default nil :family "Consolas" :height 104)
+  (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "メイリオ"))
+  (setq face-font-rescale-alist '(("メイリオ" . 1.08)))
   )
 
 ; mac
