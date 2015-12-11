@@ -15,51 +15,36 @@
 ;; └─────────────────────────────┘
 ;;
 
-; japanese
+;; japanese
 (set-language-environment  'utf-8)
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (setq default-file-name-coding-system 'shift_jis)
 
-; windows
+
+;; windows
 (when (eq system-type 'windows-nt)
-  ; ime
   (setq default-input-method "W32-IME")
   (setq-default w32-ime-mode-line-state-indicator "[--]")
   (w32-ime-initialize)
   (setq w32-ime-mode-line-state-indicator-list '("[--]" "[あ]" "[--]"))
   (global-set-key [M-kanji] 'ignore)
 
-  ; font
   (set-face-attribute 'default nil :family "Consolas" :height 104)
   (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "メイリオ"))
   (setq face-font-rescale-alist '(("メイリオ" . 1.08)))
   )
 
-; mac
-(when (eq system-type 'darwin)
-  ; font
-  (set-face-attribute 'default nil :family "Monaco" :height 90)
-  (set-fontset-font (frame-parameter nil 'font)
-                    'japanese-jisx0208
-                    '("Hiragino Maru Gothic Pro" . "iso10646-1"))
-  (set-fontset-font (frame-parameter nil 'font)
-                    'japanese-jisx0212
-                    '("Hiragino Maru Gothic Pro" . "iso10646-1"))
-  (set-fontset-font (frame-parameter nil 'font)
-                    'mule-unicode-0100-24ff
-                    '("monaco" . "iso10646-1"))
-  (setq face-font-rescale-alist
-      '(("^-apple-hiragino.*" . 1.2)
-        (".*osaka-bold.*" . 1.2)
-        (".*osaka-medium.*" . 1.2)
-        (".*courier-bold-.*-mac-roman" . 1.0)
-        (".*monaco cy-bold-.*-mac-cyrillic" . 0.9)
-        (".*monaco-bold-.*-mac-roman" . 0.9)
-        ("-cdac$" . 1.3)))
-  )
 
+;; mac
+(when (eq system-type 'darwin)
+  (set-face-attribute 'default nil :family "monaco" :height 104)
+  (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Hiragino Kaku Gothic ProN"))
+  (setq face-font-rescale-alist '(("Hiragino Kaku Gothic ProN" . 1.20))))
+
+
+;; linux
 (when (eq system-type 'gnu/linux)
   )
 
