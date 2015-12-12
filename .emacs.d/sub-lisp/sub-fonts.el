@@ -25,16 +25,9 @@
 
 ;; windows
 (when (eq system-type 'windows-nt)
-  (setq default-input-method "W32-IME")
-  (setq-default w32-ime-mode-line-state-indicator "[--]")
-  (w32-ime-initialize)
-  (setq w32-ime-mode-line-state-indicator-list '("[--]" "[あ]" "[--]"))
-  (global-set-key [M-kanji] 'ignore)
-
   (set-face-attribute 'default nil :family "Consolas" :height 104)
   (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "メイリオ"))
-  (setq face-font-rescale-alist '(("メイリオ" . 1.08)))
-  )
+  (setq face-font-rescale-alist '(("メイリオ" . 1.08))))
 
 
 ;; mac
