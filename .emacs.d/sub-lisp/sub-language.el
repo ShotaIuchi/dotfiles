@@ -12,5 +12,12 @@
 (add-hook 'c++-mode-hook 'c-mode-hook-impl)
 
 
+;; ========================================================================
+;;  Java
+;; ========================================================================
+(defun java-mode-hook-impl ()
+  (c-mode-hook-impl))
+(add-hook 'java-mode-hook 'java-mode-hook-impl)
+
 (provide 'sub-language)
 
