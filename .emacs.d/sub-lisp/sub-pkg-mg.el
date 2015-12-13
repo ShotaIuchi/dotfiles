@@ -39,6 +39,7 @@
     csharp-mode
     wgrep
     ddskk
+    cl-lib
    ))
 
 (let ((not-installed (loop for x in installing-package-list
