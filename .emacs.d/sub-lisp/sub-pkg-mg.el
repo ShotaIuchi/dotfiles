@@ -40,6 +40,7 @@
     wgrep
     ddskk
     cl-lib
+    smex
    ))
 
 (let ((not-installed (loop for x in installing-package-list

@@ -1,6 +1,7 @@
 *~
 #
 # emacs
+smex-items
 ac-comphist.dat
 elpa/
 .emacs.d/viper
