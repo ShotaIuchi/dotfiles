@@ -36,7 +36,7 @@
 ;; Input confin
 ;;----------------------------------------------------------------------------
 (require 'sub-ime)
-(require 'sub-anything)
+(require 'sub-interface)
 (require 'sub-auto-complete)
 (require 'sub-select)
 (require 'sub-history)
