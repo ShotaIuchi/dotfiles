@@ -36,7 +36,6 @@
     smartrep
     tangotango-theme
     markdown-mode
-    csharp-mode
     wgrep
     ddskk
     cl-lib
