@@ -4,7 +4,7 @@
     editer = /usr/bin/vim
     filemode = false
     autocrlf = false
-    symlinks = false
+    symlinks = true
 [color]
     ui = auto
 [alias]
