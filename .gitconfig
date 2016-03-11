@@ -1,7 +1,7 @@
 [include]
     path = ~/.gitconfig.local
 [core]
-    editer = /usr/bin/vim
+    editor = /usr/bin/vim
     filemode = false
     autocrlf = false
     symlinks = true
