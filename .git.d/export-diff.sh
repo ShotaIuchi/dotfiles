@@ -1,3 +1,5 @@
+#!/bin/bash
+
 function ExportDiff()
 {
     if [ $# -lt 1 ]; then
