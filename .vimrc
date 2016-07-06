@@ -21,6 +21,7 @@ set title
 set number
 set cursorline
 set showmatch
+set showcmd
 
 
 " file
