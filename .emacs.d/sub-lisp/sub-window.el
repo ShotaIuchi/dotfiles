@@ -15,9 +15,9 @@
       (column-number-mode t)))
 
 ;; popup window
-(require 'popwin)
-(setq display-buffer-function 'popwin:display-buffer)
-(setq popwin:popup-window-position 'bottom)
-(setq popwin:popup-window-height '20)
+(when (require 'popwin nil t)
+  (setq display-buffer-function 'popwin:display-buffer)
+  (setq popwin:popup-window-position 'bottom)
+  (setq popwin:popup-window-height '20))
 
 (provide 'sub-window)

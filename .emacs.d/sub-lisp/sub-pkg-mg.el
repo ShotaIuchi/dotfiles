@@ -18,16 +18,12 @@
     color-theme
     cygwin-mount
     expand-region
-;;    git-commit-mode
-    git-gutter
-;;    git-rebase-mode
     helm
     helm-ag
     helm-c-moccur
     helm-gtags
     helm-ls-git
     highlight-symbol
-    magit
     multiple-cursors
     popup
     popwin
@@ -41,6 +37,8 @@
     cl-lib
     smex
     web-mode
+    magit
+    git-gutter
    ))
 
 (let ((not-installed (loop for x in installing-package-list
