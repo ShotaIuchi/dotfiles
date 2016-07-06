@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #
 # include
 if [ -f ~/.bashrc.def ]; then
