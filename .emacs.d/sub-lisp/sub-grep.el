@@ -3,7 +3,7 @@
 ;; ========================================================================
 (require 'wgrep nil t)
 (setq null-device "/dev/null")
-(global-set-key (kbd "C-x C-g") 'rgrep)
+(global-set-key (kbd "C-M-g") 'rgrep)
 
 
 ;; ========================================================================
@@ -21,7 +21,7 @@
            ))
   (add-hook 'c-mode-hook (lambda () (gtags-mode 1)))
   (add-hook 'c++-mode-hook (lambda () (gtags-mode 1)))
-  (add-hook 'java-mode-hook	(lambda () (gtags-mode 1)))
+  (add-hook 'java-mode-hook (lambda () (gtags-mode 1)))
   )
 
 (provide 'sub-grep)
