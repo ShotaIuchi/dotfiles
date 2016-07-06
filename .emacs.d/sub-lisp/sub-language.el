@@ -25,6 +25,11 @@
   (c-mode-hook-impl))
 (add-hook 'java-mode-hook 'java-mode-hook-impl)
 
+;; ========================================================================
+;;  Build
+;; ========================================================================
+(require 'gradle-mode)
+(gradle-mode 1)
 
 ;; ========================================================================
 ;;  Web
@@ -56,4 +61,3 @@
 (add-hook 'web-mode-hook 'web-mode-hook)
 
 (provide 'sub-language)
-

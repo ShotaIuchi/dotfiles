@@ -37,6 +37,7 @@
     cl-lib
     smex
     web-mode
+    gradle-mode
     magit
     git-gutter
    ))
