@@ -1,10 +1,10 @@
-; start screen hide
+;; start screen hide
 (setq inhibit-startup-message t)
 
-; start window-size :: maximized / fullscreen
+;; start window-size :: maximized / fullscreen
 (set-frame-parameter nil 'fullscreen 'maximized)
 
-; frame
+;; frame
 (if window-system
     (progn
       (tool-bar-mode 0)
@@ -15,9 +15,11 @@
       (column-number-mode t)))
 
 ;; popup window
-(when (require 'popwin nil t)
+(if (not (require 'popwin nil t))
+    (message "!!! WORNING !!! | require : popwin")
   (setq display-buffer-function 'popwin:display-buffer)
   (setq popwin:popup-window-position 'bottom)
   (setq popwin:popup-window-height '20))
+
 
 (provide 'sub-window)

@@ -26,5 +26,5 @@
     (error "The buffer has been modified")))
 (global-set-key (kbd "<f5>") 'revert-buffer-no-confirm)
 
-(provide 'sub-keybind)
 
+(provide 'sub-keybind)

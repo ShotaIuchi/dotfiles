@@ -1,7 +1,9 @@
 ;; ========================================================================
 ;;  grep
 ;; ========================================================================
-(require 'wgrep nil t)
+(unless (require 'wgrep nil t)
+  (message "!!! WORNING !!! | require : wgrep"))
+
 (setq null-device "/dev/null")
 (global-set-key (kbd "C-M-g") 'rgrep)
 
@@ -9,7 +11,8 @@
 ;; ========================================================================
 ;;  tags
 ;; ========================================================================
-(when (require 'gtags nil t)
+(if (not (require 'gtags nil t))
+    (message "!!! WORNING !!! | require : gtags")
   (setq gtags-mode-hook
         '(lambda ()
            (local-set-key "\M-t" 'gtags-find-tag)
@@ -23,5 +26,6 @@
   (add-hook 'c++-mode-hook (lambda () (gtags-mode 1)))
   (add-hook 'java-mode-hook (lambda () (gtags-mode 1)))
   )
+
 
 (provide 'sub-grep)

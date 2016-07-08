@@ -1,9 +1,14 @@
+(setq helm-idle-delay 0.2)
+
 (require 'helm-config)
 (require 'helm-ag)
 ;(require 'helm-gtags)
 (require 'helm-ls-git)
 (require 'helm-c-moccur)
 ;(require 'helm-descbinds)
+
+
+;;(setq helm-exit-idle-delay nil)
 
 (global-unset-key (kbd "C-u"))
 (global-set-key (kbd "C-u C-u") 'helm-mini)
@@ -31,5 +36,5 @@
 ;; This is your old M-x.
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 
-(provide 'sub-interface)
 
+(provide 'sub-interface)

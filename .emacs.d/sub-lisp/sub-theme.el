@@ -6,5 +6,5 @@
 
 (load-theme 'tangotango t)
 
-(provide 'sub-theme)
 
+(provide 'sub-theme)

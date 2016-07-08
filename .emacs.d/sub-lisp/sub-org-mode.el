@@ -84,4 +84,5 @@
           '(lambda ()
              (org-defkey org-mode-map (kbd "C-c C-;") 'org-my-get-ranking)))
 
+
 (provide 'sub-org-mode)
