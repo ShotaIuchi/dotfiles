@@ -59,7 +59,9 @@
 ;; linux
 ;; ========================================================================
 (when (eq system-type 'gnu/linux)
-  )
+  (set-face-attribute 'default nil :family "Ricty Diminished" :height 104)
+  (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Ricty Diminished"))
+  (setq face-font-rescale-alist '(("Ricty Diminished" . 1.00))))
 
 
 ;; ========================================================================
