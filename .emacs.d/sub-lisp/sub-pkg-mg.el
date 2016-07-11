@@ -29,6 +29,7 @@
       helm-c-moccur
       helm-gtags
       helm-ls-git
+      helm-swoop
       highlight-symbol
       multiple-cursors
       popup

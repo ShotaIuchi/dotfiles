@@ -1,40 +1,67 @@
-(setq helm-idle-delay 0.2)
+;; ========================================================================
+;; helm
+;; ========================================================================
+(if (not (require 'helm-config nil t))
+    (message "!!! WORNING !!! | require : helm-config")
 
-(require 'helm-config)
-(require 'helm-ag)
-;(require 'helm-gtags)
-(require 'helm-ls-git)
-(require 'helm-c-moccur)
-;(require 'helm-descbinds)
+  (setq helm-idle-delay 0.2)
+
+  (global-unset-key (kbd "C-u"))
+  (global-set-key (kbd "C-u C-u") 'helm-mini)
+  (global-set-key (kbd "C-u C-i") 'helm-imenu)
+  (global-set-key (kbd "C-u C-y") 'helm-show-kill-ring)
+  (global-set-key (kbd "C-u C-x") 'helm-M-x)
+  (global-set-key (kbd "C-u C-o") 'helm-occur)
+
+  ;;(require 'helm-c-moccur)
+  ;;(require 'helm-descbinds)
+
+  ;; ag
+  (if (not (require 'helm-ag nil t))
+      (message "!!! WORNING !!! | require : helm-ag")
+    (global-set-key (kbd "C-u C-g") 'helm-ag))
+
+  ;; swoop
+  (if (not (require 'helm-swoop nil t))
+      (message "!!! WORNING !!! | require : helm-swoop")
+    (helm-migemo-mode 1)
+    (setq helm-multi-swoop-edit-save t)
+    (setq helm-swoop-split-with-multiple-windows nil)
+    (setq helm-swoop-split-direction 'split-window-vertically)
+    (setq helm-swoop-speed-or-color nil)
+    (setq helm-swoop-move-to-line-cycle t)
+    (setq helm-swoop-use-line-number-face t)
+    (setq helm-swoop-use-fuzzy-match t)
+    (global-set-key (kbd "C-u C-s") 'helm-swoop)
+    (global-set-key (kbd "C-u C-a") 'helm-multi-swoop-all))
+
+  ;; ls-git
+  (if (not (require 'helm-ls-git nil t))
+      (message "!!! WORNING !!! | require : helm-ls-git")
+    (global-set-key (kbd "C-u C-l") 'helm-ls-git-ls))
+
+  ;; gtags
+  (if (not (require 'helm-gtags nil t))
+      (message "!!! WORNING !!! | require : helm-gtags")
+    (global-set-key (kbd "C-c p") 'helm-gtags-find-pattern)
+    (global-set-key (kbd "C-c t") 'helm-gtags-find-tag)
+    (global-set-key (kbd "C-c r") 'helm-gtags-find-rtag)
+    (global-set-key (kbd "C-c a") 'helm-gtags-find-files)
+    (global-set-key (kbd "C-c s") 'helm-gtags-find-symbol))
+  )
 
 
-;;(setq helm-exit-idle-delay nil)
-
-(global-unset-key (kbd "C-u"))
-(global-set-key (kbd "C-u C-u") 'helm-mini)
-(global-set-key (kbd "C-u C-i") 'helm-imenu)
-(global-set-key (kbd "C-u C-o") 'helm-occur)
-(global-set-key (kbd "C-u C-g") 'helm-ag)
-(global-set-key (kbd "C-u C-y") 'helm-show-kill-ring)
-
-;; gtags
-;(global-set-key (kbd "C-c p") 'helm-gtags-find-pattern)
-;(global-set-key (kbd "C-c t") 'helm-gtags-find-tag)
-;(global-set-key (kbd "C-c r") 'helm-gtags-find-rtag)
-;(global-set-key (kbd "C-c a") 'helm-gtags-find-files)
-;(global-set-key (kbd "C-c s") 'helm-gtags-find-symbol)
-
-;; find
-(global-set-key (kbd "M-o") 'helm-c-moccur-occur-by-moccur)
-(setq helm-c-moccur-enable-initial-pattern t)
-(setq helm-c-moccur-enable-auto-look-flag t)
-
-;; M-x
-(smex-initialize)
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-;; This is your old M-x.
-(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+;; ========================================================================
+;; smex
+;;  > M-x
+;; ========================================================================
+(if (not (require 'smex nil t))
+    (message "!!! WORNING !!! | require : smex")
+  (smex-initialize)
+  (global-set-key (kbd "M-x") 'smex)
+  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+  ;; This is your old M-x.
+  (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command))
 
 
 (provide 'sub-interface)
