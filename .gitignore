@@ -6,6 +6,8 @@ ac-comphist.dat
 elpa/
 .emacs.d/viper
 .emacs.d/recentf
+.emacs.d/eshell/
+.emacs.d/session*
 #
 # vim
 .vim/bundle/
