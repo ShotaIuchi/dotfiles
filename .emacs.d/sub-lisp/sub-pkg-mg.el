@@ -46,6 +46,7 @@
       gradle-mode
       magit
       git-gutter
+      migemo
       ))
 
   (let ((not-installed (loop for x in installing-package-list
