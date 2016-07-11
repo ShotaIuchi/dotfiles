@@ -64,11 +64,10 @@
 (require 'sub-org-mode)
 (require 'sub-insert)
 (require 'sub-markdown)
-
+(require 'sub-directory)
 
 ;;----------------------------------------------------------------------------
 ;; Local setting (end)
 ;;----------------------------------------------------------------------------
 (when (file-exists-p "~/.emacs.local-end.el")
   (load "~/.emacs.local-end.el"))
-
