@@ -24,7 +24,8 @@
   ;; swoop
   (if (not (require 'helm-swoop nil t))
       (message "!!! WORNING !!! | require : helm-swoop")
-    (helm-migemo-mode 1)
+    (when (require 'migemo nil t)
+      (helm-migemo-mode 1))
     (setq helm-multi-swoop-edit-save t)
     (setq helm-swoop-split-with-multiple-windows nil)
     (setq helm-swoop-split-direction 'split-window-vertically)

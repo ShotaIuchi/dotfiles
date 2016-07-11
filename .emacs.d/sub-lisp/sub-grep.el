@@ -31,7 +31,9 @@
 ;; ========================================================================
 ;; migemo
 ;; ========================================================================
-(if (not (require 'migemo nil t))
+(if (not (and
+          (require 'migemo nil t)
+          (executable-find "cmigemo")))
     (message "!!! WORNING !!! | require : migemo")
   (setq migemo-options '("-q" "--emacs"))
   (setq migemo-user-dictionary nil)
