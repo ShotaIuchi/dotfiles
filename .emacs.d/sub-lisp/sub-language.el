@@ -1,7 +1,16 @@
 ;; ========================================================================
+;;  common
+;; ========================================================================
+(defun hook-common ()
+  (hs-minor-mode 1)
+  (local-set-key (kbd "C-M-\\") 'hs-toggle-hiding)
+  )
+
+;; ========================================================================
 ;;  C,C++
 ;; ========================================================================
 (defun c-mode-hook-impl ()
+  (hook-common)
   (c-set-style "linux")
   (setq c-basic-offset 4)
   (setq c-tab-always-indent nil)
@@ -22,6 +31,7 @@
 ;;  Java
 ;; ========================================================================
 (defun java-mode-hook-impl ()
+  (hook-common)
   (c-mode-hook-impl))
 (add-hook 'java-mode-hook 'java-mode-hook-impl)
 
@@ -54,6 +64,7 @@
   ;; indent
   (defun web-mode-hook ()
     "Hooks for Web mode."
+    (hook-common)
     (setq web-mode-html-offset   4)
     (setq web-mode-css-offset    4)
     (setq web-mode-script-offset 4)
