@@ -50,19 +50,21 @@
       ))
 
   (defvar installing-package-list-24_3 '())
-  (when (version< emacs-version "24.3")
-    (defconst installing-package-list-24_3
-      '(
-        helm-ls-git
-        magit
-        )
-      )
-    )
-
+  (defvar installing-package-list-24_4 '())
+  (cond ((string-match "24.3." emacs-version)
+         (defconst installing-package-list-24_3 '()))
+        (t
+         (defconst installing-package-list-24_4
+           '(
+             helm-ls-git
+             magit
+             )
+           )))
   (defconst installing-package-list
     (append
      installing-package-list
      installing-package-list-24_3
+     installing-package-list-24_4
      ))
 
   (let ((not-installed (loop for x in installing-package-list
