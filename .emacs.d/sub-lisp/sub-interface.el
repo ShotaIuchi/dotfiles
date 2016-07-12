@@ -39,17 +39,7 @@
   ;; ls-git
   (if (not (require 'helm-ls-git nil t))
       (message "!!! WORNING !!! | require : helm-ls-git")
-    (global-set-key (kbd "C-u C-l") 'helm-ls-git-ls))
-
-  ;; gtags
-  (if (not (require 'helm-gtags nil t))
-      (message "!!! WORNING !!! | require : helm-gtags")
-    (global-set-key (kbd "C-c p") 'helm-gtags-find-pattern)
-    (global-set-key (kbd "C-c t") 'helm-gtags-find-tag)
-    (global-set-key (kbd "C-c r") 'helm-gtags-find-rtag)
-    (global-set-key (kbd "C-c a") 'helm-gtags-find-files)
-    (global-set-key (kbd "C-c s") 'helm-gtags-find-symbol))
-  )
+    (global-set-key (kbd "C-u C-l") 'helm-ls-git-ls)))
 
 
 ;; ========================================================================

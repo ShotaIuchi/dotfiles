@@ -47,6 +47,7 @@
       gradle-mode
       git-gutter
       migemo
+      ggtags
       ))
 
   (defvar installing-package-list-24_3 '())
