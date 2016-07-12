@@ -15,6 +15,7 @@
   (global-set-key (kbd "C-u C-y") 'helm-show-kill-ring)
   (global-set-key (kbd "C-u C-x") 'helm-M-x)
   (global-set-key (kbd "C-u C-o") 'helm-occur)
+  (global-set-key (kbd "C-u C-f") 'helm-find-files)
 
   ;;(require 'helm-c-moccur)
   ;;(require 'helm-descbinds)
