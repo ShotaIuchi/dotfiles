@@ -48,6 +48,7 @@
       git-gutter
       migemo
       ggtags
+      google-translate
       ))
 
   (defvar installing-package-list-24_3 '())

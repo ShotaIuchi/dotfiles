@@ -65,6 +65,7 @@
 (require 'sub-insert)
 (require 'sub-markdown)
 (require 'sub-directory)
+(require 'sub-web)
 
 ;;----------------------------------------------------------------------------
 ;; Local setting (end)
