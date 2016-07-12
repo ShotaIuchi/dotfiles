@@ -4,7 +4,10 @@
 (if (not (require 'helm-config nil t))
     (message "!!! WORNING !!! | require : helm-config")
 
-  (setq helm-idle-delay 0.2)
+  (require 'helm)
+
+  (setq helm-idle-delay 1.2)
+  (setq helm-input-idle-delay 1.2)
 
   (global-unset-key (kbd "C-u"))
   (global-set-key (kbd "C-u C-u") 'helm-mini)
