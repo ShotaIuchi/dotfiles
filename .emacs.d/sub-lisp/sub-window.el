@@ -4,6 +4,14 @@
 ;; start window-size :: maximized / fullscreen
 (set-frame-parameter nil 'fullscreen 'maximized)
 
+;; ========================================================================
+;; resize
+;; ========================================================================
+(global-set-key (kbd "M-<left>") 'shrink-window-horizontally)
+(global-set-key (kbd "M-<right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "M-<up>") 'shrink-window)
+(global-set-key (kbd "M-<down>") 'enlarge-window)
+
 ;; frame
 (if window-system
     (progn

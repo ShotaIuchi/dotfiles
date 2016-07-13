@@ -46,7 +46,7 @@
   (forward-line 1)
   (transpose-lines 1)
   (forward-line -1))
-(global-set-key (kbd "M-<up>") 'move-line-up)
-(global-set-key (kbd "M-<down>") 'move-line-down)
+(global-set-key (kbd "C-M-p") 'move-line-up)
+(global-set-key (kbd "C-M-n") 'move-line-down)
 
 (provide 'sub-select)
