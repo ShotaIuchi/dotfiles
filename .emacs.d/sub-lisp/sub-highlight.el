@@ -1,7 +1,24 @@
-;; line
-(global-hl-line-mode t)
+;;----------------------------------------------------------------------------
+;; line (center)
+;;----------------------------------------------------------------------------
+(if (not (require 'hl-line nil t))
+    (message "!!! WORNING !!! | require : hl-line")
+  ;; mode:on
+  (global-hl-line-mode t)
+  ;; hook:remove
+  (remove-hook 'post-command-hook #'global-hl-line-highlight)
+  (remove-hook 'change-major-mode-hook #'global-hl-line-unhighlight)
+  (remove-hook 'post-command-hook #'global-hl-line-maybe-unhighlight)
+  ;; keybind
+  (global-set-key (kbd "C-c C-;") 'global-hl-line-center)
+  (defun global-hl-line-center ()
+    (interactive)
+    (global-hl-line-highlight)
+    (recenter-top-bottom)))
 
-;; highlight-symbol
+;;----------------------------------------------------------------------------
+;; symble
+;;----------------------------------------------------------------------------
 (if (not (require 'highlight-symbol nil t))
     (message "!!! WORNING !!! | require : highlight-symbol")
   ;;(require 'auto-highlight-symbol nil t)
@@ -12,7 +29,9 @@
   (global-set-key [(shift f3)] 'highlight-symbol-prev)
   )
 
+;;----------------------------------------------------------------------------
 ;; Emphasis of parentheses
+;;----------------------------------------------------------------------------
 (if (not (and
           (require 'rainbow-delimiters nil t)
           (require 'cl-lib nil t)
