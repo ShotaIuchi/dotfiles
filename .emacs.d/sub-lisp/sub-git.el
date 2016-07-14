@@ -12,7 +12,8 @@
 
 (if (not (require 'git-gutter nil t))
     (message "!!! WORNING !!! | require : git-gutter")
-  (global-git-gutter-mode t))
+  ;;(global-git-gutter-mode t)
+  (global-set-key (kbd "C-x C-g") 'git-gutter:toggle))
 
 
 (provide 'sub-git)
