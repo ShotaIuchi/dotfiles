@@ -49,6 +49,7 @@
       migemo
       ggtags
       google-translate
+      multi-term
       ))
 
   (defvar installing-package-list-24_3 '())
