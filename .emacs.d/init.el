@@ -1,8 +1,8 @@
-(setq user-emacs-directory "~/.emacs.d/")
+(when load-file-name
+  (setq user-emacs-directory (file-name-directory load-file-name)))
 
-(add-to-list 'load-path (expand-file-name "sub-lisp" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "site-lisp" user-emacs-directory))
-
+(add-to-list 'load-path (locate-user-emacs-file "sub-lisp"))
+(add-to-list 'load-path (locate-user-emacs-file "site-lisp"))
 
 ;;----------------------------------------------------------------------------
 ;; Local setting (start)
