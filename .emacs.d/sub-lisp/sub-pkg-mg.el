@@ -1,11 +1,5 @@
-(if (not (and
-          (require 'package nil t)
-          (require 'cl nil t)
-          ))
-    ((unless (require 'package nil t)
-       (message "!!! WORNING !!! | require : package"))
-     (unless (require 'cl nil t)
-       (message "!!! WORNING !!! | require : cl")))
+(if (not (require 'package nil t))
+    (message "!!! WORNING !!! | require : package")
 
   ;;----------------------------------------------------------------------------
   ;; melpa - setting
@@ -70,13 +64,9 @@
      installing-package-list-24_4
      ))
 
-  (let ((not-installed (loop for x in installing-package-list
-                             when (not (package-installed-p x))
-                             collect x)))
-    (when not-installed
-      (package-refresh-contents)
-      (dolist (pkg not-installed)
-        (package-install pkg))))
+  (dolist (package installing-package-list)
+    (when (or (not (package-installed-p package)))
+      (package-install package)))
   )
 
 
