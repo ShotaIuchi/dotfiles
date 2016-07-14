@@ -10,6 +10,14 @@
 (global-set-key (kbd "M-k") 'kill-buffer)       ; Cut the cursor below.
 
 ;;----------------------------------------------------------------------------
+;; mouse
+;;----------------------------------------------------------------------------
+(xterm-mouse-mode t)
+(mouse-wheel-mode t)
+(global-set-key [mouse-4] (kbd "C-p"))
+(global-set-key [mouse-5] (kbd "C-n"))
+
+;;----------------------------------------------------------------------------
 ;; Unset the keybind.
 ;;----------------------------------------------------------------------------
 (global-unset-key (kbd "M-c"))                  ; unset - capitalize-word
