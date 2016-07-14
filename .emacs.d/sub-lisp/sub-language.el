@@ -3,7 +3,8 @@
 ;; ========================================================================
 (defun hook-common ()
   (hs-minor-mode 1)
-  (local-set-key (kbd "C-M-\\") 'hs-toggle-hiding)
+  (local-set-key (kbd "C-u C-c") 'hs-hide-level)
+  (local-set-key (kbd "C-u C-t") 'hs-toggle-hiding)
   )
 
 ;; ========================================================================
