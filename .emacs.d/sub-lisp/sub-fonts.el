@@ -67,21 +67,21 @@
 ;; ========================================================================
 ;;  emphasis
 ;; ========================================================================
-(if (not (require 'whitespace nil t))
-    (message "!!! WORNING !!! | require : whitespace")
-  (setq whitespace-style '(face           ; faceで可視化
-                           trailing       ; 行末
-                           tabs           ; タブ
-                           empty          ; 先頭/末尾の空行
-                           space-mark     ; 表示のマッピング
-                           tab-mark
-                           ))
-  (setq whitespace-space-regexp "\\(\x3000+\\)")
-  (setq whitespace-display-mappings
-        '((space-mark ?\x3000 [?\□])
-          (tab-mark   ?\t   [?\xBB ?\t])
-          ))
-  (global-whitespace-mode 1))
+;;(if (not (require 'whitespace nil t))
+;;    (message "!!! WORNING !!! | require : whitespace")
+;;  (setq whitespace-style '(face           ; faceで可視化
+;;                           trailing       ; 行末
+;;                           tabs           ; タブ
+;;                           empty          ; 先頭/末尾の空行
+;;                           space-mark     ; 表示のマッピング
+;;                           tab-mark
+;;                           ))
+;;  (setq whitespace-space-regexp "\\(\x3000+\\)")
+;;  (setq whitespace-display-mappings
+;;        '((space-mark ?\x3000 [?\□])
+;;          (tab-mark   ?\t   [?\xBB ?\t])
+;;          ))
+;;  (global-whitespace-mode 1))
 
 
 (provide 'sub-fonts)
