@@ -1,3 +1,6 @@
+;; ========================================================================
+;;  sample
+;; ========================================================================
 ;; フォント
 ;; abcdefghijklmnopqrstuvwxyz
 ;; ABCDEFGHIJKLMNOPQRSTUVWXYZ
@@ -14,15 +17,6 @@
 ;; │　　　　　　　　　　　　　罫線                            │
 ;; └─────────────────────────────┘
 ;;
-
-;; ========================================================================
-;; japanese
-;; ========================================================================
-(set-language-environment  'utf-8)
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(setq default-file-name-coding-system 'shift_jis)
 
 
 ;; ========================================================================
@@ -62,26 +56,6 @@
   (set-face-attribute 'default nil :family "Ricty Diminished" :height 104)
   (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Ricty Diminished"))
   (setq face-font-rescale-alist '(("Ricty Diminished" . 1.00))))
-
-
-;; ========================================================================
-;;  emphasis
-;; ========================================================================
-;;(if (not (require 'whitespace nil t))
-;;    (message "!!! WORNING !!! | require : whitespace")
-;;  (setq whitespace-style '(face           ; faceで可視化
-;;                           trailing       ; 行末
-;;                           tabs           ; タブ
-;;                           empty          ; 先頭/末尾の空行
-;;                           space-mark     ; 表示のマッピング
-;;                           tab-mark
-;;                           ))
-;;  (setq whitespace-space-regexp "\\(\x3000+\\)")
-;;  (setq whitespace-display-mappings
-;;        '((space-mark ?\x3000 [?\□])
-;;          (tab-mark   ?\t   [?\xBB ?\t])
-;;          ))
-;;  (global-whitespace-mode 1))
 
 
 (provide 'sub-fonts)
