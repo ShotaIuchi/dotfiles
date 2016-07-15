@@ -21,7 +21,8 @@
 ;;----------------------------------------------------------------------------
 (require 'sub-keyboard)
 (require 'sub-keybind)
-(require 'sub-pkg-mg)
+(require 'sub-package)
+;;(require 'sub-pkg-mg)
 (require 'sub-enviorment)
 
 ;;----------------------------------------------------------------------------

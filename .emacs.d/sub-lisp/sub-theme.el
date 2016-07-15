@@ -4,7 +4,9 @@
 ;(color-theme-initialize)
 ;(color-theme-deep-blue)
 
-(load-theme 'tangotango t)
+(if (not (require 'tangotango-theme nil t))
+    (message "!!! WORNING !!! | require : tangotango-theme")
+  (load-theme 'tangotango t))
 
 
 (provide 'sub-theme)
