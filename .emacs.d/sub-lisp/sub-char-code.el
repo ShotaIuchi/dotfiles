@@ -9,4 +9,4 @@
 (setq-default buffer-file-coding-system 'utf-8)
 
 
-(provide 'sub-fonts)
+(provide 'sub-char-code)
