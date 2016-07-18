@@ -72,7 +72,6 @@
 ;;  install packages (>=24.3.)
 ;; ========================================================================
 (when (emacs-version-old 24 3)
-  ;;(package-install 'tangotango-theme)
   )
 
 
@@ -80,7 +79,7 @@
 ;;  install packages (<=24.4.)
 ;; ========================================================================
 (when (emacs-version-new 24 4)
-  (el-get-bundle magit)
+  (el-get-bundle magit/magit)
   )
 
 
