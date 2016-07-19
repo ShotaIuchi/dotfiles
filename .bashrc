@@ -1,6 +1,10 @@
 #!/bin/bash
 
 #
+# prompt
+PS1="\[\e]0;\w\a\]\n\[\e[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n\$ "
+
+#
 # include
 if [ -f ~/.bashrc.def ]; then
     source ~/.bashrc.def
