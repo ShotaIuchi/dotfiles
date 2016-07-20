@@ -1,4 +1,18 @@
 ;; ========================================================================
+;;  move
+;; ------------------------------------------------------------------------
+;;   C-c h   .. goto left
+;;   C-c j   .. goto down
+;;   C-c k   .. goto up
+;;   C-c l   .. goto right
+;; ========================================================================
+(global-set-key (kbd "C-c h") 'windmove-left)
+(global-set-key (kbd "C-c j") 'windmove-down)
+(global-set-key (kbd "C-c k") 'windmove-up)
+(global-set-key (kbd "C-c l") 'windmove-right)
+
+
+;; ========================================================================
 ;;  Set the keybind.
 ;; ========================================================================
 (global-set-key (kbd "M-k") 'kill-buffer)       ; Cut the cursor below.
