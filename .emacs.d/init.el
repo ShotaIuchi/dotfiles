@@ -101,6 +101,7 @@
 ;; ========================================================================
 (require 'sub-search)
 (require 'sub-search-buffer-current)
+(require 'sub-search-buffer-all)
 (require 'sub-search-grep)
 (require 'sub-search-tags)
 
