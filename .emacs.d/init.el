@@ -11,12 +11,29 @@
 ;; ========================================================================
 ;;  Local setting (start)
 ;; ------------------------------------------------------------------------
-;;   > (setq url-proxy-services
-;;   >     '(("http" . "hoge:xxxx")
-;;   >       ("https" . "hoge:xxxx")))
+;;   (setq url-proxy-services
+;;       '(("http" . "hoge:xxxx")
+;;         ("https" . "hoge:xxxx")))
 ;; ========================================================================
 (when (file-exists-p "~/.emacs.local-start.el")
   (load "~/.emacs.local-start.el"))
+
+
+;; ========================================================================
+;;  function
+;; ========================================================================
+(require 'sub-function-init)
+(require 'sub-function-version)
+(require 'sub-function-date)
+
+
+;; ========================================================================
+;;  enviorment
+;; ========================================================================
+(require 'sub-key-swap)
+(require 'sub-gc)
+(require 'sub-appearance)
+(require 'sub-os)
 
 
 ;; ========================================================================
@@ -27,62 +44,99 @@
 
 
 ;; ========================================================================
-;; Bootstrap config
+;;  interface
 ;; ========================================================================
-(require 'sub-keyboard)
+(require 'sub-mouse)
 (require 'sub-keybind)
+
+
+;; ========================================================================
+;;  package
+;; ========================================================================
 (require 'sub-package)
 ;;(require 'sub-pkg-mg)
-(require 'sub-enviorment)
+(require 'sub-helm-init)
 
 
 ;; ========================================================================
-;; Layout config
+;;  directory
 ;; ========================================================================
-(require 'sub-highlight)
+(require 'sub-directory)
+
+
+;; ========================================================================
+;;  buffer
+;; ========================================================================
+(require 'sub-M-x)
+(require 'sub-buffer)
+(require 'sub-buffer-list)
+(require 'sub-open-file)
+
+
+;; ========================================================================
+;;  shortcut
+;; ========================================================================
+(require 'sub-alias)
+(require 'sub-cursor)
+
+
+;; ========================================================================
+;;  range
+;; ========================================================================
+(require 'sub-region)
+(require 'sub-delete)
+(require 'sub-rectangle)
+
+
+;; ========================================================================
+;;  layout
+;; ========================================================================
 (require 'sub-window)
 (require 'sub-theme)
+(require 'sub-highlight)
 
 
 ;; ========================================================================
-;; Search config
+;;  search
 ;; ========================================================================
-(require 'sub-grep)
+(require 'sub-search)
+(require 'sub-search-buffer-current)
+(require 'sub-search-grep)
+(require 'sub-search-tags)
 
 
 ;; ========================================================================
-;; Input confin
+;;  input
 ;; ========================================================================
 (require 'sub-ime)
-(require 'sub-interface)
 (require 'sub-auto-complete)
-(require 'sub-select)
-(require 'sub-history)
+(require 'sub-input-history)
 
 
 ;; ========================================================================
-;; Text confin
+;;  tool
 ;; ========================================================================
-(require 'sub-indent)
+(require 'sub-terminal)
+(require 'sub-web)
 
 
 ;; ========================================================================
-;; History confin
+;;  history
 ;; ========================================================================
 (require 'sub-git)
 (require 'sub-backup)
+(require 'sub-kill-ring)
 
 
 ;; ========================================================================
-;; Other confin
+;;  filetype
 ;; ========================================================================
-(require 'sub-terminal)
-(require 'sub-language)
-(require 'sub-org-mode)
-(require 'sub-insert)
-(require 'sub-markdown)
-(require 'sub-directory)
-(require 'sub-web)
+(require 'sub-filetype-common)
+(require 'sub-filetype-c)
+(require 'sub-filetype-build)
+(require 'sub-filetype-html)
+(require 'sub-filetype-text)
+(require 'sub-filetype-org)
 
 
 ;; ========================================================================

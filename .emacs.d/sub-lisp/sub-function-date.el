@@ -1,14 +1,17 @@
 ;; ========================================================================
-;;  backup
+;;  today
 ;; ========================================================================
-(setq make-backup-files nil)
+(defun insert-today()
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d %a" (current-time))))
 
 
 ;; ========================================================================
-;;  auto-save
+;;  now
 ;; ========================================================================
-(setq auto-save-default nil)
-(setq auto-save-list-file-prefix nil)
+(defun insert-now()
+  (interactive)
+  (insert (format-time-string "%H:%M:%S" (current-time))))
 
 
-(provide 'sub-backup)
+(provide 'sub-function-date)

@@ -1,12 +1,5 @@
 ;; ========================================================================
-;;  reload
-;; ========================================================================
-(defun reload ()
-  (interactive)
-  (load-file "~/.emacs.d/init.el"))
-
-;; ========================================================================
-;;  windows
+;;  MS windows
 ;; ========================================================================
 (when (eq system-type 'windows-nt)
   (unless (require 'cygwin-mount nil t)
@@ -15,4 +8,4 @@
     (message "!!! WORNING !!! | require : cygwin-mount")))
 
 
-(provide 'sub-enviorment)
+(provide 'sub-os)

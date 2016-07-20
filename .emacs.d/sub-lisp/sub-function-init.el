@@ -1,7 +1,9 @@
 ;; ========================================================================
-;;  dired : rename
+;;  reload
 ;; ========================================================================
-(define-key dired-mode-map (kbd "r") 'wdired-change-to-wdired-mode)
+(defun reload ()
+  (interactive)
+  (load-file "~/.emacs.d/init.el"))
 
 
-(provide 'sub-directory)
+(provide 'sub-function-init)

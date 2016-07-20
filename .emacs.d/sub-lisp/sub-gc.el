@@ -1,7 +1,8 @@
 ;; ========================================================================
-;;  dired : rename
+;;  garbage collect
 ;; ========================================================================
-(define-key dired-mode-map (kbd "r") 'wdired-change-to-wdired-mode)
+(setq gc-cons-threshold 100000000)
+(setq garbage-collection-messages "run-GC")
 
 
-(provide 'sub-directory)
+(provide 'sub-gc)

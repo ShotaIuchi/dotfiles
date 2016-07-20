@@ -1,7 +1,7 @@
 ;; ========================================================================
-;;  dired : rename
+;;  yes/no --> y/n
 ;; ========================================================================
-(define-key dired-mode-map (kbd "r") 'wdired-change-to-wdired-mode)
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 
-(provide 'sub-directory)
+(provide 'sub-alias)

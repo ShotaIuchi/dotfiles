@@ -1,7 +1,8 @@
 ;; ========================================================================
-;;  dired : rename
+;;  rectangle
 ;; ========================================================================
-(define-key dired-mode-map (kbd "r") 'wdired-change-to-wdired-mode)
+(cua-mode t)
+(setq cua-enable-cua-keys nil)
 
 
-(provide 'sub-directory)
+(provide 'sub-rectangle)

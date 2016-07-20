@@ -1,9 +1,15 @@
+;; ========================================================================
+;;  word
+;; ========================================================================
 (if (not (require 'expand-region nil t))
     (message "!!! WORNING !!! | require : expand-region")
   (global-set-key (kbd "C-M-SPC") 'er/expand-region)
   (global-set-key (kbd "M-SPC") 'er/contract-region))
 
 
+;; ========================================================================
+;;  multhiple cursors
+;; ========================================================================
 (if (not (and
           (require 'multiple-cursors nil t)
           (require 'smartrep nil t)
@@ -33,9 +39,10 @@
       ("O"        . 'mc/reverse-regions)))
   )
 
-;;----------------------------------------------------------------------------
-;; rectangle
-;;----------------------------------------------------------------------------
+
+;; ========================================================================
+;;  rectangle
+;; ========================================================================
 (cua-mode t)
 (setq cua-enable-cua-keys nil)
 
@@ -54,4 +61,4 @@
 (global-set-key (kbd "C-M-p") 'move-line-up)
 (global-set-key (kbd "C-M-n") 'move-line-down)
 
-(provide 'sub-select)
+(provide 'sub-region)

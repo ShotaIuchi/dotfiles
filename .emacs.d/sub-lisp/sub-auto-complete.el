@@ -1,3 +1,6 @@
+;; ========================================================================
+;;  auto-complete
+;; ========================================================================
 (if (not (require 'auto-complete-config nil t))
     (message "!!! WORNING !!! | require : auto-complete-config")
   ;;(global-auto-complete-mode t)

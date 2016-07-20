@@ -15,3 +15,6 @@
   "Whether major and minor are old."
   (and (>= major emacs-major-version)
        (>= minor emacs-minor-version)))
+
+
+(provide 'sub-function-version)

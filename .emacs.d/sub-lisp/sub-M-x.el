@@ -1,22 +1,24 @@
 ;; ========================================================================
-;;  unbind
+;;  smex
 ;; ------------------------------------------------------------------------
-;;   M-c   .. capitalize-word
-;;   M-l   .. downcase-word
-;;   M-u   .. universal-argument
+;;   M-x            .. smex
+;;   C-c C-c M-x    .. M-x (default)
 ;; ========================================================================
-(global-unset-key (kbd "M-c"))
-(global-unset-key (kbd "M-l"))
-(global-unset-key (kbd "C-u"))
+(if (not (require 'smex nil t))
+    (message "!!! WORNING !!! | require : smex")
+  (smex-initialize)
+  (global-set-key (kbd "M-x") 'smex)
+  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+  (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command))
 
 
 ;; ========================================================================
-;;  list
+;;  helm
 ;; ------------------------------------------------------------------------
-;;   C-u C-d    .. keybind list
+;;   C-u C-x
 ;; ========================================================================
 (when 'flag-helm-init
-  (global-set-key (kbd "C-u C-d") 'helm-descbinds))
+  (global-set-key (kbd "C-u C-x") 'helm-M-x))
 
 
-(provide 'sub-keybind)
+(provide 'sub-M-x)

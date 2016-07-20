@@ -1,5 +1,5 @@
 ;; ========================================================================
-;; web
+;;  web
 ;; ========================================================================
 (if (not (require 'eww nil t))
     (message "!!! WORNING !!! | require : eww")
@@ -50,8 +50,9 @@
     (setq-local shr-put-image-function 'shr-put-image-alt))
   (add-hook 'eww-mode-hook 'eww-mode-hook--disable-image))
 
+
 ;; ========================================================================
-;; google translate
+;;  google translate
 ;; ========================================================================
 (if (not (require 'google-translate nil t))
     (message "!!! WORNING !!! | require : google-translate")
