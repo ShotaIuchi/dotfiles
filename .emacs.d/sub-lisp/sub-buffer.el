@@ -14,8 +14,12 @@
 
 ;; ========================================================================
 ;;  Set the keybind.
+;; ------------------------------------------------------------------------
+;;  M-k     .. kill buffer
+;;  !!! helm-mode-kill-buffer : OFF
 ;; ========================================================================
-(global-set-key (kbd "M-k") 'kill-buffer)       ; Cut the cursor below.
+(add-to-list 'helm-completing-read-handlers-alist '(kill-buffer . nil))
+(global-set-key (kbd "M-k") 'kill-buffer)
 
 
 ;; ========================================================================
