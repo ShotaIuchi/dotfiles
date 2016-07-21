@@ -47,6 +47,7 @@
 (el-get-bundle multiple-cursors)
 (el-get-bundle popup)
 (el-get-bundle popwin)
+(el-get-bundle windata)
 (el-get-bundle rainbow-delimiters)
 (el-get-bundle redo+)
 (el-get-bundle smartrep)
