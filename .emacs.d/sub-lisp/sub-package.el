@@ -65,6 +65,7 @@
 (el-get-bundle multi-term)
 (el-get-bundle tangotango-theme)
 (el-get-bundle helm-ls-git)
+(el-get-bundle elscreen)
 
 
 ;; ========================================================================

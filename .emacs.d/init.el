@@ -92,6 +92,7 @@
 ;;  layout
 ;; ========================================================================
 (require 'sub-window)
+(require 'sub-tab-bar)
 (require 'sub-theme)
 (require 'sub-highlight)
 
