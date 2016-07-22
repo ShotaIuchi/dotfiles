@@ -3,20 +3,16 @@
 ;; -----------------------------------------------------------------------
 ;;   C-c C-;    to center and highlight line
 ;; ========================================================================
-(if (not (require 'hl-line nil t))
-    (message "!!! WORNING !!! | require : hl-line")
-  ;; mode:on
-  (global-hl-line-mode t)
-  ;; hook:remove
-  (remove-hook 'post-command-hook #'global-hl-line-highlight)
-  (remove-hook 'change-major-mode-hook #'global-hl-line-unhighlight)
-  (remove-hook 'post-command-hook #'global-hl-line-maybe-unhighlight)
-  ;; keybind
-  (global-set-key (kbd "C-c C-;") 'global-hl-line-center)
-  (defun global-hl-line-center ()
-    (interactive)
-    (global-hl-line-highlight)
-    (recenter-top-bottom)))
+(cond ((not (require 'col-highlight nil t))
+       (message "!!! WORNING !!! | require : col-highlight"))
+      ((not (require 'crosshairs nil t))
+       (message "!!! WORNING !!! | require : col-highlight"))
+      (t
+       (global-set-key (kbd "C-c C-;") 'global-hl-line-center)
+       (defun global-hl-line-center ()
+         (interactive)
+         (recenter-top-bottom)
+         (crosshairs-highlight))))
 
 
 ;; ========================================================================
