@@ -66,6 +66,7 @@
 (el-get-bundle tangotango-theme)
 (el-get-bundle helm-ls-git)
 (el-get-bundle elscreen)
+(el-get-bundle elscreen-persist)
 (el-get-bundle hl-line+)
 (el-get-bundle col-highlight)
 (el-get-bundle crosshairs)

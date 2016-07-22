@@ -18,6 +18,10 @@
 
   (setq elscreen-prefix-key (kbd "C-z"))
   (elscreen-start)
+  ;; memory
+  (if (not (require 'elscreen-persist nil t))
+      (message "!!! WORNING !!! | require : elscreen-persist")
+    (elscreen-persist-mode t))
   ;; do not display [x]
   (setq elscreen-tab-display-kill-screen nil)
   ;; do not display [<->]
