@@ -6,6 +6,7 @@ ac-comphist.dat
 elpa/
 .emacs.d/viper
 .emacs.d/recentf
+.emacs.d/backup/
 .emacs.d/eshell/
 .emacs.d/el-get/
 .emacs.d/url/
