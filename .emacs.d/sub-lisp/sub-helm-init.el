@@ -5,6 +5,7 @@
 (if (not (require 'helm-config nil t))
     (message "!!! WORNING !!! | require : helm-config")
   (require 'helm)
+  (require 'helm-mode)
   (setq helm-idle-delay 0.2)
   (setq helm-input-idle-delay 0.2)
   (defadvice helm-buffers-sort-transformer (around ignore activate)

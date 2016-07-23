@@ -8,4 +8,4 @@
     (message "!!! WORNING !!! | require : cygwin-mount")))
 
 
-(provide 'sub-os)
+(provide 'sub-os-windows)
