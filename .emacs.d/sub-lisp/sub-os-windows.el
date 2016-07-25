@@ -1,7 +1,9 @@
 ;; ========================================================================
 ;;  MS windows
 ;; ========================================================================
-(when (eq system-type 'windows-nt)
+(when (and
+       (os-type-windows)
+       (ui-type-gui))
   (unless (require 'cygwin-mount nil t)
     (message "!!! WORNING !!! | require : cygwin-mount"))
   (unless (require 'setup-cygwin nil t)

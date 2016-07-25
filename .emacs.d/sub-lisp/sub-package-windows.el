@@ -6,7 +6,7 @@
 ;;   > M-x package-install
 ;;   > async
 ;; ========================================================================
-(when (eq system-type 'windows-nt)
+(when (os-type-windows)
   (if (not (require 'package nil t))
       (message "!!! WORNING !!! | require : package")
 

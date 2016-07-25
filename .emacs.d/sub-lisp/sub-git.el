@@ -17,7 +17,7 @@
 (if (not (require 'magit nil t))
     (message "!!! WORNING !!! | require : magit")
   (global-set-key (kbd "C-c C-s") 'magit-status)
-  ;;(if (eq system-type 'windows-nt)
+  ;;(if (os-type-windows)
   ;;    (setq magit-git-executable "C:/cygwin/bin/git.exe"))
   ;;(set-face-foreground 'magit-diff-add "#00000000")
   ;;(set-face-foreground 'magit-diff-del "#00000000")

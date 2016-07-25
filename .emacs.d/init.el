@@ -24,6 +24,7 @@
 ;; ========================================================================
 (require 'sub-function-init)
 (require 'sub-function-version)
+(require 'sub-function-environment)
 (require 'sub-function-date)
 
 

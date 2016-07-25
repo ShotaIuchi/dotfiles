@@ -9,13 +9,18 @@
 ;; ========================================================================
 ;;  window item
 ;; ========================================================================
-(when window-system  
-  (tool-bar-mode 0)
-  (menu-bar-mode 0)
-  (global-linum-mode 0)
-  (scroll-bar-mode 0)
-  (line-number-mode t)
-  (column-number-mode t))
+(cond ((window-system)
+       (tool-bar-mode 0)
+       (menu-bar-mode 0)
+       (global-linum-mode 0)
+       (scroll-bar-mode 0)
+       (line-number-mode t)
+       (column-number-mode t))
+      (t
+       (menu-bar-mode 0)
+       (global-linum-mode 0)
+       (line-number-mode t)
+       (column-number-mode t)))
 
 
 ;; ========================================================================

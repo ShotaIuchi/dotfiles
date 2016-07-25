@@ -22,7 +22,7 @@
        ;;  >           --> .\dict\utf-8
        ;;  >           -->   =copy=> ~\.emacs.d\etc\dict\cmigemo\
        ;; ========================================================================
-       (when (eq system-type 'windows-nt)
+       (when (os-type-windows)
          (setq migemo-command "cmigemo")
          (setq migemo-dictionary (expand-file-name "~/.emacs.d/etc/dict/cmigemo/utf-8/migemo-dict"))
          )
@@ -31,7 +31,7 @@
        ;; mac
        ;;  > brew install cmigemo
        ;; ========================================================================
-       (when (eq system-type 'darwin)
+       (when (os-type-mac)
          (setq migemo-command "/usr/local/bin/cmigemo")
          (setq migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
          )
@@ -40,7 +40,7 @@
        ;; linux
        ;;  > sudo apt-get install cmigemo
        ;; ========================================================================
-       (when (eq system-type 'gnu/linux)
+       (when (os-type-linux)
          (setq migemo-command "cmigemo")
          (setq migemo-dictionary "/usr/share/cmigemo/utf-8/migemo-dict")
          )
