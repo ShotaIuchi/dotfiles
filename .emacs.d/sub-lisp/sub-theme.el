@@ -16,4 +16,9 @@
   (load-theme 'tangotango t))
 
 
+(if (not (require 'color-theme-solarized nil t))
+    (message "!!! WORNING !!! | require : solarized-theme")
+  (load-theme 'solarized t))
+
+
 (provide 'sub-theme)
