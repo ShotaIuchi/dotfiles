@@ -59,6 +59,7 @@
         web-mode
         wgrep
         windata
+        yasnippet
         ))
 
     (defvar installing-package-list-24_3 '())

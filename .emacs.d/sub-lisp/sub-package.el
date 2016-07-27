@@ -74,6 +74,7 @@
   (el-get-bundle web-mode)
   (el-get-bundle wgrep)
   (el-get-bundle windata)
+  (el-get-bundle yasnippet)
 
 
   ;; ======================================================================
