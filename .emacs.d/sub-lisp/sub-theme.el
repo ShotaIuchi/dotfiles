@@ -11,14 +11,22 @@
 ;; ========================================================================
 ;;  theme
 ;; ========================================================================
-(if (not (require 'tangotango-theme nil t))
-    (message "!!! WORNING !!! | require : tangotango-theme")
-  (load-theme 'tangotango t))
+;; ------------------------------------------------------------------------
+;;  tangotango
+;; ------------------------------------------------------------------------
+(when (not (require 'tangotango-theme nil t))
+  (message "!!! WORNING !!! | require : tangotango-theme"))
 
+;; ------------------------------------------------------------------------
+;;  solarized
+;; ------------------------------------------------------------------------
+(when (not (require 'color-theme-solarized nil t))
+  (message "!!! WORNING !!! | require : solarized-theme"))
 
-(if (not (require 'color-theme-solarized nil t))
-    (message "!!! WORNING !!! | require : solarized-theme")
-  (load-theme 'solarized t))
+;; ------------------------------------------------------------------------
+;;  default theme
+;; ------------------------------------------------------------------------
+(load-theme 'tangotango t)
 
 
 (provide 'sub-theme)
