@@ -5,8 +5,10 @@
     (message "!!! WORNING !!! | require : yasnippet")
 
   (setq yas-snippet-dirs
-        '("~/.emacs.d/yasnippets"
-          "~/.emacs.d/yasnippets-org"
+        '("~/.emacs.d/yasnippet/sub"
+          ;; https://github.com/AndreaCrotti/yasnippet-snippets
+          ;; https://github.com/gausby/HTML5-YASnippet-bundle
+          "~/.emacs.d/yasnippet/site"
           ))
 
   ;; new snippet
