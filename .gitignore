@@ -4,6 +4,7 @@
 elscreen
 smex-items
 ac-comphist.dat
+.mc-lists.el
 elpa/
 .emacs.d/viper
 .emacs.d/recentf
