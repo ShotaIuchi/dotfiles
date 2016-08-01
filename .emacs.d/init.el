@@ -34,6 +34,7 @@
 (require 'sub-key-swap)
 (require 'sub-gc)
 (require 'sub-appearance)
+(require 'sub-sound)
 
 
 ;; ========================================================================
