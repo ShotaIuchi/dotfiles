@@ -7,6 +7,7 @@ ac-comphist.dat
 .mc-lists.el
 elpa/
 .emacs.d/viper
+.emacs.d/history
 .emacs.d/recentf
 .emacs.d/backup/
 .emacs.d/eshell/

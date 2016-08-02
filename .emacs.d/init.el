@@ -78,6 +78,7 @@
 (require 'sub-buffer)
 (require 'sub-buffer-list)
 (require 'sub-open-file)
+(require 'sub-recent)
 
 
 ;; ========================================================================
