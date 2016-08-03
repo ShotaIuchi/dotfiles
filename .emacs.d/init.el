@@ -142,6 +142,7 @@
 ;;  filetype
 ;; ========================================================================
 (require 'sub-yasnippet)
+(require 'sub-syntax-check)
 (require 'sub-filetype-common)
 (require 'sub-filetype-c)
 (require 'sub-filetype-build)

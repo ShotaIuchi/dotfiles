@@ -75,6 +75,8 @@
   (el-get-bundle wgrep)
   (el-get-bundle windata)
   (el-get-bundle yasnippet)
+  (el-get-bundle flycheck)
+  (el-get-bundle flycheck-irony)
 
 
   ;; ======================================================================

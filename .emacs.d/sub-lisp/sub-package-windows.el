@@ -60,6 +60,8 @@
         wgrep
         windata
         yasnippet
+        flycheck
+        flycheck-irony
         ))
 
     (defvar installing-package-list-24_3 '())
