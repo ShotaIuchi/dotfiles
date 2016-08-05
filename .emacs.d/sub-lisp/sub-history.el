@@ -11,4 +11,4 @@
   (setq undo-strong-limit 900000))
 
 
-(provide 'sub-input-history)
+(provide 'sub-history)
