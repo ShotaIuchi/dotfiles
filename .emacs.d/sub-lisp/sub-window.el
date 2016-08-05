@@ -27,7 +27,7 @@
 (if (not (require 'windata nil t))
     (message "!!! WORNING !!! | require : windata")
   ;;(setq helm-windata '(frame left 0.3 nil))
-  (setq helm-windata '(frame right 0.3 nil))
+  (setq helm-windata '(frame left 0.5 nil))
   (defun my/helm-display-buffer (buffer)
     (apply 'windata-display-buffer buffer helm-windata))
   (setq helm-display-function 'my/helm-display-buffer))
