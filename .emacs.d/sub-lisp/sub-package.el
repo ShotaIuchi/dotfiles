@@ -77,6 +77,7 @@
   (el-get-bundle yasnippet)
   (el-get-bundle flycheck)
   (el-get-bundle flycheck-irony)
+  (el-get-bundle yaml-mode)
 
 
   ;; ======================================================================

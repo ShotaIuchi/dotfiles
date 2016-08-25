@@ -62,6 +62,7 @@
         yasnippet
         flycheck
         flycheck-irony
+        yaml-mode
         ))
 
     (defvar installing-package-list-24_3 '())
