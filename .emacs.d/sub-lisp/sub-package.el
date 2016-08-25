@@ -78,6 +78,7 @@
   (el-get-bundle flycheck)
   (el-get-bundle flycheck-irony)
   (el-get-bundle yaml-mode)
+  (el-get-bundle cmake-mode)
 
 
   ;; ======================================================================

@@ -63,6 +63,7 @@
         flycheck
         flycheck-irony
         yaml-mode
+        cmake-mode
         ))
 
     (defvar installing-package-list-24_3 '())
