@@ -1,4 +1,17 @@
 ;; ========================================================================
+;;  count (show mode-line)
+;; ========================================================================
+(defun count-lines-and-chars ()
+  (if mark-active
+      (format "[%3d:%4d]"
+              (count-lines (region-beginning) (region-end))
+              (- (region-end) (region-beginning)))
+    ""))
+(add-to-list 'default-mode-line-format
+             '(:eval (count-lines-and-chars)))
+
+
+;; ========================================================================
 ;;  word
 ;; ========================================================================
 (if (not (require 'expand-region nil t))
