@@ -6,7 +6,7 @@
 ;; ------------------------------------------------------------------------
 (defun c-mode-hook-impl ()
   (hook-common)
-  (c-set-style "linux")
+  (c-set-style "bsd")
   (c-set-offset 'innamespace 0)
   (setq c-basic-offset 4)
   (setq c-tab-always-indent nil)
