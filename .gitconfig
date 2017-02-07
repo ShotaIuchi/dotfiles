@@ -31,6 +31,7 @@
     lg = log --oneline --decorate --graph
     s = status
     c = checkout
+    cm = checkout master
     co = commit
     com = commit --message
     coa = commit --amend
