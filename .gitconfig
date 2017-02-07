@@ -46,6 +46,10 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; possibility of destruction
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    m = merge --ff
+    mf = merge --ff
+    mn = merge --no-ff
+    ms = merge --squash
     rb = rebase
     rbc = rebase --continue
     rbs = rebase --skip
