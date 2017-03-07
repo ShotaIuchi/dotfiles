@@ -25,6 +25,8 @@
     ap = add --patch
     b = branch
     ba = branch --all
+    br = remote prune --dry-run
+    ; brc = remote prune ; destructive
     l = log --oneline
     ld = log --oneline --decorate
     lb = log --oneline --decorate --stat
@@ -64,6 +66,7 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; destructive
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    brc = remote prune
     fback = !sh -c 'git reset --soft HEAD~${1:-1}' -
     fclean = "!f() { git reset --hard HEAD; git clean --force -d; }; f"
     faclean = "!f() { git reset --hard HEAD; git clean --force -d; git ls-files --others | xargs rm -rf; }; f"
