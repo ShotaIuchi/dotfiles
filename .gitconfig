@@ -28,6 +28,7 @@
     br = remote prune --dry-run
     ; brc = remote prune ; destructive
     l = log --oneline
+    la = log --format=full
     ld = log --oneline --decorate
     lb = log --oneline --decorate --stat
     lg = log --oneline --decorate --graph
