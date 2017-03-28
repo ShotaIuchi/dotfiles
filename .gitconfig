@@ -60,6 +60,10 @@
     mf = merge --ff
     mn = merge --no-ff
     ms = merge --squash
+    pp = pull
+    pprb = pull --rebase
+    pprbc = rebase --continue
+    pprbs = rebase --skip
     rb = rebase
     rbc = rebase --continue
     rbs = rebase --skip
