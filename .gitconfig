@@ -18,6 +18,10 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     cofirst = commit --allow-empty -m 'Initial commit'
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; test
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    bt = remote prune --dry-run
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; non-destructive
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     a = add
@@ -25,7 +29,6 @@
     ap = add --patch
     b = branch
     ba = branch --all
-    br = remote prune --dry-run
     ; brc = remote prune ; destructive
     l = log --oneline
     la = log --format=full
