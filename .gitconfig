@@ -28,6 +28,7 @@
     a = add
     aa = add --all
     ap = add --patch
+    au = add --update
     b = branch
     ba = branch --all
     ; brc = remote prune ; destructive
