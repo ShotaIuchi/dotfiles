@@ -33,7 +33,7 @@
     ba = branch --all
     ; brc = remote prune ; destructive
     l = log --oneline
-    la = log --format=full
+    la = log --format=full --decorate --graph --branches --tags --remotes
     ld = log --oneline --decorate
     lb = log --oneline --decorate --stat
     lg = log --oneline --decorate --graph
