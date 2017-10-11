@@ -37,6 +37,7 @@
     ld = log --oneline --decorate
     lb = log --oneline --decorate --stat
     lg = log --oneline --decorate --graph
+    lx = log --oneline --decorate --graph --branches --tags --remotes
     s = status
     c = checkout
     cm = checkout master
