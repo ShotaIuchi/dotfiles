@@ -15,6 +15,8 @@ fi
 
 #
 # alias
+alias ls='ls -F --color=auto'
+alias lc='ls -F --color=auto --show-control-char'
 alias l='ls -lah'
 alias ll='ls -lah'
 alias lr='ls -lahrt'
