@@ -35,3 +35,7 @@ function replace()
     echo "> \"${1}\" => \"${2}\""
 }
 
+#
+# env
+export IGNOREEOF=2
+export HISTCONTROL=ignoredups:ignorespace
