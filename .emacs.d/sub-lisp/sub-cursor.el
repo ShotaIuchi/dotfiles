@@ -16,5 +16,8 @@
       (beginning-of-line)
     (back-to-indentation)))
 
+(setq scroll-conservatively 35
+      scroll-margin 0
+      scroll-step 4)
 
 (provide 'sub-cursor)
