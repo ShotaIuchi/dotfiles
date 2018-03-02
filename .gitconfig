@@ -2,6 +2,8 @@
     path = ~/.gitconfig.local
 [core]
     editor = /usr/bin/vim
+    pager = less -cm
+    quotepath = false
     filemode = false
     autocrlf = false
     symlinks = true
