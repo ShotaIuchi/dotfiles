@@ -12,6 +12,9 @@ fi
 if [ -f ~/.bashrc.local ]; then
     source ~/.bashrc.local
 fi
+if [ -d ~/.script.d ]; then
+    source ~/.script.d/FindTargetFile.sh
+fi
 
 #
 # alias
