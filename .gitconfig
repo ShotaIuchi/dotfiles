@@ -88,5 +88,5 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; other
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ark = "!f() { ~/.git.d/export-diff.sh ${@}; }; f"
+    ark = "!f() { ~/.script.d/GitExportDiff.sh ${@}; }; f"
     find = "!f() { find . -type d -name '.git' -prune -o -type f -print; }; f"
