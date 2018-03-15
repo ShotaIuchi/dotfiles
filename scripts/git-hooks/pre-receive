@@ -1,0 +1,110 @@
+#!/bin/sh
+SHOW_MSG=1
+
+## Target file extension.
+TARGET_EXTENSION=(
+c cc cpp
+h hh hpp
+)
+
+COMMAND='uncrustify --check'
+TEMPDIR=`mktemp -d`
+HIERARCHY=''
+
+## Message switching.
+function msg() {
+    if [ ${SHOW_MSG} -ne 0 ]; then
+        $*
+    fi
+}
+
+## In the case of cygwin, uncrustify does not work with a partner.
+if [[ $(uname) =~ 'CYGWIN_NT' ]]; then
+    source ~/.script.d/PathCommon.sh
+    HIERARCHY=`RelativeLevel2`
+    ##
+    ## Dependent file correspondence
+    # TMP=`pwd | sed -e 's@[^/]@@g'`
+    # TMP=`echo ${TMP} | sed -e 's@/@../@g'`
+    # RET=`echo ${TMP} | sed -e 's@/$@@g'`
+    # HIERARCHY=${RET}
+fi
+
+## See https://www.kernel.org/pub/software/scm/git/docs/githooks.html#pre-receive
+while read oldrev newrev refname; do
+
+    count=0
+
+    ## Scan to the latest commit-id on the server side.
+    while :
+    do
+        ## Acquire commit-id to be checked.
+        ##  - git rev-parse HEAD~0
+        ##  - git rev-parse HEAD~1
+        ##  - git rev-parse HEAD~n
+        conrev=`git rev-parse ${newrev}~${count}`
+        let ++count
+
+        ## Confirm the latest commit-id.
+        if [ ${oldrev} = ${conrev} ]; then
+            break
+        fi
+
+        msg echo "=============================================="
+        msg git log ${conrev} -1
+        msg echo "----------------------------------------------"
+
+        ## Get file names, without directory.
+        files=`git diff --name-only ${conrev}~ ${conrev}`
+
+        ## Get blob for commit-id.
+        objects=`git ls-tree --full-name -r ${conrev}`
+
+        for file in ${files};
+        do
+            ## Check if the target file-extension.
+            extension=${file##*.}
+            if ! `echo ${TARGET_EXTENSION[@]} | grep -q ${extension}` ; then
+                msg echo " - [--] ${file}"
+                continue
+            fi
+
+            ## Get target blob of target file.
+            object=`echo -e "${objects}" | egrep "(\s)${file}\$" | awk '{ print $3 }'`
+
+            ## The target blob dose not exist
+            ##  * Naturally impossible.
+            if [ -z ${object} ];
+            then
+                continue
+            fi
+
+            ## Create a temporary directory.
+            mkdir -p "${TEMPDIR}/`dirname ${file}`" &>/dev/null
+
+            ## Create a temporary file of the target blob of target file.
+            git cat-file blob ${object} > ${TEMPDIR}/${file}
+
+            ## Confirm file format.
+            ${COMMAND} ${HIERARCHY}${TEMPDIR}/${file} &>/dev/null
+            if [ $? -ne 0 ]; then
+                msg echo " - [NG] ${file}"
+                bad_file=1
+            else
+                msg echo " - [OK] ${file}"
+            fi
+        done;
+    done
+done
+
+msg echo "=============================================="
+
+## Delete temporary directory/file.
+rm -rf ${TEMPDIR} &> /dev/null
+
+## Check error.
+if [[ $bad_file -eq 1 ]]
+then
+    echo "ERROR : Coding rule violation."
+    exit 1
+fi
