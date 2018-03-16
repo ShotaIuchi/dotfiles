@@ -1,5 +1,10 @@
 #!/bin/sh
+
+## Whether to display a message.
 SHOW_MSG=1
+
+## In the case of a new branch, whether to confirm each commit.
+CHECK_ALL_COMMIT=1
 
 ## Target file extension.
 TARGET_EXTENSION=(
@@ -7,9 +12,18 @@ c cc cpp
 h hh hpp
 )
 
+## Target file extension.
 COMMAND='uncrustify --check'
 TEMPDIR=`mktemp -d`
 HIERARCHY=''
+
+## Constant
+ID_ZERO="0000000000000000000000000000000000000000"
+ID_MASTER="refs/heads/master"
+
+## Constant - msg
+MSG_SEPARATOR_LV1="=============================================="
+MSG_SEPARATOR_LV2="----------------------------------------------"
 
 ## Message switching.
 function msg() {
@@ -33,49 +47,29 @@ fi
 ## See https://www.kernel.org/pub/software/scm/git/docs/githooks.html#pre-receive
 while read oldrev newrev refname; do
 
-    count=0
+    msg echo ${MSG_SEPARATOR_LV1}
+    msg echo "ref : ${refname}"
+    msg echo "old : ${oldrev}"
+    msg echo "new : ${newrev}"
 
-    ## Scan to the latest commit-id on the server side.
-    while :
-    do
-        ## Acquire commit-id to be checked.
-        ##  - git rev-parse HEAD~0
-        ##  - git rev-parse HEAD~1
-        ##  - git rev-parse HEAD~n
-        conrev=`git rev-parse ${newrev}~${count}`
-        let ++count
+    if [ ${CHECK_ALL_COMMIT} -eq 0 ] && [ ${oldrev} = ${ID_ZERO} ]; then
 
-        ## Confirm the latest commit-id.
-        if [ ${oldrev} = ${conrev} ]; then
-            break
-        fi
+        ##
+        ## New branch
+        ##
 
-        msg echo "=============================================="
-        msg git log ${conrev} -1
-        msg echo "----------------------------------------------"
-
-        ## Get file names, without directory.
-        files=`git diff --name-only ${conrev}~ ${conrev}`
-
-        ## Get blob for commit-id.
-        objects=`git ls-tree --full-name -r ${conrev}`
-
-        for file in ${files};
+        msg echo ${MSG_SEPARATOR_LV1}
+        msg echo " Cehck all file."
+        msg echo ${MSG_SEPARATOR_LV2}
+        git ls-tree --full-name -r ${newrev} \
+        | while read objectLine;
         do
-            ## Check if the target file-extension.
+            file=`echo ${objectLine} | awk '{ print $4 }'`
+            object=`echo ${objectLine} | awk '{ print $3 }'`
+
             extension=${file##*.}
             if ! `echo ${TARGET_EXTENSION[@]} | grep -q ${extension}` ; then
                 msg echo " - [--] ${file}"
-                continue
-            fi
-
-            ## Get target blob of target file.
-            object=`echo -e "${objects}" | egrep "(\s)${file}\$" | awk '{ print $3 }'`
-
-            ## The target blob dose not exist
-            ##  * Naturally impossible.
-            if [ -z ${object} ];
-            then
                 continue
             fi
 
@@ -93,11 +87,94 @@ while read oldrev newrev refname; do
             else
                 msg echo " - [OK] ${file}"
             fi
-        done;
-    done
+        done
+
+    else
+
+        ##
+        ## Already breanch
+        ##
+
+        ## Search branch points with master branch.
+        baserev=`git show-branch --merge-base ${ID_MASTER} ${newrev}`
+
+        count=0
+
+        ## Scan to the latest commit-id on the server side.
+        while :
+        do
+            ## Acquire commit-id to be checked.
+            ##  - git rev-parse HEAD~0
+            ##  - git rev-parse HEAD~1
+            ##  - git rev-parse HEAD~n
+            conrev=`git rev-parse ${newrev}~${count}`
+            let ++count
+
+            ## Confirm whether the change point is reached.
+            if [ ${conrev} = ${oldrev} ]; then
+                break
+            fi
+
+            ## Confirmation that it reached the branch point with the master branch.
+            if [ ${conrev} = ${baserev} ]; then
+                break
+            fi
+
+            ## Check whether all commits have been scanned.
+            git show ${conrev}~ &> /dev/null
+            if [ $? -ne 0 ]; then
+                break
+            fi
+
+            msg echo ${MSG_SEPARATOR_LV1}
+            msg git log ${conrev} -1
+            msg echo ${MSG_SEPARATOR_LV2}
+
+            ## Get file names, without directory.
+            files=`git diff --name-only ${conrev}~ ${conrev}`
+
+            ## Get blob for commit-id.
+            objects=`git ls-tree --full-name -r ${conrev}`
+
+            for file in ${files};
+            do
+                ## Check if the target file-extension.
+                extension=${file##*.}
+                if ! `echo ${TARGET_EXTENSION[@]} | grep -q ${extension}` ; then
+                    msg echo " - [--] ${file}"
+                    continue
+                fi
+
+                ## Get target blob of target file.
+                object=`echo -e "${objects}" | egrep "(\s)${file}\$" | awk '{ print $3 }'`
+
+                ## The target blob dose not exist
+                ##  * Naturally impossible.
+                if [ -z ${object} ];
+                then
+                    continue
+                fi
+
+                ## Create a temporary directory.
+                mkdir -p "${TEMPDIR}/`dirname ${file}`" &>/dev/null
+
+                ## Create a temporary file of the target blob of target file.
+                git cat-file blob ${object} > ${TEMPDIR}/${file}
+
+                ## Confirm file format.
+                ${COMMAND} ${HIERARCHY}${TEMPDIR}/${file} &>/dev/null
+                if [ $? -ne 0 ]; then
+                    msg echo " - [NG] ${file}"
+                    bad_file=1
+                else
+                    msg echo " - [OK] ${file}"
+                fi
+            done;
+        done
+    fi
 done
 
-msg echo "=============================================="
+msg echo ${MSG_SEPARATOR_LV1}
 
 ## Delete temporary directory/file.
 rm -rf ${TEMPDIR} &> /dev/null
