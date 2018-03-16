@@ -7,25 +7,34 @@ SHOW_MSG=1
 CHECK_ALL_COMMIT=1
 
 ## Target file extension.
-TARGET_EXTENSION=(
+TARGET_EXTENSIONS=(
 c cc cpp
 h hh hpp
 )
 
-## Target file extension.
-COMMAND='uncrustify --check'
-TEMPDIR=`mktemp -d`
-HIERARCHY=''
+## Non-check naming convention.
+NOT_TARGET_NAMES=(
+refs/tags
+refs/heads/dev/
+refs/heads/usr/
+refs/heads/tmp/
+)
 
 ## Constant
+COMMAND='uncrustify --check'
+TEMPDIR=`mktemp -d`
 ID_ZERO="0000000000000000000000000000000000000000"
 ID_MASTER="refs/heads/master"
 
 ## Constant - msg
-MSG_SEPARATOR_LV1="=============================================="
+MSG_SEPARATOR_LV0="%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+MSG_SEPARATOR_LV1="================================================"
 MSG_SEPARATOR_LV2="----------------------------------------------"
 
-## Message switching.
+## Value
+HIERARCHY=''
+
+## FUNC : Message switching.
 function msg() {
     if [ ${SHOW_MSG} -ne 0 ]; then
         $*
@@ -47,10 +56,26 @@ fi
 ## See https://www.kernel.org/pub/software/scm/git/docs/githooks.html#pre-receive
 while read oldrev newrev refname; do
 
-    msg echo ${MSG_SEPARATOR_LV1}
+    msg echo ${MSG_SEPARATOR_LV0}
     msg echo "ref : ${refname}"
     msg echo "old : ${oldrev}"
     msg echo "new : ${newrev}"
+
+    ## Non-check naming convention.
+    skip_name=0
+    for ntn in ${NOT_TARGET_NAMES[@]};
+    do
+        if [ $(echo ${refname} | grep -e ${ntn}) ]; then
+            msg echo ${MSG_SEPARATOR_LV2}
+            msg echo " Unchecked name."
+            msg echo "  -> ${ntn}"
+            skip_name=1
+            break
+        fi
+    done
+    if [ ${skip_name} -eq 1 ]; then
+        continue
+    fi
 
     if [ ${CHECK_ALL_COMMIT} -eq 0 ] && [ ${oldrev} = ${ID_ZERO} ]; then
 
@@ -68,7 +93,7 @@ while read oldrev newrev refname; do
             object=`echo ${objectLine} | awk '{ print $3 }'`
 
             extension=${file##*.}
-            if ! `echo ${TARGET_EXTENSION[@]} | grep -q ${extension}` ; then
+            if ! `echo ${TARGET_EXTENSIONS[@]} | grep -q ${extension}` ; then
                 msg echo " - [--] ${file}"
                 continue
             fi
@@ -140,7 +165,7 @@ while read oldrev newrev refname; do
             do
                 ## Check if the target file-extension.
                 extension=${file##*.}
-                if ! `echo ${TARGET_EXTENSION[@]} | grep -q ${extension}` ; then
+                if ! `echo ${TARGET_EXTENSIONS[@]} | grep -q ${extension}` ; then
                     msg echo " - [--] ${file}"
                     continue
                 fi
@@ -174,7 +199,7 @@ while read oldrev newrev refname; do
     fi
 done
 
-msg echo ${MSG_SEPARATOR_LV1}
+msg echo ${MSG_SEPARATOR_LV0}
 
 ## Delete temporary directory/file.
 rm -rf ${TEMPDIR} &> /dev/null
