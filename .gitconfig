@@ -38,8 +38,13 @@
     la = log --format=full --decorate --graph --branches --tags --remotes
     ld = log --oneline --decorate
     lb = log --oneline --decorate --stat
-    lg = log --oneline --decorate --graph
     lx = log --oneline --decorate --graph --branches --tags --remotes
+    logg = !sh -c 'git log --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
+    lg   = !sh -c 'git l   --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
+    lag  = !sh -c 'git la  --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
+    ldg  = !sh -c 'git ld  --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
+    lbg  = !sh -c 'git lb  --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
+    lxg  = !sh -c 'git lx  --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
     s = status
     c = checkout
     cm = checkout master
