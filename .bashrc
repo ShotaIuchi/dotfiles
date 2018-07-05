@@ -38,6 +38,16 @@ function replace()
     echo "> \"${1}\" => \"${2}\""
 }
 
+function jgrep()
+{
+    find . -name .repo -prune -o -name .git -prune -o  -type f -name "*\.java" -print0 | xargs -0 grep --color -n "$@"
+}
+
+function cgrep()
+{
+    find . -name .repo -prune -o -name .git -prune -o -type f \( -name '*.c' -o -name '*.cc' -o -name '*.cpp' -o -name '*.h' \) -print0 | xargs -0 grep --color -n "$@"
+}
+
 #
 # env
 export IGNOREEOF=2
