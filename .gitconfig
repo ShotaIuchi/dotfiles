@@ -22,35 +22,43 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; test
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    at = add --dry-run
-    bt = remote prune --dry-run
+    taa = add --dry-run
+    tbsync = remote prune --dry-run
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; non-destructive
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; add
     a = add
     aa = add --all
     ap = add --patch
     au = add --update
+    ;; branch
     b = branch
     ba = branch --all
-    ; brc = remote prune ; destructive
+    bsync = remote prune ; destructive
+    ;; log
     l = log --oneline
     la = log --format=full --decorate --graph --branches --tags --remotes
     ld = log --oneline --decorate
     lb = log --oneline --decorate --stat
     lx = log --oneline --decorate --graph --branches --tags --remotes
-    logg = !sh -c 'git log --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
-    lg   = !sh -c 'git l   --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
-    lag  = !sh -c 'git la  --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
-    ldg  = !sh -c 'git ld  --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
-    lbg  = !sh -c 'git lb  --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
-    lxg  = !sh -c 'git lx  --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
+    ;; staths
     s = status
+    ;; grep(log)
+    glog = !sh -c 'git log --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
+    gl   = !sh -c 'git l   --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
+    gla  = !sh -c 'git la  --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
+    gld  = !sh -c 'git ld  --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
+    glb  = !sh -c 'git lb  --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
+    glx  = !sh -c 'git lx  --color=always | ~/.script.d/logcolored.pl $1 $2 $3 $4 $5 $6 $7 $8 $9 | less -R' -
+    ;; checkout
     c = checkout
     cm = checkout master
+    ;; commit
     co = commit
     com = commit --message
     coa = commit --amend
+    ;; diff
     d = diff
     ds = diff --cached
     db = diff --stat
