@@ -58,6 +58,7 @@
     co = commit
     com = commit --message
     coa = commit --amend
+    coan = commit --amend --no-edit
     ;; diff
     d = diff
     ds = diff --cached
