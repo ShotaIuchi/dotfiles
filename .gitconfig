@@ -35,7 +35,9 @@
     ;; branch
     b = branch
     ba = branch --all
+    ; brc = remote prune ; destructive
     bsync = remote prune ; destructive
+    bnow = rev-parse --abbrev-ref HEAD
     ;; log
     l = log --oneline
     la = log --format=full --decorate --graph --branches --tags --remotes
