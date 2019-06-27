@@ -56,6 +56,7 @@
     ;; checkout
     c = checkout
     cm = checkout master
+    cempty = checkout --orphan
     ;; commit
     co = commit
     com = commit --message
