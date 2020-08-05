@@ -1,0 +1,40 @@
+#!/bin/sh
+
+remote="$1"
+url="$2"
+
+z40=0000000000000000000000000000000000000000
+
+while read local_ref local_sha remote_ref remote_sha
+do
+	if [ "$local_sha" = $z40 ]
+	then
+		# Handle delete
+		:
+	else
+		if [ "$remote_sha" = $z40 ]
+		then
+			# New branch, examine all commits
+			range="$local_sha"
+		else
+			# Update to existing branch, examine new commits
+			range="$remote_sha..$local_sha"
+		fi
+
+		# Check for WIP commit
+		echo $range
+		pattern="^refs #[0-9].* .*"
+		commit=`git rev-list --invert-grep --grep "$pattern" "$range"`
+
+		if [ -n "$commit" ]
+		then
+			echo "--- MESSAGE FORMAT ERROR --------------------------------------"
+			git rev-list --format=%s --invert-grep --grep "$pattern" "$range"
+			echo "--- MESSAGE FORMAT ERROR --------------------------------------"
+			exit 1
+		fi
+	fi
+done
+
+exit 0
+
