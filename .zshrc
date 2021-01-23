@@ -1,5 +1,11 @@
 alias ll="ls -al"
 
+## PS1
+## see) https://github.com/olivierverdier/zsh-git-prompt
+## see) https://formulae.brew.sh/formula/zsh-git-prompt#default
+source "/opt/homebrew/opt/zsh-git-prompt/zshrc.sh"
+PROMPT='%B%m.%n%\:%~%b$(git_super_status)%# '
+
 ### HOMEBREW
 # $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 # see) https://brew.sh/index_ja
