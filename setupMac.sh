@@ -2,6 +2,7 @@
 
 ## ! ハードリンクにしたい場合は-sを削除
 
+ln -s $(PWD)/.Brewfile ~/
 ln -s $(PWD)/.zshrc ~/
 ln -s $(PWD)/.script.d ~/
 ln -s $(PWD)/.gitconfig ~/
