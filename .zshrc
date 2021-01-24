@@ -1,4 +1,5 @@
 alias ll="ls -al"
+export PATH="$HOME/development/flutter/bin:$PATH"
 
 ## PS1
 ## see) https://github.com/olivierverdier/zsh-git-prompt
