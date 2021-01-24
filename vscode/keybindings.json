@@ -59,5 +59,28 @@
     {
         "key": "cmd+v",
         "command": "-execPaste"
+    },
+    {
+        "key": "cmd+w",
+        "command": "-workbench.action.closeActiveEditor"
+    },
+    {
+        "key": "cmd+w",
+        "command": "-workbench.action.closeGroup",
+        "when": "activeEditorGroupEmpty && multipleEditorGroups"
+    },
+    {
+        "key": "cmd+w",
+        "command": "-emacs-mcx.executeCommands",
+        "when": "config.emacs-mcx.useMetaPrefixMacCmd && editorFocus && findWidgetVisible && !isComposing"
+    },
+    {
+        "key": "cmd+w",
+        "command": "-workbench.action.closeWindow",
+        "when": "!editorIsOpen && !multipleEditorGroups"
+    },
+    {
+        "key": "cmd+w",
+        "command": "editor.action.clipboardCopyAction"
     }
 ]
