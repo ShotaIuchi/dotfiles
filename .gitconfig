@@ -40,6 +40,7 @@
     bnow = rev-parse --abbrev-ref HEAD
     ;; log
     l = log --oneline
+    ll = log --oneline --topo-order
     lp = !sh -c 'git log --oneline | peco' -
     la = log --format=full --decorate --graph --branches --tags --remotes
     ld = log --oneline --decorate
