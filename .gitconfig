@@ -7,6 +7,7 @@
     filemode = false
     autocrlf = false
     symlinks = true
+	commentChar = ";"
 [color]
     ui = auto
 [alias]
@@ -110,6 +111,10 @@
     faclean = "!f() { git reset --hard HEAD; git clean --force -d; git ls-files --others | xargs rm -rf; }; f"
     daspace  = "!f() { git ls-files | xargs sed -i 's/[ ]*$//g'; }; f"
     ddspace  = "!f() { git ls-files --modified | xargs sed -i 's/[ ]*$//g'; }; f"
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; markdown
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    mdshow = "!f() { ~/.script.d/git-mdshow.sh ${@} | glow -s dark | less -R -X; }; f"
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; other
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
