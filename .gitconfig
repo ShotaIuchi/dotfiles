@@ -7,7 +7,7 @@
     filemode = false
     autocrlf = false
     symlinks = true
-	commentChar = ";"
+    commentChar = ";"
 [color]
     ui = auto
 [alias]
