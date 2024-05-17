@@ -66,6 +66,7 @@
     com = commit --message
     coa = commit --amend
     coan = commit --amend --no-edit
+    coai = !sh -c 'aicommits' -
     ;; diff
     d = diff
     ds = diff --cached
