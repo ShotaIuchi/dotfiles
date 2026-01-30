@@ -1,0 +1,53 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# Editors
+*.swp
+*.swo
+*.swn
+*.bak
+*.orig
+*.tmp
+
+# VS Code
+.vscode/
+
+# JetBrains
+.idea/
+
+# Secrets and credentials
+*.pem
+*.key
+*.p12
+*.pfx
+.env
+.env.*
+!.env.example
+*.secret
+*_secret*
+credentials.json
+secrets.json
+
+# SSH
+.ssh/id_*
+.ssh/known_hosts
+
+# Shell history
+.*_history
+.bash_history
+.zsh_history
+
+# Local config overrides
+*.local
+*.local.*
