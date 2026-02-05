@@ -15,7 +15,6 @@
 # Core Settings
 # ============================================================
 [core]
-    editor = nvim
     pager = less -mS
     quotepath = false       ; 日本語ファイル名の文字化け防止
     filemode = false        ; パーミッション変更を無視

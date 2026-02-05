@@ -7,7 +7,7 @@
 # Environment Variables
 # ------------------------------------------------------------------------------
 
-export EDITOR="vim"
+export EDITOR="nvim"
 export LANG="en_US.UTF-8"
 
 # Claude Code: disable terminal title override (use shell's title instead)
@@ -44,6 +44,10 @@ alias mv='mv -i'
 # Navigation
 alias ..='cd ..'
 alias ...='cd ../..'
+
+# Editor (Neovim)
+alias vi='nvim'
+alias vim='nvim'
 
 # Git
 alias g='git'
