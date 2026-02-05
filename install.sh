@@ -88,6 +88,7 @@ declare -A INSTALL_DECISIONS=(
     [glow]=0
     [fzf]=0
     [fd]=0
+    [wtp]=0
     [bash_completion]=0
     [claude_code]=0
 )
@@ -102,6 +103,7 @@ declare -A ALREADY_INSTALLED=(
     [glow]=0
     [fzf]=0
     [fd]=0
+    [wtp]=0
     [bash_completion]=0
     [claude_code]=0
 )
@@ -251,6 +253,11 @@ detect_installed() {
     # fd (fd-find on Debian/Ubuntu)
     if command_exists fd || command_exists fdfind; then
         ALREADY_INSTALLED[fd]=1
+    fi
+
+    # wtp
+    if command_exists wtp; then
+        ALREADY_INSTALLED[wtp]=1
     fi
 
     # bash-completion
@@ -578,6 +585,39 @@ prompt_fd() {
     fi
 }
 
+prompt_wtp() {
+    if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
+        return 0
+    fi
+
+    # wtp is only available via Homebrew
+    if [[ "$PKG_MANAGER" != "brew" ]]; then
+        return 0
+    fi
+
+    print_header "wtp"
+    print_info "Git worktree 管理ツール"
+    echo
+
+    if [[ ${ALREADY_INSTALLED[wtp]} -eq 1 ]]; then
+        print_success "インストール済み"
+        INSTALL_DECISIONS[wtp]=1
+        return 0
+    fi
+
+    print_note "機能:"
+    print_info "   - wtp add <branch> で worktree を自動配置"
+    print_info "   - wtp remove --with-branch で一括削除"
+    print_info "   - wtp cd <branch> で worktree 間を移動"
+    echo
+    print_note "dotfilesとの関連:"
+    print_info "   - .wtp.yml で .env, .claude 等を自動コピー可能"
+
+    if ask_yes_no "インストールしますか？"; then
+        INSTALL_DECISIONS[wtp]=1
+    fi
+}
+
 prompt_bash_completion() {
     # Skip if zsh is the default shell
     if [[ "$SHELL" == */zsh ]]; then
@@ -678,7 +718,7 @@ show_summary() {
     fi
 
     # Tools
-    for pkg in neovim zellij ghostty amu gh glow fzf fd bash_completion; do
+    for pkg in neovim zellij ghostty amu gh glow fzf fd wtp bash_completion; do
         # Skip conditions
         [[ "$pkg" == "bash_completion" && "$SHELL" == */zsh ]] && continue
         [[ "$pkg" == "bash_completion" && "$OS_TYPE" == "windows" ]] && continue
@@ -686,6 +726,7 @@ show_summary() {
         [[ "$pkg" == "zellij" && "$OS_TYPE" == "windows" ]] && continue
         [[ "$pkg" == "glow" && "$PKG_MANAGER" == "apt" ]] && continue
         [[ "$pkg" == "glow" && "$PKG_MANAGER" == "dnf" ]] && continue
+        [[ "$pkg" == "wtp" && "$PKG_MANAGER" != "brew" ]] && continue
 
         local display_name
         case "$pkg" in
@@ -892,6 +933,24 @@ install_amu() {
     fi
 }
 
+install_wtp() {
+    if [[ ${ALREADY_INSTALLED[wtp]} -eq 1 ]]; then
+        return 0
+    fi
+    if [[ ${INSTALL_DECISIONS[wtp]} -eq 0 ]]; then
+        return 0
+    fi
+
+    echo
+    printf " ${CYAN}→${NC} wtp をインストール中...\n"
+
+    if brew tap satococoa/tap && brew install wtp; then
+        print_success "wtp インストール完了"
+    else
+        print_error "wtp のインストールに失敗しました"
+    fi
+}
+
 install_claude_code() {
     if [[ ${ALREADY_INSTALLED[claude_code]} -eq 1 ]]; then
         return 0
@@ -978,6 +1037,7 @@ main() {
     prompt_glow
     prompt_fzf
     prompt_fd
+    prompt_wtp
     prompt_bash_completion
     prompt_claude_code
     prompt_apply_dotfiles
@@ -1006,6 +1066,7 @@ main() {
     install_package "glow" "glow" "" "" "glow" "charmbracelet.glow" "glow"
     install_package "fzf" "fzf" "fzf" "fzf" "fzf" "junegunn.fzf" "fzf"
     install_package "fd" "fd" "fd-find" "fd-find" "fd" "sharkdp.fd" "fd"
+    install_wtp
     install_package "bash_completion" "bash-completion@2" "bash-completion" "bash-completion" "bash-completion" "" ""
 
     install_claude_code
