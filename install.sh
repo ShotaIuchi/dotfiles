@@ -944,7 +944,7 @@ install_wtp() {
     echo
     printf " ${CYAN}→${NC} wtp をインストール中...\n"
 
-    if brew tap satococoa/tap && brew install wtp; then
+    if brew tap shotaiuchi/tap && brew install shotaiuchi/tap/wtp; then
         print_success "wtp インストール完了"
     else
         print_error "wtp のインストールに失敗しました"
