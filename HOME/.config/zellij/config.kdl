@@ -57,6 +57,6 @@ plugins {
 }
 
 default_layout "compact"
-pane_frames false
+pane_frames true
 show_startup_tips false
 show_release_notes false

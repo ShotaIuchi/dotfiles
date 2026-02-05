@@ -37,11 +37,24 @@ setopt CORRECT
 # ------------------------------------------------------------------------------
 
 autoload -Uz vcs_info
-precmd() { vcs_info }
 zstyle ':vcs_info:git:*' formats ' (%F{yellow}%b%f)'
 
 setopt PROMPT_SUBST
 PROMPT='%F{green}%n@%m%f:%F{blue}%~%f${vcs_info_msg_0_}%# '
+
+# ------------------------------------------------------------------------------
+# Zellij Pane Title (zsh hook)
+# ------------------------------------------------------------------------------
+
+# precmd: called before prompt (zsh-specific)
+# Functions _zellij_title_dir and _zellij_set_title are defined in .shell_common
+precmd() {
+    vcs_info
+
+    if [[ -n "$ZELLIJ" ]]; then
+        _zellij_set_title "$(_zellij_title_dir)"
+    fi
+}
 
 # ------------------------------------------------------------------------------
 # Completion

@@ -10,6 +10,9 @@
 export EDITOR="vim"
 export LANG="en_US.UTF-8"
 
+# Claude Code: disable terminal title override (use shell's title instead)
+export CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1
+
 # ------------------------------------------------------------------------------
 # Path
 # ------------------------------------------------------------------------------
@@ -58,4 +61,25 @@ alias fclaude='claude --dangerously-skip-permissions'
 # mkdir & cd
 mkcd() {
     mkdir -p "$1" && cd "$1"
+}
+
+# ------------------------------------------------------------------------------
+# Zellij Pane Title
+# ------------------------------------------------------------------------------
+
+# Get directory name for title (git root name or current dir name)
+_zellij_title_dir() {
+    local git_root
+    git_root=$(git rev-parse --show-toplevel 2>/dev/null)
+    if [[ -n "$git_root" ]]; then
+        basename "$git_root"
+    else
+        basename "$PWD"
+    fi
+}
+
+# Set Zellij pane title
+_zellij_set_title() {
+    local title="$1"
+    printf '\e]0;%s\a' "$title"
 }
