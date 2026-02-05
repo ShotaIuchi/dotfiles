@@ -1,16 +1,16 @@
 ---
 name: dotfile-tools-install
-description: dotfiles install.sh の更新・メンテナンス
+description: dotfiles install.sh / uninstall.sh の更新・メンテナンス
 argument-hint: "[add <tool>] [update] [list] [test]"
 ---
 
 # /dotfile-tools-install
 
-dotfilesのインストールスクリプトを管理・更新する。
+dotfilesのインストール/アンインストールスクリプトを管理・更新する。
 
 ## 目的
 
-- install.sh に新しいツールを追加
+- install.sh / uninstall.sh に新しいツールを追加
 - 既存ツールの設定を更新
 - スクリプトの動作テスト
 - 対応ツール一覧の表示
@@ -25,7 +25,7 @@ dotfilesのインストールスクリプトを管理・更新する。
 
 ### list
 
-install.sh に含まれる全ツールとOS対応状況を表示。
+install.sh / uninstall.sh に含まれる全ツールとOS対応状況を表示。
 
 ```
 /dotfile-tools-install list
@@ -33,7 +33,7 @@ install.sh に含まれる全ツールとOS対応状況を表示。
 
 ### add <tool>
 
-新しいツールを対話式で追加。
+新しいツールを install.sh / uninstall.sh の両方に対話式で追加。
 
 ```
 /dotfile-tools-install add <ツール名>
@@ -47,11 +47,12 @@ install.sh に含まれる全ツールとOS対応状況を表示。
 
 ### update
 
-install.sh をレビュー・更新:
+install.sh / uninstall.sh をレビュー・更新:
 - インストールURL/スクリプトの最新確認（Homebrew、Claude Code等）
 - 古いパッケージ名のチェック
 - パッケージマネージャーコマンドの更新
 - 不足しているOS対応の追加
+- install.sh と uninstall.sh の整合性チェック
 
 ```
 /dotfile-tools-install update
@@ -59,7 +60,7 @@ install.sh をレビュー・更新:
 
 ### test
 
-構文チェックとドライランテストを実行。
+install.sh / uninstall.sh 両方の構文チェックとドライランテストを実行。
 
 ```
 /dotfile-tools-install test
@@ -115,13 +116,15 @@ install.sh をレビュー・更新:
 ### `test` の場合:
 
 1. `bash -n install.sh` で構文チェック
-2. モック入力でフローを検証
-3. 問題があれば報告
+2. `bash -n uninstall.sh` で構文チェック
+3. モック入力でフローを検証
+4. 問題があれば報告
 
 ## ファイル場所
 
 ```
-~/dot/dotfiles/dotfile-tools-install.sh
+~/dot/dotfiles/install.sh
+~/dot/dotfiles/uninstall.sh
 ```
 
 ## 使用例
@@ -142,6 +145,7 @@ install.sh をレビュー・更新:
 
 ## 注意事項
 
-- 大きな変更前は install.sh をバックアップ
+- 大きな変更前は install.sh / uninstall.sh をバックアップ
 - 変更後は対象OSでテスト
 - 既存のコードスタイルとパターンに従う
+- install.sh と uninstall.sh のツール一覧を同期させる
