@@ -48,6 +48,9 @@ alias gs='git status'
 alias gd='git diff'
 alias gl='git log --oneline -10'
 
+# Claude Code
+alias fclaude='claude --dangerously-skip-permissions'
+
 # ------------------------------------------------------------------------------
 # Functions
 # ------------------------------------------------------------------------------
