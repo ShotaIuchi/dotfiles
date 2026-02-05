@@ -1,0 +1,62 @@
+// Zellij設定 - Emacs互換
+//
+// C-x プレフィックスのみ使用（他のCtrlキーはアプリへスルー）
+//
+// ┌──────────┬───────────────────┬──────────────────────────┐
+// │ キー     │ アクション        │ 説明                     │
+// ├──────────┼───────────────────┼──────────────────────────┤
+// │ C-x 2    │ NewPane down      │ 水平分割（下に新ペイン）    │
+// │ C-x 3    │ NewPane right     │ 垂直分割（右に新ペイン）    │
+// │ C-x 0    │ CloseFocus        │ 現在のペインを閉じる       │
+// │ C-x 1    │ ToggleFullscreen  │ 他ペインを一時非表示       │
+// │ C-x o    │ FocusNextPane     │ 次のペインへ移動          │
+// │ C-x ←↑↓→ │ MoveFocus         │ 方向キーで移動            │
+// │ C-x n    │ FocusPreviousPane │ 前のペインへ移動（C-x oの逆）│
+// │ C-x d    │ Detach            │ セッションをデタッチ       │
+// │ C-x C-x  │ (pass through)    │ C-xをアプリに送信         │
+// └──────────┴───────────────────┴──────────────────────────┘
+
+keybinds clear-defaults=true {
+    shared_except "locked" {
+        bind "Ctrl x" { SwitchToMode "tmux"; }
+    }
+    shared_except "normal" "locked" "entersearch" {
+        bind "esc" { SwitchToMode "normal"; }
+    }
+    tmux {
+        // ペイン操作
+        bind "2" { NewPane "down"; SwitchToMode "normal"; }
+        bind "3" { NewPane "right"; SwitchToMode "normal"; }
+        bind "0" { CloseFocus; SwitchToMode "normal"; }
+        bind "1" { ToggleFocusFullscreen; SwitchToMode "normal"; }
+        bind "o" { FocusNextPane; SwitchToMode "normal"; }
+        bind "left" { MoveFocus "left"; SwitchToMode "normal"; }
+        bind "down" { MoveFocus "down"; SwitchToMode "normal"; }
+        bind "up" { MoveFocus "up"; SwitchToMode "normal"; }
+        bind "right" { MoveFocus "right"; SwitchToMode "normal"; }
+        bind "h" { MoveFocus "left"; SwitchToMode "normal"; }
+        bind "j" { MoveFocus "down"; SwitchToMode "normal"; }
+        bind "k" { MoveFocus "up"; SwitchToMode "normal"; }
+        bind "l" { MoveFocus "right"; SwitchToMode "normal"; }
+        // 前のペインへ（C-x oの逆）
+        bind "n" { FocusPreviousPane; SwitchToMode "normal"; }
+        // セッション
+        bind "d" { Detach; }
+        // C-x C-x でアプリにC-xを送信
+        bind "Ctrl x" { Write 24; SwitchToMode "normal"; }
+        // キャンセル
+        bind "esc" { SwitchToMode "normal"; }
+        bind "Ctrl g" { SwitchToMode "normal"; }
+    }
+}
+
+plugins {
+    compact-bar location="zellij:compact-bar"
+    session-manager location="zellij:session-manager"
+    tab-bar location="zellij:tab-bar"
+}
+
+default_layout "compact"
+pane_frames false
+show_startup_tips false
+show_release_notes false
