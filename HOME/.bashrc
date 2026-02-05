@@ -61,3 +61,11 @@ if [[ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]]; then
 elif [[ -f /etc/bash_completion ]]; then
     source /etc/bash_completion
 fi
+
+# ------------------------------------------------------------------------------
+# fzf Key Bindings
+# ------------------------------------------------------------------------------
+
+if command -v fzf &>/dev/null; then
+    eval "$(fzf --bash)"
+fi

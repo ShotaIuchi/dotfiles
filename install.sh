@@ -86,6 +86,8 @@ declare -A INSTALL_DECISIONS=(
     [amu]=0
     [gh]=0
     [glow]=0
+    [fzf]=0
+    [fd]=0
     [bash_completion]=0
     [claude_code]=0
 )
@@ -98,6 +100,8 @@ declare -A ALREADY_INSTALLED=(
     [amu]=0
     [gh]=0
     [glow]=0
+    [fzf]=0
+    [fd]=0
     [bash_completion]=0
     [claude_code]=0
 )
@@ -237,6 +241,16 @@ detect_installed() {
     # glow
     if command_exists glow; then
         ALREADY_INSTALLED[glow]=1
+    fi
+
+    # fzf
+    if command_exists fzf; then
+        ALREADY_INSTALLED[fzf]=1
+    fi
+
+    # fd (fd-find on Debian/Ubuntu)
+    if command_exists fd || command_exists fdfind; then
+        ALREADY_INSTALLED[fd]=1
     fi
 
     # bash-completion
@@ -506,6 +520,64 @@ prompt_glow() {
     fi
 }
 
+prompt_fzf() {
+    if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
+        return 0
+    fi
+
+    print_header "fzf"
+    print_info "コマンドラインファジーファインダー"
+    echo
+
+    if [[ ${ALREADY_INSTALLED[fzf]} -eq 1 ]]; then
+        print_success "インストール済み"
+        INSTALL_DECISIONS[fzf]=1
+        return 0
+    fi
+
+    print_note "機能:"
+    print_info "   - ファイル、コマンド履歴、プロセス等をあいまい検索"
+    print_info "   - Ctrl+R で履歴検索、Ctrl+T でファイル検索"
+    echo
+    print_note "dotfilesとの関連:"
+    print_info "   - .bashrc / .zshrc でキーバインド設定あり"
+
+    if ask_yes_no "インストールしますか？"; then
+        INSTALL_DECISIONS[fzf]=1
+    fi
+}
+
+prompt_fd() {
+    if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
+        return 0
+    fi
+
+    print_header "fd"
+    print_info "高速なfind代替コマンド"
+    echo
+
+    if [[ ${ALREADY_INSTALLED[fd]} -eq 1 ]]; then
+        print_success "インストール済み"
+        INSTALL_DECISIONS[fd]=1
+        return 0
+    fi
+
+    print_note "機能:"
+    print_info "   - findより高速でシンプルな構文"
+    print_info "   - .gitignore を自動で尊重"
+    echo
+    print_note "dotfilesとの関連:"
+    print_info "   - fzf と連携して検索を高速化"
+
+    if [[ "$PKG_MANAGER" == "apt" ]]; then
+        print_warning "Debian/Ubuntuではコマンド名が fdfind になります"
+    fi
+
+    if ask_yes_no "インストールしますか？"; then
+        INSTALL_DECISIONS[fd]=1
+    fi
+}
+
 prompt_bash_completion() {
     # Skip if zsh is the default shell
     if [[ "$SHELL" == */zsh ]]; then
@@ -606,7 +678,7 @@ show_summary() {
     fi
 
     # Tools
-    for pkg in neovim zellij ghostty amu gh glow bash_completion; do
+    for pkg in neovim zellij ghostty amu gh glow fzf fd bash_completion; do
         # Skip conditions
         [[ "$pkg" == "bash_completion" && "$SHELL" == */zsh ]] && continue
         [[ "$pkg" == "bash_completion" && "$OS_TYPE" == "windows" ]] && continue
@@ -904,6 +976,8 @@ main() {
     prompt_amu
     prompt_gh
     prompt_glow
+    prompt_fzf
+    prompt_fd
     prompt_bash_completion
     prompt_claude_code
     prompt_apply_dotfiles
@@ -930,6 +1004,8 @@ main() {
     install_amu
     install_package "gh" "gh" "gh" "gh" "github-cli" "GitHub.cli" "gh"
     install_package "glow" "glow" "" "" "glow" "charmbracelet.glow" "glow"
+    install_package "fzf" "fzf" "fzf" "fzf" "fzf" "junegunn.fzf" "fzf"
+    install_package "fd" "fd" "fd-find" "fd-find" "fd" "sharkdp.fd" "fd"
     install_package "bash_completion" "bash-completion@2" "bash-completion" "bash-completion" "bash-completion" "" ""
 
     install_claude_code

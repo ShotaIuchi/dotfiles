@@ -1,2 +1,5 @@
+# macOS: Option キーを Alt として使用（fzf の Alt+C 等に必要）
+macos-option-as-alt = true
+
 # 改行（Emacs C-m）
 keybind = ctrl+m=text:\n

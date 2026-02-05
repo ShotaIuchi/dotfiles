@@ -78,3 +78,11 @@ bindkey -e
 # History search
 bindkey '^P' history-search-backward
 bindkey '^N' history-search-forward
+
+# ------------------------------------------------------------------------------
+# fzf Key Bindings
+# ------------------------------------------------------------------------------
+
+if command -v fzf &>/dev/null; then
+    eval "$(fzf --zsh)"
+fi
