@@ -58,6 +58,9 @@ alias gl='git log --oneline -10'
 # Claude Code
 alias fclaude='claude --dangerously-skip-permissions'
 
+# Markdown viewer
+alias md='glow -p'
+
 # ------------------------------------------------------------------------------
 # Functions
 # ------------------------------------------------------------------------------

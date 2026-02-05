@@ -85,6 +85,7 @@ declare -A INSTALL_DECISIONS=(
     [ghostty]=0
     [amu]=0
     [gh]=0
+    [glow]=0
     [bash_completion]=0
     [claude_code]=0
 )
@@ -96,6 +97,7 @@ declare -A ALREADY_INSTALLED=(
     [ghostty]=0
     [amu]=0
     [gh]=0
+    [glow]=0
     [bash_completion]=0
     [claude_code]=0
 )
@@ -230,6 +232,11 @@ detect_installed() {
     # gh
     if command_exists gh; then
         ALREADY_INSTALLED[gh]=1
+    fi
+
+    # glow
+    if command_exists glow; then
+        ALREADY_INSTALLED[glow]=1
     fi
 
     # bash-completion
@@ -470,6 +477,35 @@ prompt_gh() {
     fi
 }
 
+prompt_glow() {
+    if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
+        return 0
+    fi
+
+    # glow is not available on apt/dnf without adding Charm repo
+    if [[ "$PKG_MANAGER" == "apt" || "$PKG_MANAGER" == "dnf" ]]; then
+        return 0
+    fi
+
+    print_header "glow"
+    print_info "ターミナル用Markdownビューア"
+    echo
+
+    if [[ ${ALREADY_INSTALLED[glow]} -eq 1 ]]; then
+        print_success "インストール済み"
+        INSTALL_DECISIONS[glow]=1
+        return 0
+    fi
+
+    print_note "機能:"
+    print_info "   - Markdownファイルを美しく表示"
+    print_info "   - TUIモードでファイルブラウズ可能"
+
+    if ask_yes_no "インストールしますか？"; then
+        INSTALL_DECISIONS[glow]=1
+    fi
+}
+
 prompt_bash_completion() {
     # Skip if zsh is the default shell
     if [[ "$SHELL" == */zsh ]]; then
@@ -570,12 +606,14 @@ show_summary() {
     fi
 
     # Tools
-    for pkg in neovim zellij ghostty amu gh bash_completion; do
+    for pkg in neovim zellij ghostty amu gh glow bash_completion; do
         # Skip conditions
         [[ "$pkg" == "bash_completion" && "$SHELL" == */zsh ]] && continue
         [[ "$pkg" == "bash_completion" && "$OS_TYPE" == "windows" ]] && continue
         [[ "$pkg" == "ghostty" && "$OS_TYPE" != "macos" ]] && continue
         [[ "$pkg" == "zellij" && "$OS_TYPE" == "windows" ]] && continue
+        [[ "$pkg" == "glow" && "$PKG_MANAGER" == "apt" ]] && continue
+        [[ "$pkg" == "glow" && "$PKG_MANAGER" == "dnf" ]] && continue
 
         local display_name
         case "$pkg" in
@@ -865,6 +903,7 @@ main() {
     prompt_ghostty
     prompt_amu
     prompt_gh
+    prompt_glow
     prompt_bash_completion
     prompt_claude_code
     prompt_apply_dotfiles
@@ -890,6 +929,7 @@ main() {
     install_package "ghostty" "ghostty" "" "" "" "" "" "true"  # macOS only
     install_amu
     install_package "gh" "gh" "gh" "gh" "github-cli" "GitHub.cli" "gh"
+    install_package "glow" "glow" "" "" "glow" "charmbracelet.glow" "glow"
     install_package "bash_completion" "bash-completion@2" "bash-completion" "bash-completion" "bash-completion" "" ""
 
     install_claude_code

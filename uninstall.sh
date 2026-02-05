@@ -80,6 +80,7 @@ declare -A UNINSTALL_DECISIONS=(
     [ghostty]=0
     [amu]=0
     [gh]=0
+    [glow]=0
     [bash_completion]=0
     [claude_code]=0
 )
@@ -90,6 +91,7 @@ declare -A IS_INSTALLED=(
     [ghostty]=0
     [amu]=0
     [gh]=0
+    [glow]=0
     [bash_completion]=0
     [claude_code]=0
 )
@@ -210,6 +212,11 @@ detect_installed() {
         IS_INSTALLED[gh]=1
     fi
 
+    # glow
+    if command_exists glow; then
+        IS_INSTALLED[glow]=1
+    fi
+
     # bash-completion
     case "$PKG_MANAGER" in
         brew)
@@ -292,7 +299,7 @@ show_summary() {
         remove_list+=("dotfilesリンク")
     fi
 
-    for pkg in neovim zellij ghostty amu gh bash_completion claude_code; do
+    for pkg in neovim zellij ghostty amu gh glow bash_completion claude_code; do
         if [[ ${UNINSTALL_DECISIONS[$pkg]} -eq 1 ]]; then
             local display_name
             case "$pkg" in
@@ -516,6 +523,7 @@ main() {
     fi
 
     prompt_uninstall_tool "gh" "gh (GitHub CLI)" "GitHub操作用CLI"
+    prompt_uninstall_tool "glow" "glow" "ターミナル用Markdownビューア"
     prompt_uninstall_tool "bash_completion" "bash-completion" "bashのタブ補完強化"
     prompt_uninstall_tool "claude_code" "Claude Code" "Anthropic AI CLI"
 
@@ -543,6 +551,7 @@ main() {
     uninstall_package "zellij" "zellij" "" "" "zellij" "" ""
     uninstall_package "ghostty" "ghostty" "" "" "" "" "" "true"
     uninstall_package "gh" "gh" "gh" "gh" "github-cli" "GitHub.cli" "gh"
+    uninstall_package "glow" "glow" "" "" "glow" "charmbracelet.glow" "glow"
     uninstall_package "bash_completion" "bash-completion@2" "bash-completion" "bash-completion" "bash-completion" "" ""
 
     uninstall_claude_code
