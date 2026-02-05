@@ -13,6 +13,8 @@
 // │ C-x ←↑↓→ │ MoveFocus         │ 方向キーで移動            │
 // │ C-x n    │ FocusPreviousPane │ 前のペインへ移動（C-x oの逆）│
 // │ C-x d    │ Detach            │ セッションをデタッチ       │
+// │ C-x 4    │ NewPane (float)   │ フローティングペイン切替     │
+// │ C-x 6    │ Run zsh (float)   │ 中央にフローティングシェル   │
 // │ C-x C-x  │ (pass through)    │ C-xをアプリに送信         │
 // └──────────┴───────────────────┴──────────────────────────┘
 
@@ -42,6 +44,9 @@ keybinds clear-defaults=true {
         bind "n" { FocusPreviousPane; SwitchToMode "normal"; }
         // セッション
         bind "d" { Detach; }
+        // フローティングペイン
+        bind "4" { NewPane { floating true; }; SwitchToMode "normal"; }
+        bind "6" { Run "zsh" { floating true; }; SwitchToMode "normal"; }
         // C-x C-x でアプリにC-xを送信
         bind "Ctrl x" { Write 24; SwitchToMode "normal"; }
         // キャンセル
