@@ -7,13 +7,53 @@
 ```
 dotfiles/
 ├── HOME/           # ホームディレクトリに配置するファイル
-│   └── .gitconfig
+│   ├── .bashrc
+│   ├── .gitconfig
+│   └── .config/    # アプリ設定（neovim, zellij, ghostty等）
+├── install.sh      # 対話式インストールスクリプト
+├── uninstall.sh    # 対話式アンインストールスクリプト
 └── .gitignore
 ```
 
-## セットアップ
+## クイックスタート
 
-### 推奨ツール: amu
+```bash
+git clone https://github.com/yourname/dotfiles ~/dot/dotfiles
+cd ~/dot/dotfiles
+./install.sh
+```
+
+対話式でツールのインストールとdotfilesの適用を行います。
+
+## インストール
+
+### install.sh（推奨）
+
+対話式インストールスクリプト。各ツールのインストール可否を選択できます。
+
+```bash
+./install.sh
+```
+
+**対応OS:**
+- macOS（Homebrew）
+- Linux（apt / dnf / pacman）
+- Windows（WSL, Git Bash）
+
+**インストール可能なツール:**
+
+| ツール | 説明 |
+|--------|------|
+| Homebrew | パッケージマネージャー（macOS） |
+| Neovim | モダンなVimエディタ |
+| Zellij | ターミナルマルチプレクサ |
+| Ghostty | 高速ターミナルエミュレータ（macOS） |
+| amu | シンボリックリンク管理 |
+| gh | GitHub CLI |
+| bash-completion | タブ補完強化 |
+| Claude Code | Anthropic AI CLI |
+
+### 手動セットアップ
 
 [amu](https://github.com/ShotaIuchi/amu) を使用してシンボリックリンクを作成する。
 
@@ -40,11 +80,25 @@ amu status
 amu add ~/dot/dotfiles/HOME ~/ --dry-run
 ```
 
-#### リンクの管理
+## アンインストール
+
+### uninstall.sh
+
+対話式でdotfilesのリンク解除とツールの削除を行います。
 
 ```bash
-# リンク削除
-amu remove ~/dot/dotfiles/HOME ~/
+./uninstall.sh
+```
+
+**機能:**
+- dotfilesのシンボリックリンク解除（`amu rm`）
+- 各ツールの個別アンインストール
+
+### 手動でのリンク解除
+
+```bash
+# amuでリンク解除
+amu rm ~/dot/dotfiles/HOME ~/
 
 # 設定更新後の再適用
 amu sync
