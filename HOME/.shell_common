@@ -87,8 +87,14 @@ if command -v fd &>/dev/null; then
     export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
 fi
 
-# Preview with head
-export FZF_CTRL_T_OPTS="--preview 'head -100 {}'"
+# Preview with bat (syntax highlight) or head fallback
+if command -v bat &>/dev/null; then
+    export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :100 --style=numbers {}'"
+elif command -v batcat &>/dev/null; then
+    export FZF_CTRL_T_OPTS="--preview 'batcat --color=always --line-range :100 --style=numbers {}'"
+else
+    export FZF_CTRL_T_OPTS="--preview 'head -100 {}'"
+fi
 
 # fzf git branch checkout
 fbr() {
