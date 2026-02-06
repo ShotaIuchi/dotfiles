@@ -74,7 +74,11 @@ alias md='glow -p'
 # ------------------------------------------------------------------------------
 
 # Default options
-export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
+export FZF_DEFAULT_OPTS='--height 40% --reverse --border
+  --bind "ctrl-k:kill-line"
+  --bind "ctrl-n:down,ctrl-p:up"
+  --bind "ctrl-v:page-down,alt-v:page-up"
+  --bind "alt-n:preview-down,alt-p:preview-up"'
 
 # Use fd if available (faster than find)
 if command -v fd &>/dev/null; then
