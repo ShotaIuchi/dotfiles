@@ -1280,6 +1280,50 @@ apply_dotfiles() {
 }
 
 # ------------------------------------------------------------------------------
+# Git User Setup
+# ------------------------------------------------------------------------------
+
+setup_git_user() {
+    local gitconfig_user="$HOME/.gitconfig.user"
+
+    if [[ -f "$gitconfig_user" ]]; then
+        print_success "Git ユーザー設定済み ($gitconfig_user)"
+        return 0
+    fi
+
+    print_header "Git ユーザー設定"
+    print_info "~/.gitconfig.user が見つかりません"
+    print_info "Git のコミットに使用する名前とメールアドレスを設定します"
+    echo
+
+    if ! ask_yes_no "Git ユーザー情報を設定しますか？"; then
+        print_skip "Git ユーザー設定をスキップ"
+        print_info "   後で手動で ~/.gitconfig.user を作成できます"
+        return 0
+    fi
+
+    local name email
+
+    printf "\n 名前: "
+    read -r name
+    printf " メールアドレス: "
+    read -r email
+
+    if [[ -z "$name" || -z "$email" ]]; then
+        print_warning "名前またはメールアドレスが空のためスキップしました"
+        return 0
+    fi
+
+    cat > "$gitconfig_user" <<EOF
+[user]
+    name = $name
+    email = $email
+EOF
+
+    print_success "Git ユーザー設定を作成しました: $gitconfig_user"
+}
+
+# ------------------------------------------------------------------------------
 # Update Functions
 # ------------------------------------------------------------------------------
 
@@ -1565,6 +1609,7 @@ run_install_mode() {
 
     install_claude_code
     apply_dotfiles
+    setup_git_user
 
     # Done
     echo

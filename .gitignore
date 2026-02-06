@@ -52,5 +52,8 @@ secrets.json
 *.local
 *.local.*
 
+# Git user config (personal, created by install.sh)
+HOME/.gitconfig.user
+
 # Backup directory (created by backup-conflicts.sh)
 .backup/

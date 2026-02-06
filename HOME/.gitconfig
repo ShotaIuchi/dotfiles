@@ -1,6 +1,8 @@
 # ============================================================
 # Git Configuration
 # ============================================================
+[include]
+    path = ~/.gitconfig.user
 # [user]
 # 	name = Shota Iuchi
 # 	email = shotaiuchi.develop@gmail.com
