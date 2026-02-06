@@ -104,7 +104,7 @@ detect_os() {
 # ------------------------------------------------------------------------------
 
 typeset -A UNINSTALL_DECISIONS
-UNINSTALL_DECISIONS[neovim]=0 UNINSTALL_DECISIONS[zellij]=0
+UNINSTALL_DECISIONS[neovim]=0 UNINSTALL_DECISIONS[tmux]=0 UNINSTALL_DECISIONS[zellij]=0
 UNINSTALL_DECISIONS[ghostty]=0 UNINSTALL_DECISIONS[font]=0
 UNINSTALL_DECISIONS[amu]=0
 UNINSTALL_DECISIONS[gh]=0 UNINSTALL_DECISIONS[glow]=0
@@ -114,7 +114,7 @@ UNINSTALL_DECISIONS[starship]=0
 UNINSTALL_DECISIONS[bash_completion]=0 UNINSTALL_DECISIONS[claude_code]=0
 
 typeset -A IS_INSTALLED
-IS_INSTALLED[neovim]=0 IS_INSTALLED[zellij]=0
+IS_INSTALLED[neovim]=0 IS_INSTALLED[tmux]=0 IS_INSTALLED[zellij]=0
 IS_INSTALLED[ghostty]=0 IS_INSTALLED[font]=0
 IS_INSTALLED[amu]=0
 IS_INSTALLED[gh]=0 IS_INSTALLED[glow]=0
@@ -215,6 +215,11 @@ detect_installed() {
     # Neovim
     if command_exists nvim; then
         IS_INSTALLED[neovim]=1
+    fi
+
+    # tmux
+    if command_exists tmux; then
+        IS_INSTALLED[tmux]=1
     fi
 
     # Zellij
@@ -360,7 +365,7 @@ show_summary() {
         remove_list+=("dotfilesリンク")
     fi
 
-    for pkg in neovim zellij ghostty font amu gh glow fzf fd bat wtp starship bash_completion claude_code; do
+    for pkg in neovim tmux zellij ghostty font amu gh glow fzf fd bat wtp starship bash_completion claude_code; do
         if [[ ${UNINSTALL_DECISIONS[$pkg]} -eq 1 ]]; then
             local display_name
             case "$pkg" in
@@ -593,7 +598,8 @@ main() {
     # Collect uninstall decisions
     prompt_remove_dotfiles
     prompt_uninstall_tool "neovim" "Neovim" "モダンなVimエディタ"
-    prompt_uninstall_tool "zellij" "Zellij" "ターミナルマルチプレクサ"
+    prompt_uninstall_tool "tmux" "tmux" "ターミナルマルチプレクサ"
+    prompt_uninstall_tool "zellij" "Zellij" "ターミナルマルチプレクサ（tmux代替）"
 
     if [[ "$OS_TYPE" == "macos" ]]; then
         prompt_uninstall_tool "ghostty" "Ghostty" "高速なターミナルエミュレータ"
@@ -634,6 +640,7 @@ main() {
 
     # Uninstall packages: key, brew, apt, dnf, pacman, winget, scoop, is_cask
     uninstall_package "neovim" "neovim" "neovim" "neovim" "neovim" "Neovim.Neovim" "neovim"
+    uninstall_package "tmux" "tmux" "tmux" "tmux" "tmux" "" ""
     uninstall_package "zellij" "zellij" "" "" "zellij" "" ""
     uninstall_package "ghostty" "ghostty" "" "" "" "" "" "true"
     uninstall_package "font" "font-udev-gothic-nf" "" "" "" "" "" "true"

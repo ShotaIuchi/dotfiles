@@ -30,15 +30,15 @@ shopt -s checkwinsize
 shopt -s cdspell
 
 # ------------------------------------------------------------------------------
-# Zellij Pane Title (bash hook)
+# Pane Title (bash hook)
 # ------------------------------------------------------------------------------
 
 # PROMPT_COMMAND: called before prompt (bash-specific)
-# Functions _zellij_title_dir and _zellij_set_title are defined in .shell_common
+# Functions _pane_title_dir and _pane_set_title are defined in .shell_common
 # Set before starship init so starship can prepend its own command
 PROMPT_COMMAND='
-if [[ -n "$ZELLIJ" ]]; then
-    _zellij_set_title "$(_zellij_title_dir)"
+if [[ -n "$TMUX" || -n "$ZELLIJ" ]]; then
+    _pane_set_title "$(_pane_title_dir)"
 fi
 '
 

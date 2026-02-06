@@ -28,11 +28,15 @@ if [[ -d "$HOME/.local/bin" ]]; then
 fi
 
 # ------------------------------------------------------------------------------
-# Zellij Auto-start
+# Multiplexer Auto-start (tmux preferred, zellij fallback)
 # ------------------------------------------------------------------------------
 
-if [[ -z "$ZELLIJ" && $- == *i* ]]; then
-    exec zellij
+if [[ -z "$TMUX" && -z "$ZELLIJ" && $- == *i* ]]; then
+    if command -v tmux &>/dev/null; then
+        exec tmux new-session
+    elif command -v zellij &>/dev/null; then
+        exec zellij
+    fi
 fi
 
 # ------------------------------------------------------------------------------
@@ -117,11 +121,11 @@ mkcd() {
 }
 
 # ------------------------------------------------------------------------------
-# Zellij Pane Title
+# Pane Title (tmux / terminal)
 # ------------------------------------------------------------------------------
 
 # Get directory name for title (git root name or current dir name)
-_zellij_title_dir() {
+_pane_title_dir() {
     local git_root
     git_root=$(git rev-parse --show-toplevel 2>/dev/null)
     if [[ -n "$git_root" ]]; then
@@ -131,8 +135,8 @@ _zellij_title_dir() {
     fi
 }
 
-# Set Zellij pane title
-_zellij_set_title() {
+# Set pane title
+_pane_set_title() {
     local title="$1"
     printf '\e]0;%s\a' "$title"
 }

@@ -39,14 +39,14 @@ setopt CORRECT
 eval "$(starship init zsh)"
 
 # ------------------------------------------------------------------------------
-# Zellij Pane Title (zsh hook)
+# Pane Title (zsh hook)
 # ------------------------------------------------------------------------------
 
 # precmd: called before prompt (zsh-specific)
-# Functions _zellij_title_dir and _zellij_set_title are defined in .shell_common
+# Functions _pane_title_dir and _pane_set_title are defined in .shell_common
 precmd() {
-    if [[ -n "$ZELLIJ" ]]; then
-        _zellij_set_title "$(_zellij_title_dir)"
+    if [[ -n "$TMUX" || -n "$ZELLIJ" ]]; then
+        _pane_set_title "$(_pane_title_dir)"
     fi
 }
 
