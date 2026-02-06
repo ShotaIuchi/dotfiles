@@ -1251,6 +1251,9 @@ apply_dotfiles() {
         return 1
     fi
 
+    # Backup conflicting files before amu add
+    bash "${dotfiles_dir}/backup-conflicts.sh"
+
     if command_exists amu; then
         if amu add "$home_source" ~/; then
             print_success "dotfiles 適用完了"
@@ -1412,6 +1415,9 @@ update_dotfiles() {
         print_error "HOME ディレクトリが見つかりません: $home_source"
         return 1
     fi
+
+    # Backup conflicting files before amu add
+    bash "${dotfiles_dir}/backup-conflicts.sh"
 
     if command_exists amu; then
         if amu add "$home_source" ~/; then
