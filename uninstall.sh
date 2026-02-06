@@ -105,7 +105,8 @@ detect_os() {
 
 typeset -A UNINSTALL_DECISIONS
 UNINSTALL_DECISIONS[neovim]=0 UNINSTALL_DECISIONS[zellij]=0
-UNINSTALL_DECISIONS[ghostty]=0 UNINSTALL_DECISIONS[amu]=0
+UNINSTALL_DECISIONS[ghostty]=0 UNINSTALL_DECISIONS[font]=0
+UNINSTALL_DECISIONS[amu]=0
 UNINSTALL_DECISIONS[gh]=0 UNINSTALL_DECISIONS[glow]=0
 UNINSTALL_DECISIONS[fzf]=0 UNINSTALL_DECISIONS[fd]=0
 UNINSTALL_DECISIONS[bat]=0 UNINSTALL_DECISIONS[wtp]=0
@@ -114,7 +115,8 @@ UNINSTALL_DECISIONS[bash_completion]=0 UNINSTALL_DECISIONS[claude_code]=0
 
 typeset -A IS_INSTALLED
 IS_INSTALLED[neovim]=0 IS_INSTALLED[zellij]=0
-IS_INSTALLED[ghostty]=0 IS_INSTALLED[amu]=0
+IS_INSTALLED[ghostty]=0 IS_INSTALLED[font]=0
+IS_INSTALLED[amu]=0
 IS_INSTALLED[gh]=0 IS_INSTALLED[glow]=0
 IS_INSTALLED[fzf]=0 IS_INSTALLED[fd]=0
 IS_INSTALLED[bat]=0 IS_INSTALLED[wtp]=0
@@ -226,6 +228,15 @@ detect_installed() {
             IS_INSTALLED[ghostty]=1
         fi
     fi
+
+    # UDEV Gothic NFLG font (brew cask)
+    case "$PKG_MANAGER" in
+        brew)
+            if command_exists brew && brew list font-udev-gothic-nf &>/dev/null; then
+                IS_INSTALLED[font]=1
+            fi
+            ;;
+    esac
 
     # amu
     if command_exists amu; then
@@ -349,12 +360,13 @@ show_summary() {
         remove_list+=("dotfilesリンク")
     fi
 
-    for pkg in neovim zellij ghostty amu gh glow fzf fd bat wtp starship bash_completion claude_code; do
+    for pkg in neovim zellij ghostty font amu gh glow fzf fd bat wtp starship bash_completion claude_code; do
         if [[ ${UNINSTALL_DECISIONS[$pkg]} -eq 1 ]]; then
             local display_name
             case "$pkg" in
                 bash_completion) display_name="bash-completion" ;;
                 claude_code) display_name="Claude Code" ;;
+                font) display_name="UDEV Gothic NFLG" ;;
                 *) display_name="$pkg" ;;
             esac
             remove_list+=("$display_name")
@@ -587,6 +599,10 @@ main() {
         prompt_uninstall_tool "ghostty" "Ghostty" "高速なターミナルエミュレータ"
     fi
 
+    if [[ "$PKG_MANAGER" == "brew" ]]; then
+        prompt_uninstall_tool "font" "UDEV Gothic NFLG" "プログラミング向け日本語等幅フォント"
+    fi
+
     prompt_uninstall_tool "gh" "gh (GitHub CLI)" "GitHub操作用CLI"
     prompt_uninstall_tool "glow" "glow" "ターミナル用Markdownビューア"
     prompt_uninstall_tool "fzf" "fzf" "コマンドラインファジーファインダー"
@@ -620,6 +636,7 @@ main() {
     uninstall_package "neovim" "neovim" "neovim" "neovim" "neovim" "Neovim.Neovim" "neovim"
     uninstall_package "zellij" "zellij" "" "" "zellij" "" ""
     uninstall_package "ghostty" "ghostty" "" "" "" "" "" "true"
+    uninstall_package "font" "font-udev-gothic-nf" "" "" "" "" "" "true"
     uninstall_package "gh" "gh" "gh" "gh" "github-cli" "GitHub.cli" "gh"
     uninstall_package "glow" "glow" "" "" "glow" "charmbracelet.glow" "glow"
     uninstall_package "fzf" "fzf" "fzf" "fzf" "fzf" "junegunn.fzf" "fzf"

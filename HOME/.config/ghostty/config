@@ -1,3 +1,7 @@
+# フォント
+font-family = "UDEV Gothic NFLG"
+font-size = 13
+
 # macOS: Option キーを Alt として使用（fzf の Alt+C 等に必要）
 macos-option-as-alt = true
 

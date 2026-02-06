@@ -112,6 +112,7 @@ detect_os() {
 typeset -A INSTALL_DECISIONS
 INSTALL_DECISIONS[pkg_manager]=0 INSTALL_DECISIONS[neovim]=0
 INSTALL_DECISIONS[zellij]=0 INSTALL_DECISIONS[ghostty]=0
+INSTALL_DECISIONS[font]=0
 INSTALL_DECISIONS[amu]=0 INSTALL_DECISIONS[gh]=0
 INSTALL_DECISIONS[glow]=0 INSTALL_DECISIONS[fzf]=0
 INSTALL_DECISIONS[fd]=0 INSTALL_DECISIONS[bat]=0 INSTALL_DECISIONS[wtp]=0
@@ -121,6 +122,7 @@ INSTALL_DECISIONS[claude_code]=0
 typeset -A ALREADY_INSTALLED
 ALREADY_INSTALLED[pkg_manager]=0 ALREADY_INSTALLED[neovim]=0
 ALREADY_INSTALLED[zellij]=0 ALREADY_INSTALLED[ghostty]=0
+ALREADY_INSTALLED[font]=0
 ALREADY_INSTALLED[amu]=0 ALREADY_INSTALLED[gh]=0
 ALREADY_INSTALLED[glow]=0 ALREADY_INSTALLED[fzf]=0
 ALREADY_INSTALLED[fd]=0 ALREADY_INSTALLED[bat]=0 ALREADY_INSTALLED[wtp]=0
@@ -132,7 +134,8 @@ APPLY_DOTFILES=0
 # Update mode variables
 typeset -A UPDATE_DECISIONS
 UPDATE_DECISIONS[neovim]=0 UPDATE_DECISIONS[zellij]=0
-UPDATE_DECISIONS[ghostty]=0 UPDATE_DECISIONS[amu]=0
+UPDATE_DECISIONS[ghostty]=0 UPDATE_DECISIONS[font]=0
+UPDATE_DECISIONS[amu]=0
 UPDATE_DECISIONS[gh]=0 UPDATE_DECISIONS[glow]=0
 UPDATE_DECISIONS[fzf]=0 UPDATE_DECISIONS[fd]=0
 UPDATE_DECISIONS[bat]=0 UPDATE_DECISIONS[wtp]=0
@@ -209,6 +212,7 @@ tool_display_name() {
     case "$1" in
         bash_completion) echo "bash-completion" ;;
         claude_code) echo "Claude Code" ;;
+        font) echo "UDEV Gothic NFLG" ;;
         *) echo "$1" ;;
     esac
 }
@@ -223,8 +227,8 @@ show_help() {
     echo "  ./install.sh --help                このヘルプを表示"
     echo
     printf "${BOLD}更新可能なツール:${NC}\n"
-    echo "  neovim, zellij, ghostty, amu, gh, glow, fzf, fd, bat, wtp,"
-    echo "  starship, bash-completion, claude-code, dotfiles"
+    echo "  neovim, zellij, ghostty, font, amu, gh, glow, fzf, fd, bat,"
+    echo "  wtp, starship, bash-completion, claude-code, dotfiles"
     echo
     exit 0
 }
@@ -251,6 +255,7 @@ normalize_tool_name() {
     case "$1" in
         bash-completion) echo "bash_completion" ;;
         claude-code|claude_code|claude) echo "claude_code" ;;
+        font|udev-gothic) echo "font" ;;
         dotfiles) echo "dotfiles" ;;
         *) echo "$1" ;;
     esac
@@ -296,7 +301,7 @@ show_updatable_tools() {
     echo
 
     local count=0
-    local tools=(neovim zellij ghostty amu gh glow fzf fd bat wtp starship bash_completion claude_code)
+    local tools=(neovim zellij ghostty font amu gh glow fzf fd bat wtp starship bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -337,7 +342,7 @@ prompt_update_all_or_select() {
     case "$choice" in
         1)
             # Select all installed tools
-            local tools=(neovim zellij ghostty amu gh glow fzf fd bat wtp starship bash_completion claude_code)
+            local tools=(neovim zellij ghostty font amu gh glow fzf fd bat wtp starship bash_completion claude_code)
             for tool in "${tools[@]}"; do
                 if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
                     UPDATE_DECISIONS[$tool]=1
@@ -358,7 +363,7 @@ prompt_update_all_or_select() {
 }
 
 prompt_individual_updates() {
-    local tools=(neovim zellij ghostty amu gh glow fzf fd bat wtp starship bash_completion claude_code)
+    local tools=(neovim zellij ghostty font amu gh glow fzf fd bat wtp starship bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -384,7 +389,7 @@ show_update_summary() {
 
     local update_list=()
     local skip_list=()
-    local tools=(neovim zellij ghostty amu gh glow fzf fd bat wtp starship bash_completion claude_code)
+    local tools=(neovim zellij ghostty font amu gh glow fzf fd bat wtp starship bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -471,6 +476,15 @@ detect_installed() {
             ALREADY_INSTALLED[ghostty]=1
         fi
     fi
+
+    # UDEV Gothic NFLG font (brew cask)
+    case "$PKG_MANAGER" in
+        brew)
+            if command_exists brew && brew list font-udev-gothic-nf &>/dev/null; then
+                ALREADY_INSTALLED[font]=1
+            fi
+            ;;
+    esac
 
     # amu
     if command_exists amu; then
@@ -689,6 +703,38 @@ prompt_ghostty() {
 
     if ask_yes_no "インストールしますか？"; then
         INSTALL_DECISIONS[ghostty]=1
+    fi
+}
+
+prompt_font() {
+    if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
+        return 0
+    fi
+
+    # Font cask is only available via Homebrew
+    if [[ "$PKG_MANAGER" != "brew" ]]; then
+        return 0
+    fi
+
+    print_header "UDEV Gothic NFLG"
+    print_info "プログラミング向け日本語等幅フォント（Nerd Fonts + リガチャ対応）"
+    echo
+
+    if [[ ${ALREADY_INSTALLED[font]} -eq 1 ]]; then
+        print_success "インストール済み"
+        INSTALL_DECISIONS[font]=1
+        return 0
+    fi
+
+    print_note "構成:"
+    print_info "   - 英字: JetBrains Mono"
+    print_info "   - 日本語: BIZ UDゴシック（モリサワ製UD）"
+    echo
+    print_note "dotfilesとの関連:"
+    print_info "   - Ghostty設定でフォント指定済み"
+
+    if ask_yes_no "インストールしますか？"; then
+        INSTALL_DECISIONS[font]=1
     fi
 }
 
@@ -1029,7 +1075,7 @@ show_summary() {
     fi
 
     # Tools
-    for pkg in neovim zellij ghostty amu gh glow fzf fd bat wtp starship bash_completion; do
+    for pkg in neovim zellij ghostty font amu gh glow fzf fd bat wtp starship bash_completion; do
         # Skip conditions
         [[ "$pkg" == "bash_completion" && "$SHELL" == */zsh ]] && continue
         [[ "$pkg" == "bash_completion" && "$OS_TYPE" == "windows" ]] && continue
@@ -1038,10 +1084,12 @@ show_summary() {
         [[ "$pkg" == "glow" && "$PKG_MANAGER" == "apt" ]] && continue
         [[ "$pkg" == "glow" && "$PKG_MANAGER" == "dnf" ]] && continue
         [[ "$pkg" == "wtp" && "$PKG_MANAGER" != "brew" ]] && continue
+        [[ "$pkg" == "font" && "$PKG_MANAGER" != "brew" ]] && continue
 
         local display_name
         case "$pkg" in
             bash_completion) display_name="bash-completion" ;;
+            font) display_name="UDEV Gothic NFLG" ;;
             *) display_name="$pkg" ;;
         esac
 
@@ -1538,7 +1586,7 @@ run_update_mode() {
             fi
 
             # Validate tool name
-            local valid_tools=" pkg_manager neovim zellij ghostty amu gh glow fzf fd wtp starship bash_completion claude_code "
+            local valid_tools=" pkg_manager neovim zellij ghostty font amu gh glow fzf fd wtp starship bash_completion claude_code "
             if [[ "$valid_tools" != *" $target "* ]]; then
                 print_error "不明なツール: $(tool_display_name "$target")"
                 print_info "使い方: ./install.sh --update [ツール名...]"
@@ -1576,6 +1624,7 @@ run_update_mode() {
     upgrade_package "neovim" "neovim" "neovim" "neovim" "neovim" "Neovim.Neovim" "neovim"
     upgrade_package "zellij" "zellij" "" "" "zellij" "" ""
     upgrade_package "ghostty" "ghostty" "" "" "" "" "" "true"
+    upgrade_package "font" "font-udev-gothic-nf" "" "" "" "" "" "true"
     update_amu
     upgrade_package "gh" "gh" "gh" "gh" "github-cli" "GitHub.cli" "gh"
     upgrade_package "glow" "glow" "" "" "glow" "charmbracelet.glow" "glow"
@@ -1606,6 +1655,7 @@ run_install_mode() {
     prompt_neovim
     prompt_zellij
     prompt_ghostty
+    prompt_font
     prompt_amu
     prompt_gh
     prompt_glow
@@ -1637,6 +1687,7 @@ run_install_mode() {
     install_package "neovim" "neovim" "neovim" "neovim" "neovim" "Neovim.Neovim" "neovim"
     install_package "zellij" "zellij" "" "" "zellij" "" ""  # Linux: cargo or manual
     install_package "ghostty" "ghostty" "" "" "" "" "" "true"  # macOS only
+    install_package "font" "font-udev-gothic-nf" "" "" "" "" "" "true"  # brew cask only
     install_amu
     install_package "gh" "gh" "gh" "gh" "github-cli" "GitHub.cli" "gh"
     install_package "glow" "glow" "" "" "glow" "charmbracelet.glow" "glow"
