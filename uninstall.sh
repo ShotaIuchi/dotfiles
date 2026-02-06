@@ -1,9 +1,38 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # ==============================================================================
 # dotfiles Uninstall Script
 # ==============================================================================
 # 対話式でdotfilesとツールを削除する
 # 対応OS: macOS, Linux (Debian/Ubuntu, Fedora, Arch), Windows (WSL, Git Bash)
+
+# ------------------------------------------------------------------------------
+# Shell Bootstrap (POSIX sh compatible)
+# ------------------------------------------------------------------------------
+
+_need_reexec=0
+if [ -n "${BASH_VERSION:-}" ]; then
+    _major="${BASH_VERSION%%.*}"
+    if [ "$_major" -lt 4 ] 2>/dev/null; then
+        _need_reexec=1
+    fi
+elif [ -z "${ZSH_VERSION:-}" ]; then
+    _need_reexec=1
+fi
+
+if [ "$_need_reexec" = 1 ]; then
+    for _sh in zsh /opt/homebrew/bin/bash /usr/local/bin/bash /home/linuxbrew/.linuxbrew/bin/bash; do
+        if command -v "$_sh" >/dev/null 2>&1; then
+            exec "$_sh" "$0" "$@"
+        fi
+    done
+    echo "ERROR: bash 4.0+ or zsh is required." >&2
+    exit 1
+fi
+unset _need_reexec _major _sh
+
+# ------------------------------------------------------------------------------
+# From here: guaranteed bash 4+ or zsh
+# ------------------------------------------------------------------------------
 
 set -euo pipefail
 
@@ -74,35 +103,21 @@ detect_os() {
 # State Variables
 # ------------------------------------------------------------------------------
 
-declare -A UNINSTALL_DECISIONS=(
-    [neovim]=0
-    [zellij]=0
-    [ghostty]=0
-    [amu]=0
-    [gh]=0
-    [glow]=0
-    [fzf]=0
-    [fd]=0
-    [wtp]=0
-    [starship]=0
-    [bash_completion]=0
-    [claude_code]=0
-)
+typeset -A UNINSTALL_DECISIONS
+UNINSTALL_DECISIONS[neovim]=0 UNINSTALL_DECISIONS[zellij]=0
+UNINSTALL_DECISIONS[ghostty]=0 UNINSTALL_DECISIONS[amu]=0
+UNINSTALL_DECISIONS[gh]=0 UNINSTALL_DECISIONS[glow]=0
+UNINSTALL_DECISIONS[fzf]=0 UNINSTALL_DECISIONS[fd]=0
+UNINSTALL_DECISIONS[wtp]=0 UNINSTALL_DECISIONS[starship]=0
+UNINSTALL_DECISIONS[bash_completion]=0 UNINSTALL_DECISIONS[claude_code]=0
 
-declare -A IS_INSTALLED=(
-    [neovim]=0
-    [zellij]=0
-    [ghostty]=0
-    [amu]=0
-    [gh]=0
-    [glow]=0
-    [fzf]=0
-    [fd]=0
-    [wtp]=0
-    [starship]=0
-    [bash_completion]=0
-    [claude_code]=0
-)
+typeset -A IS_INSTALLED
+IS_INSTALLED[neovim]=0 IS_INSTALLED[zellij]=0
+IS_INSTALLED[ghostty]=0 IS_INSTALLED[amu]=0
+IS_INSTALLED[gh]=0 IS_INSTALLED[glow]=0
+IS_INSTALLED[fzf]=0 IS_INSTALLED[fd]=0
+IS_INSTALLED[wtp]=0 IS_INSTALLED[starship]=0
+IS_INSTALLED[bash_completion]=0 IS_INSTALLED[claude_code]=0
 
 REMOVE_DOTFILES=0
 
@@ -160,13 +175,13 @@ ask_yes_no() {
     read -r response
 
     if [[ "$default" == "n" ]]; then
-        case "${response,,}" in
-            y|yes) return 0 ;;
+        case "$response" in
+            [yY]|[yY][eE][sS]) return 0 ;;
             *) return 1 ;;
         esac
     else
-        case "${response,,}" in
-            n|no) return 1 ;;
+        case "$response" in
+            [nN]|[nN][oO]) return 1 ;;
             *) return 0 ;;
         esac
     fi
@@ -375,7 +390,7 @@ remove_dotfiles() {
     print_header "dotfilesのリンクを解除中..."
 
     local dotfiles_dir
-    dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
     local home_source="${dotfiles_dir}/HOME"
 
     if [[ ! -d "$home_source" ]]; then
