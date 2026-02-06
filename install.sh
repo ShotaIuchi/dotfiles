@@ -1,9 +1,40 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # ==============================================================================
 # dotfiles Install Script
 # ==============================================================================
 # 対話式でツールをインストールし、dotfilesを適用する
 # 対応OS: macOS, Linux (Debian/Ubuntu, Fedora, Arch), Windows (WSL, Git Bash)
+
+# ------------------------------------------------------------------------------
+# Shell Bootstrap (POSIX sh compatible)
+# ------------------------------------------------------------------------------
+# Automatically re-exec with zsh or bash 4+ if the current shell is insufficient.
+# This allows "./install.sh" to work on any environment.
+
+_need_reexec=0
+if [ -n "${BASH_VERSION:-}" ]; then
+    _major="${BASH_VERSION%%.*}"
+    if [ "$_major" -lt 4 ] 2>/dev/null; then
+        _need_reexec=1
+    fi
+elif [ -z "${ZSH_VERSION:-}" ]; then
+    _need_reexec=1
+fi
+
+if [ "$_need_reexec" = 1 ]; then
+    for _sh in zsh /opt/homebrew/bin/bash /usr/local/bin/bash /home/linuxbrew/.linuxbrew/bin/bash; do
+        if command -v "$_sh" >/dev/null 2>&1; then
+            exec "$_sh" "$0" "$@"
+        fi
+    done
+    echo "ERROR: bash 4.0+ or zsh is required." >&2
+    exit 1
+fi
+unset _need_reexec _major _sh
+
+# ------------------------------------------------------------------------------
+# From here: guaranteed bash 4+ or zsh
+# ------------------------------------------------------------------------------
 
 set -euo pipefail
 
@@ -78,55 +109,34 @@ detect_os() {
 # State Variables
 # ------------------------------------------------------------------------------
 
-declare -A INSTALL_DECISIONS=(
-    [pkg_manager]=0
-    [neovim]=0
-    [zellij]=0
-    [ghostty]=0
-    [amu]=0
-    [gh]=0
-    [glow]=0
-    [fzf]=0
-    [fd]=0
-    [wtp]=0
-    [starship]=0
-    [bash_completion]=0
-    [claude_code]=0
-)
+typeset -A INSTALL_DECISIONS
+INSTALL_DECISIONS[pkg_manager]=0 INSTALL_DECISIONS[neovim]=0
+INSTALL_DECISIONS[zellij]=0 INSTALL_DECISIONS[ghostty]=0
+INSTALL_DECISIONS[amu]=0 INSTALL_DECISIONS[gh]=0
+INSTALL_DECISIONS[glow]=0 INSTALL_DECISIONS[fzf]=0
+INSTALL_DECISIONS[fd]=0 INSTALL_DECISIONS[wtp]=0
+INSTALL_DECISIONS[starship]=0 INSTALL_DECISIONS[bash_completion]=0
+INSTALL_DECISIONS[claude_code]=0
 
-declare -A ALREADY_INSTALLED=(
-    [pkg_manager]=0
-    [neovim]=0
-    [zellij]=0
-    [ghostty]=0
-    [amu]=0
-    [gh]=0
-    [glow]=0
-    [fzf]=0
-    [fd]=0
-    [wtp]=0
-    [starship]=0
-    [bash_completion]=0
-    [claude_code]=0
-)
+typeset -A ALREADY_INSTALLED
+ALREADY_INSTALLED[pkg_manager]=0 ALREADY_INSTALLED[neovim]=0
+ALREADY_INSTALLED[zellij]=0 ALREADY_INSTALLED[ghostty]=0
+ALREADY_INSTALLED[amu]=0 ALREADY_INSTALLED[gh]=0
+ALREADY_INSTALLED[glow]=0 ALREADY_INSTALLED[fzf]=0
+ALREADY_INSTALLED[fd]=0 ALREADY_INSTALLED[wtp]=0
+ALREADY_INSTALLED[starship]=0 ALREADY_INSTALLED[bash_completion]=0
+ALREADY_INSTALLED[claude_code]=0
 
 APPLY_DOTFILES=0
 
 # Update mode variables
-declare -A UPDATE_DECISIONS=(
-    [neovim]=0
-    [zellij]=0
-    [ghostty]=0
-    [amu]=0
-    [gh]=0
-    [glow]=0
-    [fzf]=0
-    [fd]=0
-    [wtp]=0
-    [starship]=0
-    [bash_completion]=0
-    [claude_code]=0
-)
+typeset -A UPDATE_DECISIONS
+UPDATE_DECISIONS[neovim]=0 UPDATE_DECISIONS[zellij]=0
+UPDATE_DECISIONS[ghostty]=0 UPDATE_DECISIONS[amu]=0
+UPDATE_DECISIONS[gh]=0 UPDATE_DECISIONS[glow]=0
+UPDATE_DECISIONS[fzf]=0 UPDATE_DECISIONS[fd]=0
+UPDATE_DECISIONS[wtp]=0 UPDATE_DECISIONS[starship]=0
+UPDATE_DECISIONS[bash_completion]=0 UPDATE_DECISIONS[claude_code]=0
 UPDATE_MODE=0
 UPDATE_TARGETS=()
 UPDATE_DOTFILES=0
@@ -183,8 +193,8 @@ ask_yes_no() {
     printf "\n ${prompt} ${DIM}[Y/n]${NC}: "
     read -r response
 
-    case "${response,,}" in
-        n|no) return 1 ;;
+    case "$response" in
+        [nN]|[nN][oO]) return 1 ;;
         *) return 0 ;;
     esac
 }
@@ -1243,7 +1253,7 @@ apply_dotfiles() {
     print_header "dotfilesを適用中..."
 
     local dotfiles_dir
-    dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
     local home_source="${dotfiles_dir}/HOME"
 
     if [[ ! -d "$home_source" ]]; then
@@ -1408,7 +1418,7 @@ update_dotfiles() {
     print_header "dotfilesを再適用中..."
 
     local dotfiles_dir
-    dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
     local home_source="${dotfiles_dir}/HOME"
 
     if [[ ! -d "$home_source" ]]; then
@@ -1447,7 +1457,8 @@ run_update_mode() {
             fi
 
             # Validate tool name
-            if [[ -z "${ALREADY_INSTALLED[$target]+x}" ]]; then
+            local valid_tools=" pkg_manager neovim zellij ghostty amu gh glow fzf fd wtp starship bash_completion claude_code "
+            if [[ "$valid_tools" != *" $target "* ]]; then
                 print_error "不明なツール: $(tool_display_name "$target")"
                 print_info "使い方: ./install.sh --update [ツール名...]"
                 print_info "ヘルプ: ./install.sh --help"

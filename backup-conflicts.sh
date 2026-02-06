@@ -14,7 +14,7 @@ set -euo pipefail
 # Configuration
 # ------------------------------------------------------------------------------
 
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 SOURCE_DIR="${DOTFILES_DIR}/HOME"
 TARGET_DIR="$HOME"
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
