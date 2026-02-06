@@ -84,6 +84,7 @@ declare -A UNINSTALL_DECISIONS=(
     [fzf]=0
     [fd]=0
     [wtp]=0
+    [starship]=0
     [bash_completion]=0
     [claude_code]=0
 )
@@ -98,6 +99,7 @@ declare -A IS_INSTALLED=(
     [fzf]=0
     [fd]=0
     [wtp]=0
+    [starship]=0
     [bash_completion]=0
     [claude_code]=0
 )
@@ -238,6 +240,11 @@ detect_installed() {
         IS_INSTALLED[wtp]=1
     fi
 
+    # starship
+    if command_exists starship; then
+        IS_INSTALLED[starship]=1
+    fi
+
     # bash-completion
     case "$PKG_MANAGER" in
         brew)
@@ -320,7 +327,7 @@ show_summary() {
         remove_list+=("dotfilesリンク")
     fi
 
-    for pkg in neovim zellij ghostty amu gh glow fzf fd bash_completion claude_code; do
+    for pkg in neovim zellij ghostty amu gh glow fzf fd wtp starship bash_completion claude_code; do
         if [[ ${UNINSTALL_DECISIONS[$pkg]} -eq 1 ]]; then
             local display_name
             case "$pkg" in
@@ -563,6 +570,7 @@ main() {
     prompt_uninstall_tool "fzf" "fzf" "コマンドラインファジーファインダー"
     prompt_uninstall_tool "fd" "fd" "高速なfind代替コマンド"
     prompt_uninstall_tool "wtp" "wtp" "Git worktree 管理ツール"
+    prompt_uninstall_tool "starship" "Starship" "クロスシェルプロンプト"
     prompt_uninstall_tool "bash_completion" "bash-completion" "bashのタブ補完強化"
     prompt_uninstall_tool "claude_code" "Claude Code" "Anthropic AI CLI"
 
@@ -594,6 +602,7 @@ main() {
     uninstall_package "fzf" "fzf" "fzf" "fzf" "fzf" "junegunn.fzf" "fzf"
     uninstall_package "fd" "fd" "fd-find" "fd-find" "fd" "sharkdp.fd" "fd"
     uninstall_wtp
+    uninstall_package "starship" "starship" "" "" "starship" "Starship.Starship" "starship"
     uninstall_package "bash_completion" "bash-completion@2" "bash-completion" "bash-completion" "bash-completion" "" ""
 
     uninstall_claude_code

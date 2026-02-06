@@ -102,12 +102,6 @@
     pushmef = !sh -c 'git push --force-with-lease ${1:-origin} $2 $3 $4 $5 $6 $7 $8 $9 `git rev-parse --abbrev-ref HEAD`' -
 
     ; ----------------------------------------------------------
-    ; Worktree (wtp)
-    ; ----------------------------------------------------------
-    wt = !wtp              ; wtp wrapper (git wt list, git wt add, etc.)
-    cd = !wtp cd           ; worktree 間を移動 (git cd <branch>)
-
-    ; ----------------------------------------------------------
     ; ⚠️  Destructive (破壊的操作 - 注意して使用)
     ; ----------------------------------------------------------
     fback   = !sh -c 'git reset --soft HEAD~${1:-1}' -  ; コミット取り消し(変更は保持)

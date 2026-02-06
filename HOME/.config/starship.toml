@@ -1,0 +1,24 @@
+# ==============================================================================
+# Starship Prompt Configuration (tokyonight night, filled segments)
+# ==============================================================================
+
+format = """$directory$git_branch$git_status\n$character"""
+add_newline = false
+
+[character]
+success_symbol = "[❯](bold #7aa2f7)"
+error_symbol = "[❯](bold #f7768e)"
+
+[directory]
+style = "bold #1a1b26 bg:#7aa2f7"
+format = "[ $path ]($style)"
+truncation_length = 3
+fish_style_pwd_dir_length = 1
+
+[git_branch]
+style = "bold #1a1b26 bg:#e0af68"
+format = "[ $symbol$branch ]($style)"
+
+[git_status]
+style = "bold #1a1b26 bg:#9ece6a"
+format = "[ $all_status$ahead_behind ]($style)"

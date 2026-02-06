@@ -33,14 +33,10 @@ setopt PUSHD_IGNORE_DUPS
 setopt CORRECT
 
 # ------------------------------------------------------------------------------
-# Prompt
+# Prompt (Starship)
 # ------------------------------------------------------------------------------
 
-autoload -Uz vcs_info
-zstyle ':vcs_info:git:*' formats ' (%F{yellow}%b%f)'
-
-setopt PROMPT_SUBST
-PROMPT='%F{green}%n@%m%f:%F{blue}%~%f${vcs_info_msg_0_}%# '
+eval "$(starship init zsh)"
 
 # ------------------------------------------------------------------------------
 # Zellij Pane Title (zsh hook)
@@ -49,8 +45,6 @@ PROMPT='%F{green}%n@%m%f:%F{blue}%~%f${vcs_info_msg_0_}%# '
 # precmd: called before prompt (zsh-specific)
 # Functions _zellij_title_dir and _zellij_set_title are defined in .shell_common
 precmd() {
-    vcs_info
-
     if [[ -n "$ZELLIJ" ]]; then
         _zellij_set_title "$(_zellij_title_dir)"
     fi
@@ -85,4 +79,18 @@ bindkey '^N' history-search-forward
 
 if command -v fzf &>/dev/null; then
     eval "$(fzf --zsh)"
+fi
+
+# ------------------------------------------------------------------------------
+# Go
+# ------------------------------------------------------------------------------
+
+export PATH="$HOME/go/bin:$PATH"
+
+# ------------------------------------------------------------------------------
+# wtp (Git Worktree Manager)
+# ------------------------------------------------------------------------------
+
+if command -v wtp &>/dev/null; then
+    eval "$(wtp shell-init zsh)"
 fi

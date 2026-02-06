@@ -50,10 +50,10 @@ alias vi='nvim'
 alias vim='nvim'
 
 # Git
-alias g='git'
 alias gs='git status'
 alias gd='git diff'
 alias gl='git log --oneline -10'
+alias gw='wtp'
 
 # Claude Code
 alias fclaude='claude --dangerously-skip-permissions'
