@@ -110,3 +110,9 @@
     fclean  = "!f() { git reset --hard HEAD; git clean --force -d; }; f"
     faclean = "!f() { git reset --hard HEAD; git clean --force -d; git ls-files --others | xargs rm -rf; }; f"
 
+# ============================================================
+# ghq
+# ============================================================
+[ghq]
+    root = ~/ghq
+

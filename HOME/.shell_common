@@ -63,7 +63,6 @@ alias vim='nvim'
 
 # Git
 alias gs='git status'
-alias gd='git diff'
 alias gl='git log --oneline -10'
 alias gw='wtp'
 
@@ -109,6 +108,12 @@ fbr() {
 # fzf git log
 flog() {
     git log --oneline --color=always | fzf --ansi --preview 'git show --color=always {1}' | awk '{print $1}'
+}
+
+# ghq + fzf: リポジトリ移動
+gd() {
+    local dir
+    dir=$(ghq list -p | fzf +m) && cd "$dir"
 }
 
 # ------------------------------------------------------------------------------
