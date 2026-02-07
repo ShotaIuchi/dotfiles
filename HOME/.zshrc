@@ -30,7 +30,7 @@ setopt AUTO_PUSHD
 setopt PUSHD_IGNORE_DUPS
 
 # Correction
-setopt CORRECT
+unsetopt CORRECT
 
 # ------------------------------------------------------------------------------
 # Prompt (Starship)
