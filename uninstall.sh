@@ -109,7 +109,7 @@ UNINSTALL_DECISIONS[ghostty]=0 UNINSTALL_DECISIONS[font]=0
 UNINSTALL_DECISIONS[amu]=0
 UNINSTALL_DECISIONS[gh]=0 UNINSTALL_DECISIONS[glow]=0
 UNINSTALL_DECISIONS[fzf]=0 UNINSTALL_DECISIONS[fd]=0
-UNINSTALL_DECISIONS[bat]=0 UNINSTALL_DECISIONS[wtp]=0
+UNINSTALL_DECISIONS[bat]=0 UNINSTALL_DECISIONS[zoxide]=0 UNINSTALL_DECISIONS[wtp]=0
 UNINSTALL_DECISIONS[starship]=0
 UNINSTALL_DECISIONS[bash_completion]=0 UNINSTALL_DECISIONS[claude_code]=0
 
@@ -119,7 +119,7 @@ IS_INSTALLED[ghostty]=0 IS_INSTALLED[font]=0
 IS_INSTALLED[amu]=0
 IS_INSTALLED[gh]=0 IS_INSTALLED[glow]=0
 IS_INSTALLED[fzf]=0 IS_INSTALLED[fd]=0
-IS_INSTALLED[bat]=0 IS_INSTALLED[wtp]=0
+IS_INSTALLED[bat]=0 IS_INSTALLED[zoxide]=0 IS_INSTALLED[wtp]=0
 IS_INSTALLED[starship]=0
 IS_INSTALLED[bash_completion]=0 IS_INSTALLED[claude_code]=0
 
@@ -273,6 +273,11 @@ detect_installed() {
         IS_INSTALLED[bat]=1
     fi
 
+    # zoxide
+    if command_exists zoxide; then
+        IS_INSTALLED[zoxide]=1
+    fi
+
     # wtp
     if command_exists wtp; then
         IS_INSTALLED[wtp]=1
@@ -365,7 +370,7 @@ show_summary() {
         remove_list+=("dotfilesリンク")
     fi
 
-    for pkg in neovim tmux zellij ghostty font amu gh glow fzf fd bat wtp starship bash_completion claude_code; do
+    for pkg in neovim tmux zellij ghostty font amu gh glow fzf fd bat zoxide wtp starship bash_completion claude_code; do
         if [[ ${UNINSTALL_DECISIONS[$pkg]} -eq 1 ]]; then
             local display_name
             case "$pkg" in
@@ -614,6 +619,7 @@ main() {
     prompt_uninstall_tool "fzf" "fzf" "コマンドラインファジーファインダー"
     prompt_uninstall_tool "fd" "fd" "高速なfind代替コマンド"
     prompt_uninstall_tool "bat" "bat" "シンタックスハイライト付きcat代替コマンド"
+    prompt_uninstall_tool "zoxide" "zoxide" "スマートなcd代替コマンド"
     prompt_uninstall_tool "wtp" "wtp" "Git worktree 管理ツール"
     prompt_uninstall_tool "starship" "Starship" "クロスシェルプロンプト"
     prompt_uninstall_tool "bash_completion" "bash-completion" "bashのタブ補完強化"
@@ -649,6 +655,7 @@ main() {
     uninstall_package "fzf" "fzf" "fzf" "fzf" "fzf" "junegunn.fzf" "fzf"
     uninstall_package "fd" "fd" "fd-find" "fd-find" "fd" "sharkdp.fd" "fd"
     uninstall_package "bat" "bat" "bat" "bat" "bat" "sharkdp.bat" "bat"
+    uninstall_package "zoxide" "zoxide" "zoxide" "zoxide" "zoxide" "ajeetdsouza.zoxide" "zoxide"
     uninstall_wtp
     uninstall_package "starship" "starship" "" "" "starship" "Starship.Starship" "starship"
     uninstall_package "bash_completion" "bash-completion@2" "bash-completion" "bash-completion" "bash-completion" "" ""

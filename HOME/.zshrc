@@ -94,3 +94,11 @@ export PATH="$HOME/go/bin:$PATH"
 if command -v wtp &>/dev/null; then
     eval "$(wtp shell-init zsh)"
 fi
+
+# ------------------------------------------------------------------------------
+# zoxide (smart cd)
+# ------------------------------------------------------------------------------
+
+if command -v zoxide &>/dev/null; then
+    eval "$(zoxide init zsh --cmd cd)"
+fi
