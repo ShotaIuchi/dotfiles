@@ -66,7 +66,7 @@ alias gs='git status'
 alias gl='git log --oneline -10'
 alias gw='wtp'
 # wtp + fzf: worktree移動
-gdd() {
+gd() {
     local dir
     dir=$(wtp list -q | fzf +m) && cd "$dir"
 }
@@ -117,7 +117,7 @@ flog() {
 }
 
 # ghq + fzf: リポジトリ移動
-gd() {
+gdd() {
     local dir
     dir=$(ghq list -p | fzf +m) && cd "$dir"
 }
