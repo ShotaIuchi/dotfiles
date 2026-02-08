@@ -65,6 +65,11 @@ alias vim='nvim'
 alias gs='git status'
 alias gl='git log --oneline -10'
 alias gw='wtp'
+# wtp + fzf: worktree移動
+gdd() {
+    local dir
+    dir=$(wtp list -q | fzf +m) && cd "$dir"
+}
 
 # Claude Code
 alias fclaude='claude --dangerously-skip-permissions'
