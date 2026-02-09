@@ -81,6 +81,16 @@ git() {
                 done | fzf +m | awk '{print $1}'
             ) && [[ -n "$dir" ]] && cd "$dir"
             ;;
+        cb)
+            local branch
+            branch=$(
+                command git branch --all --sort=-committerdate |
+                grep -v HEAD |
+                sed 's/^[* ]*//' |
+                awk '{ key=$0; sub("^remotes/[^/]+/", "", key) } !seen[key]++' |
+                fzf +m
+            ) && [[ -n "$branch" ]] && command git checkout "${branch#remotes/*/}"
+            ;;
         repo)
             local dir
             dir=$(ghq list -p | fzf +m) && [[ -n "$dir" ]] && cd "$dir"
