@@ -71,7 +71,7 @@ git() {
             shift
             wtp "$@"
             ;;
-        cd)
+        cw)
             local dir
             dir=$(
                 command git worktree list | while IFS= read -r line; do
