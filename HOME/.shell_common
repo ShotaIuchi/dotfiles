@@ -79,11 +79,11 @@ git() {
                     subject=$(command git log -1 --format='%s' "$hash" 2>/dev/null)
                     printf '%s  %s\n' "$line" "$subject"
                 done | fzf +m | awk '{print $1}'
-            ) && cd "$dir"
+            ) && [[ -n "$dir" ]] && cd "$dir"
             ;;
         repo)
             local dir
-            dir=$(ghq list -p | fzf +m) && cd "$dir"
+            dir=$(ghq list -p | fzf +m) && [[ -n "$dir" ]] && cd "$dir"
             ;;
         *)
             command git "$@"
