@@ -17,7 +17,7 @@
 # Core Settings
 # ============================================================
 [core]
-    pager = less -mS
+    pager = delta
     quotepath = false       ; 日本語ファイル名の文字化け防止
     filemode = false        ; パーミッション変更を無視
     autocrlf = false        ; 改行コード自動変換しない
@@ -116,3 +116,16 @@
 [ghq]
     root = ~/ghq
 
+# ============================================================
+# Delta (diff viewer)
+# ============================================================
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    navigate = true
+    side-by-side = true
+    line-numbers = true
+[merge]
+    conflictstyle = diff3
+[diff]
+    colorMoved = default

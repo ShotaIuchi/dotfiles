@@ -115,7 +115,7 @@ INSTALL_DECISIONS[tmux]=0 INSTALL_DECISIONS[zellij]=0 INSTALL_DECISIONS[ghostty]
 INSTALL_DECISIONS[font]=0
 INSTALL_DECISIONS[amu]=0 INSTALL_DECISIONS[gh]=0
 INSTALL_DECISIONS[glow]=0 INSTALL_DECISIONS[fzf]=0
-INSTALL_DECISIONS[fd]=0 INSTALL_DECISIONS[bat]=0 INSTALL_DECISIONS[zoxide]=0 INSTALL_DECISIONS[ghq]=0 INSTALL_DECISIONS[wtp]=0
+INSTALL_DECISIONS[fd]=0 INSTALL_DECISIONS[bat]=0 INSTALL_DECISIONS[delta]=0 INSTALL_DECISIONS[zoxide]=0 INSTALL_DECISIONS[ghq]=0 INSTALL_DECISIONS[wtp]=0
 INSTALL_DECISIONS[starship]=0 INSTALL_DECISIONS[bash_completion]=0
 INSTALL_DECISIONS[claude_code]=0
 
@@ -125,7 +125,7 @@ ALREADY_INSTALLED[tmux]=0 ALREADY_INSTALLED[zellij]=0 ALREADY_INSTALLED[ghostty]
 ALREADY_INSTALLED[font]=0
 ALREADY_INSTALLED[amu]=0 ALREADY_INSTALLED[gh]=0
 ALREADY_INSTALLED[glow]=0 ALREADY_INSTALLED[fzf]=0
-ALREADY_INSTALLED[fd]=0 ALREADY_INSTALLED[bat]=0 ALREADY_INSTALLED[zoxide]=0 ALREADY_INSTALLED[ghq]=0 ALREADY_INSTALLED[wtp]=0
+ALREADY_INSTALLED[fd]=0 ALREADY_INSTALLED[bat]=0 ALREADY_INSTALLED[delta]=0 ALREADY_INSTALLED[zoxide]=0 ALREADY_INSTALLED[ghq]=0 ALREADY_INSTALLED[wtp]=0
 ALREADY_INSTALLED[starship]=0 ALREADY_INSTALLED[bash_completion]=0
 ALREADY_INSTALLED[claude_code]=0
 
@@ -138,7 +138,7 @@ UPDATE_DECISIONS[ghostty]=0 UPDATE_DECISIONS[font]=0
 UPDATE_DECISIONS[amu]=0
 UPDATE_DECISIONS[gh]=0 UPDATE_DECISIONS[glow]=0
 UPDATE_DECISIONS[fzf]=0 UPDATE_DECISIONS[fd]=0
-UPDATE_DECISIONS[bat]=0 UPDATE_DECISIONS[zoxide]=0 UPDATE_DECISIONS[ghq]=0 UPDATE_DECISIONS[wtp]=0
+UPDATE_DECISIONS[bat]=0 UPDATE_DECISIONS[delta]=0 UPDATE_DECISIONS[zoxide]=0 UPDATE_DECISIONS[ghq]=0 UPDATE_DECISIONS[wtp]=0
 UPDATE_DECISIONS[starship]=0
 UPDATE_DECISIONS[bash_completion]=0 UPDATE_DECISIONS[claude_code]=0
 UPDATE_MODE=0
@@ -228,7 +228,7 @@ show_help() {
     echo
     printf "${BOLD}更新可能なツール:${NC}\n"
     echo "  neovim, tmux, zellij, ghostty, font, amu, gh, glow, fzf, fd, bat,"
-    echo "  zoxide, ghq, wtp, starship, bash-completion, claude-code, dotfiles"
+    echo "  delta, zoxide, ghq, wtp, starship, bash-completion, claude-code, dotfiles"
     echo
     exit 0
 }
@@ -301,7 +301,7 @@ show_updatable_tools() {
     echo
 
     local count=0
-    local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat zoxide ghq wtp starship bash_completion claude_code)
+    local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat delta zoxide ghq wtp starship bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -342,7 +342,7 @@ prompt_update_all_or_select() {
     case "$choice" in
         1)
             # Select all installed tools
-            local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat zoxide ghq wtp starship bash_completion claude_code)
+            local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat delta zoxide ghq wtp starship bash_completion claude_code)
             for tool in "${tools[@]}"; do
                 if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
                     UPDATE_DECISIONS[$tool]=1
@@ -363,7 +363,7 @@ prompt_update_all_or_select() {
 }
 
 prompt_individual_updates() {
-    local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat zoxide ghq wtp starship bash_completion claude_code)
+    local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat delta zoxide ghq wtp starship bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -389,7 +389,7 @@ show_update_summary() {
 
     local update_list=()
     local skip_list=()
-    local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat zoxide ghq wtp starship bash_completion claude_code)
+    local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat delta zoxide ghq wtp starship bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -519,6 +519,11 @@ detect_installed() {
     # bat (batcat on Debian/Ubuntu)
     if command_exists bat || command_exists batcat; then
         ALREADY_INSTALLED[bat]=1
+    fi
+
+    # delta (git-delta)
+    if command_exists delta; then
+        ALREADY_INSTALLED[delta]=1
     fi
 
     # zoxide
@@ -958,6 +963,33 @@ prompt_bat() {
     fi
 }
 
+prompt_delta() {
+    if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
+        return 0
+    fi
+
+    print_header "delta"
+    print_info "シンタックスハイライト付きgit diffビューア"
+    echo
+
+    if [[ ${ALREADY_INSTALLED[delta]} -eq 1 ]]; then
+        print_success "インストール済み"
+        INSTALL_DECISIONS[delta]=1
+        return 0
+    fi
+
+    print_note "機能:"
+    print_info "   - git diffを見やすく表示（シンタックスハイライト、行番号）"
+    print_info "   - side-by-side表示、行内差分のハイライト"
+    echo
+    print_note "dotfilesとの関連:"
+    print_info "   - .gitconfig で core.pager = delta に設定済み"
+
+    if ask_yes_no "インストールしますか？"; then
+        INSTALL_DECISIONS[delta]=1
+    fi
+}
+
 prompt_zoxide() {
     if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
         return 0
@@ -1177,7 +1209,7 @@ show_summary() {
     fi
 
     # Tools
-    for pkg in neovim tmux zellij ghostty font amu gh glow fzf fd bat zoxide ghq wtp starship bash_completion; do
+    for pkg in neovim tmux zellij ghostty font amu gh glow fzf fd bat delta zoxide ghq wtp starship bash_completion; do
         # Skip conditions
         [[ "$pkg" == "bash_completion" && "$SHELL" == */zsh ]] && continue
         [[ "$pkg" == "bash_completion" && "$OS_TYPE" == "windows" ]] && continue
@@ -1689,7 +1721,7 @@ run_update_mode() {
             fi
 
             # Validate tool name
-            local valid_tools=" pkg_manager neovim tmux zellij ghostty font amu gh glow fzf fd bat zoxide ghq wtp starship bash_completion claude_code "
+            local valid_tools=" pkg_manager neovim tmux zellij ghostty font amu gh glow fzf fd bat delta zoxide ghq wtp starship bash_completion claude_code "
             if [[ "$valid_tools" != *" $target "* ]]; then
                 print_error "不明なツール: $(tool_display_name "$target")"
                 print_info "使い方: ./install.sh --update [ツール名...]"
@@ -1735,6 +1767,7 @@ run_update_mode() {
     upgrade_package "fzf" "fzf" "fzf" "fzf" "fzf" "junegunn.fzf" "fzf"
     upgrade_package "fd" "fd" "fd-find" "fd-find" "fd" "sharkdp.fd" "fd"
     upgrade_package "bat" "bat" "bat" "bat" "bat" "sharkdp.bat" "bat"
+    upgrade_package "delta" "git-delta" "" "" "git-delta" "dandavison.delta" "delta"
     upgrade_package "zoxide" "zoxide" "zoxide" "zoxide" "zoxide" "ajeetdsouza.zoxide" "zoxide"
     upgrade_package "ghq" "ghq" "ghq" "ghq" "ghq" "" "ghq"
     update_wtp
@@ -1769,6 +1802,7 @@ run_install_mode() {
     prompt_fzf
     prompt_fd
     prompt_bat
+    prompt_delta
     prompt_zoxide
     prompt_ghq
     prompt_wtp
@@ -1804,6 +1838,7 @@ run_install_mode() {
     install_package "fzf" "fzf" "fzf" "fzf" "fzf" "junegunn.fzf" "fzf"
     install_package "fd" "fd" "fd-find" "fd-find" "fd" "sharkdp.fd" "fd"
     install_package "bat" "bat" "bat" "bat" "bat" "sharkdp.bat" "bat"
+    install_package "delta" "git-delta" "" "" "git-delta" "dandavison.delta" "delta"
     install_package "zoxide" "zoxide" "zoxide" "zoxide" "zoxide" "ajeetdsouza.zoxide" "zoxide"
     install_package "ghq" "ghq" "ghq" "ghq" "ghq" "" "ghq"
     install_wtp
