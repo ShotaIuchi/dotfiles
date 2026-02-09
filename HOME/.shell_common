@@ -64,11 +64,31 @@ alias vim='nvim'
 # Git
 alias gs='git status'
 alias gl='git log --oneline -10'
-alias gw='wtp'
-# wtp + fzf: worktree移動
-gd() {
-    local dir
-    dir=$(wtp list -q | fzf +m) && wtp cd "$dir"
+# git wrapper: サブコマンド拡張をシェル関数で処理
+git() {
+    case "$1" in
+        wt)
+            shift
+            wtp "$@"
+            ;;
+        cd)
+            local dir
+            dir=$(
+                command git worktree list | while IFS= read -r line; do
+                    hash=$(echo "$line" | awk '{print $2}')
+                    subject=$(command git log -1 --format='%s' "$hash" 2>/dev/null)
+                    printf '%s  %s\n' "$line" "$subject"
+                done | fzf +m | awk '{print $1}'
+            ) && cd "$dir"
+            ;;
+        repo)
+            local dir
+            dir=$(ghq list -p | fzf +m) && cd "$dir"
+            ;;
+        *)
+            command git "$@"
+            ;;
+    esac
 }
 
 # Claude Code
@@ -114,12 +134,6 @@ fbr() {
 # fzf git log
 flog() {
     git log --oneline --color=always | fzf --ansi --preview 'git show --color=always {1}' | awk '{print $1}'
-}
-
-# ghq + fzf: リポジトリ移動
-gdd() {
-    local dir
-    dir=$(ghq list -p | fzf +m) && cd "$dir"
 }
 
 # ------------------------------------------------------------------------------
