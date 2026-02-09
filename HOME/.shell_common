@@ -68,7 +68,7 @@ alias gw='wtp'
 # wtp + fzf: worktree移動
 gd() {
     local dir
-    dir=$(wtp list -q | fzf +m) && cd "$dir"
+    dir=$(wtp list -q | fzf +m) && wtp cd "$dir"
 }
 
 # Claude Code
