@@ -72,14 +72,40 @@ git() {
             wtp "$@"
             ;;
         cw)
-            local dir
-            dir=$(
-                command git worktree list | while IFS= read -r line; do
-                    hash=$(echo "$line" | awk '{print $2}')
-                    subject=$(command git log -1 --format='%s' "$hash" 2>/dev/null)
-                    printf '%s  %s\n' "$line" "$subject"
-                done | fzf +m | awk '{print $1}'
-            ) && [[ -n "$dir" ]] && cd "$dir"
+            local selection tab=$'\t'
+            selection=$(
+                {
+                    command git worktree list | while IFS= read -r line; do
+                        hash=$(echo "$line" | awk '{print $2}')
+                        subject=$(command git log -1 --format='%s' "$hash" 2>/dev/null)
+                        printf 'W\t%s  %s\n' "$line" "$subject"
+                    done
+                    command git branch --sort=-committerdate | sed 's/^[* ]*//' | while IFS= read -r b; do
+                        printf 'L\t%s\n' "$b"
+                    done
+                    command git branch -r --sort=-committerdate | grep -v HEAD | sed 's/^ *//' | while IFS= read -r b; do
+                        printf 'R\t%s\n' "$b"
+                    done
+                } | fzf +m --delimiter '\t' --with-nth 2.. --header 'Select worktree / branch'
+            ) || return
+            [[ -z "$selection" ]] && return
+            local type="${selection%%$tab*}"
+            local value="${selection#*$tab}"
+            case "$type" in
+                W)
+                    local dir
+                    dir=$(echo "$value" | awk '{print $1}')
+                    [[ -n "$dir" ]] && cd "$dir"
+                    ;;
+                L)
+                    wtp add "$value" && wtp cd "$value"
+                    ;;
+                R)
+                    local branch
+                    branch=$(echo "$value" | sed 's#^[^/]*/##')
+                    wtp add "$branch" && wtp cd "$branch"
+                    ;;
+            esac
             ;;
         cb)
             local branch
