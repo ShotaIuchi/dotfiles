@@ -130,6 +130,15 @@ git() {
 # Claude Code
 alias fclaude='claude --dangerously-skip-permissions'
 
+# cat (bat with syntax highlight)
+cat() {
+    if [[ "$1" == -* ]]; then
+        bat "$@"
+    else
+        bat -pp "$@"
+    fi
+}
+
 # Markdown viewer
 alias md='glow -p'
 
