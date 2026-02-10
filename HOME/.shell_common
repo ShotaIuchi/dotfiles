@@ -72,6 +72,24 @@ git() {
             wtp "$@"
             ;;
         cw)
+            shift
+            if [[ "$1" == "-b" ]]; then
+                [[ -z "$2" ]] && { echo "usage: git cw -b <new-branch>" >&2; return 1; }
+                wtp add -b "$2" && wtp cd "$2"
+                return
+            fi
+            if [[ -n "$1" ]]; then
+                local target
+                target=$(command git worktree list | awk -v pat="$1" '$0 ~ pat {print $1; exit}')
+                if [[ -n "$target" ]]; then
+                    cd "$target"
+                elif command git rev-parse --verify "$1" &>/dev/null; then
+                    wtp add "$1" && wtp cd "$1"
+                else
+                    wtp add -b "$1" && wtp cd "$1"
+                fi
+                return
+            fi
             local selection tab=$'\t'
             selection=$(
                 {
