@@ -18,8 +18,8 @@ fi
 # ------------------------------------------------------------------------------
 
 # History
-HISTSIZE=10000
-HISTFILESIZE=20000
+HISTSIZE=100000
+HISTFILESIZE=100000
 HISTCONTROL=ignoreboth:erasedups
 shopt -s histappend
 
@@ -72,4 +72,12 @@ fi
 
 if command -v zoxide &>/dev/null; then
     eval "$(zoxide init bash --cmd cd)"
+fi
+
+# ------------------------------------------------------------------------------
+# direnv (per-directory environment variables)
+# ------------------------------------------------------------------------------
+
+if command -v direnv &>/dev/null; then
+    eval "$(direnv hook bash)"
 fi

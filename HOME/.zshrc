@@ -15,15 +15,17 @@ fi
 # ------------------------------------------------------------------------------
 
 # History
-HISTSIZE=10000
-SAVEHIST=20000
+HISTSIZE=100000
+SAVEHIST=100000
 HISTFILE=~/.zsh_history
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt HIST_REDUCE_BLANKS
+setopt HIST_FIND_NO_DUPS
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt INC_APPEND_HISTORY
 setopt SHARE_HISTORY
-setopt APPEND_HISTORY
 
 # Directory
 setopt AUTO_CD
@@ -105,4 +107,34 @@ fi
 
 if command -v zoxide &>/dev/null; then
     eval "$(zoxide init zsh --cmd cd)"
+fi
+
+# ------------------------------------------------------------------------------
+# direnv (per-directory environment variables)
+# ------------------------------------------------------------------------------
+
+if command -v direnv &>/dev/null; then
+    eval "$(direnv hook zsh)"
+fi
+
+# ------------------------------------------------------------------------------
+# Plugins (load last to ensure correct behavior)
+# ------------------------------------------------------------------------------
+
+# zsh-autosuggestions
+if [[ -f "$(brew --prefix 2>/dev/null)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+    source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+elif [[ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+    source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+elif [[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+    source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+# zsh-syntax-highlighting (must be loaded last)
+if [[ -f "$(brew --prefix 2>/dev/null)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+    source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+elif [[ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+    source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+elif [[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+    source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi

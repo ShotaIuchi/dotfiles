@@ -111,6 +111,21 @@
     faclean = "!f() { git reset --hard HEAD; git clean --force -d; git ls-files --others | xargs rm -rf; }; f"
 
 # ============================================================
+# Pull / Fetch / Rebase
+# ============================================================
+[pull]
+    rebase = true             ; pull時にmergeではなくrebase
+
+[fetch]
+    prune = true              ; fetch時に削除済みリモートブランチを自動削除
+
+[rerere]
+    enabled = true            ; コンフリクト解消を記憶して再利用
+
+[rebase]
+    autoStash = true          ; rebase前に自動stash、完了後に自動pop
+
+# ============================================================
 # Log
 # ============================================================
 [log]

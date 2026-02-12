@@ -111,6 +111,8 @@ UNINSTALL_DECISIONS[gh]=0 UNINSTALL_DECISIONS[glow]=0
 UNINSTALL_DECISIONS[fzf]=0 UNINSTALL_DECISIONS[fd]=0
 UNINSTALL_DECISIONS[bat]=0 UNINSTALL_DECISIONS[eza]=0 UNINSTALL_DECISIONS[delta]=0 UNINSTALL_DECISIONS[zoxide]=0 UNINSTALL_DECISIONS[ghq]=0 UNINSTALL_DECISIONS[wtp]=0
 UNINSTALL_DECISIONS[starship]=0
+UNINSTALL_DECISIONS[zsh_autosuggestions]=0 UNINSTALL_DECISIONS[zsh_syntax_highlighting]=0
+UNINSTALL_DECISIONS[direnv]=0
 UNINSTALL_DECISIONS[bash_completion]=0 UNINSTALL_DECISIONS[claude_code]=0
 
 typeset -A IS_INSTALLED
@@ -121,6 +123,8 @@ IS_INSTALLED[gh]=0 IS_INSTALLED[glow]=0
 IS_INSTALLED[fzf]=0 IS_INSTALLED[fd]=0
 IS_INSTALLED[bat]=0 IS_INSTALLED[eza]=0 IS_INSTALLED[delta]=0 IS_INSTALLED[zoxide]=0 IS_INSTALLED[ghq]=0 IS_INSTALLED[wtp]=0
 IS_INSTALLED[starship]=0
+IS_INSTALLED[zsh_autosuggestions]=0 IS_INSTALLED[zsh_syntax_highlighting]=0
+IS_INSTALLED[direnv]=0
 IS_INSTALLED[bash_completion]=0 IS_INSTALLED[claude_code]=0
 
 REMOVE_DOTFILES=0
@@ -303,6 +307,49 @@ detect_installed() {
         IS_INSTALLED[starship]=1
     fi
 
+    # zsh-autosuggestions
+    case "$PKG_MANAGER" in
+        brew)
+            if command_exists brew && brew list zsh-autosuggestions &>/dev/null; then
+                IS_INSTALLED[zsh_autosuggestions]=1
+            fi
+            ;;
+        apt)
+            if dpkg -l zsh-autosuggestions &>/dev/null 2>&1; then
+                IS_INSTALLED[zsh_autosuggestions]=1
+            fi
+            ;;
+        pacman)
+            if pacman -Qi zsh-autosuggestions &>/dev/null 2>&1; then
+                IS_INSTALLED[zsh_autosuggestions]=1
+            fi
+            ;;
+    esac
+
+    # zsh-syntax-highlighting
+    case "$PKG_MANAGER" in
+        brew)
+            if command_exists brew && brew list zsh-syntax-highlighting &>/dev/null; then
+                IS_INSTALLED[zsh_syntax_highlighting]=1
+            fi
+            ;;
+        apt)
+            if dpkg -l zsh-syntax-highlighting &>/dev/null 2>&1; then
+                IS_INSTALLED[zsh_syntax_highlighting]=1
+            fi
+            ;;
+        pacman)
+            if pacman -Qi zsh-syntax-highlighting &>/dev/null 2>&1; then
+                IS_INSTALLED[zsh_syntax_highlighting]=1
+            fi
+            ;;
+    esac
+
+    # direnv
+    if command_exists direnv; then
+        IS_INSTALLED[direnv]=1
+    fi
+
     # bash-completion
     case "$PKG_MANAGER" in
         brew)
@@ -385,13 +432,15 @@ show_summary() {
         remove_list+=("dotfilesリンク")
     fi
 
-    for pkg in neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship bash_completion claude_code; do
+    for pkg in neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code; do
         if [[ ${UNINSTALL_DECISIONS[$pkg]} -eq 1 ]]; then
             local display_name
             case "$pkg" in
                 bash_completion) display_name="bash-completion" ;;
                 claude_code) display_name="Claude Code" ;;
                 font) display_name="UDEV Gothic NFLG" ;;
+                zsh_autosuggestions) display_name="zsh-autosuggestions" ;;
+                zsh_syntax_highlighting) display_name="zsh-syntax-highlighting" ;;
                 *) display_name="$pkg" ;;
             esac
             remove_list+=("$display_name")
@@ -640,6 +689,9 @@ main() {
     prompt_uninstall_tool "ghq" "ghq" "Gitリポジトリ管理ツール"
     prompt_uninstall_tool "wtp" "wtp" "Git worktree 管理ツール"
     prompt_uninstall_tool "starship" "Starship" "クロスシェルプロンプト"
+    prompt_uninstall_tool "zsh_autosuggestions" "zsh-autosuggestions" "履歴ベースのコマンド補完候補表示"
+    prompt_uninstall_tool "zsh_syntax_highlighting" "zsh-syntax-highlighting" "コマンドラインのリアルタイム構文ハイライト"
+    prompt_uninstall_tool "direnv" "direnv" "ディレクトリごとの環境変数自動切り替え"
     prompt_uninstall_tool "bash_completion" "bash-completion" "bashのタブ補完強化"
     prompt_uninstall_tool "claude_code" "Claude Code" "Anthropic AI CLI"
 
@@ -679,6 +731,9 @@ main() {
     uninstall_package "ghq" "ghq" "ghq" "ghq" "ghq" "" "ghq"
     uninstall_wtp
     uninstall_package "starship" "starship" "" "" "starship" "Starship.Starship" "starship"
+    uninstall_package "zsh_autosuggestions" "zsh-autosuggestions" "zsh-autosuggestions" "" "zsh-autosuggestions" "" ""
+    uninstall_package "zsh_syntax_highlighting" "zsh-syntax-highlighting" "zsh-syntax-highlighting" "" "zsh-syntax-highlighting" "" ""
+    uninstall_package "direnv" "direnv" "direnv" "direnv" "direnv" "direnv.direnv" "direnv"
     uninstall_package "bash_completion" "bash-completion@2" "bash-completion" "bash-completion" "bash-completion" "" ""
 
     uninstall_claude_code

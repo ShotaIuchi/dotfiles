@@ -117,6 +117,8 @@ INSTALL_DECISIONS[amu]=0 INSTALL_DECISIONS[gh]=0
 INSTALL_DECISIONS[glow]=0 INSTALL_DECISIONS[fzf]=0
 INSTALL_DECISIONS[fd]=0 INSTALL_DECISIONS[bat]=0 INSTALL_DECISIONS[eza]=0 INSTALL_DECISIONS[delta]=0 INSTALL_DECISIONS[zoxide]=0 INSTALL_DECISIONS[ghq]=0 INSTALL_DECISIONS[wtp]=0
 INSTALL_DECISIONS[starship]=0 INSTALL_DECISIONS[bash_completion]=0
+INSTALL_DECISIONS[zsh_autosuggestions]=0 INSTALL_DECISIONS[zsh_syntax_highlighting]=0
+INSTALL_DECISIONS[direnv]=0
 INSTALL_DECISIONS[claude_code]=0
 
 typeset -A ALREADY_INSTALLED
@@ -127,6 +129,8 @@ ALREADY_INSTALLED[amu]=0 ALREADY_INSTALLED[gh]=0
 ALREADY_INSTALLED[glow]=0 ALREADY_INSTALLED[fzf]=0
 ALREADY_INSTALLED[fd]=0 ALREADY_INSTALLED[bat]=0 ALREADY_INSTALLED[eza]=0 ALREADY_INSTALLED[delta]=0 ALREADY_INSTALLED[zoxide]=0 ALREADY_INSTALLED[ghq]=0 ALREADY_INSTALLED[wtp]=0
 ALREADY_INSTALLED[starship]=0 ALREADY_INSTALLED[bash_completion]=0
+ALREADY_INSTALLED[zsh_autosuggestions]=0 ALREADY_INSTALLED[zsh_syntax_highlighting]=0
+ALREADY_INSTALLED[direnv]=0
 ALREADY_INSTALLED[claude_code]=0
 
 APPLY_DOTFILES=0
@@ -140,6 +144,8 @@ UPDATE_DECISIONS[gh]=0 UPDATE_DECISIONS[glow]=0
 UPDATE_DECISIONS[fzf]=0 UPDATE_DECISIONS[fd]=0
 UPDATE_DECISIONS[bat]=0 UPDATE_DECISIONS[eza]=0 UPDATE_DECISIONS[delta]=0 UPDATE_DECISIONS[zoxide]=0 UPDATE_DECISIONS[ghq]=0 UPDATE_DECISIONS[wtp]=0
 UPDATE_DECISIONS[starship]=0
+UPDATE_DECISIONS[zsh_autosuggestions]=0 UPDATE_DECISIONS[zsh_syntax_highlighting]=0
+UPDATE_DECISIONS[direnv]=0
 UPDATE_DECISIONS[bash_completion]=0 UPDATE_DECISIONS[claude_code]=0
 UPDATE_MODE=0
 UPDATE_TARGETS=()
@@ -213,6 +219,8 @@ tool_display_name() {
         bash_completion) echo "bash-completion" ;;
         claude_code) echo "Claude Code" ;;
         font) echo "UDEV Gothic NFLG" ;;
+        zsh_autosuggestions) echo "zsh-autosuggestions" ;;
+        zsh_syntax_highlighting) echo "zsh-syntax-highlighting" ;;
         *) echo "$1" ;;
     esac
 }
@@ -228,7 +236,8 @@ show_help() {
     echo
     printf "${BOLD}更新可能なツール:${NC}\n"
     echo "  neovim, tmux, zellij, ghostty, font, amu, gh, glow, fzf, fd, bat, eza,"
-    echo "  delta, zoxide, ghq, wtp, starship, bash-completion, claude-code, dotfiles"
+    echo "  delta, zoxide, ghq, wtp, starship, zsh-autosuggestions,"
+    echo "  zsh-syntax-highlighting, direnv, bash-completion, claude-code, dotfiles"
     echo
     exit 0
 }
@@ -256,6 +265,8 @@ normalize_tool_name() {
         bash-completion) echo "bash_completion" ;;
         claude-code|claude_code|claude) echo "claude_code" ;;
         font|udev-gothic) echo "font" ;;
+        zsh-autosuggestions) echo "zsh_autosuggestions" ;;
+        zsh-syntax-highlighting) echo "zsh_syntax_highlighting" ;;
         dotfiles) echo "dotfiles" ;;
         *) echo "$1" ;;
     esac
@@ -301,7 +312,7 @@ show_updatable_tools() {
     echo
 
     local count=0
-    local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship bash_completion claude_code)
+    local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -342,7 +353,7 @@ prompt_update_all_or_select() {
     case "$choice" in
         1)
             # Select all installed tools
-            local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship bash_completion claude_code)
+            local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
             for tool in "${tools[@]}"; do
                 if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
                     UPDATE_DECISIONS[$tool]=1
@@ -363,7 +374,7 @@ prompt_update_all_or_select() {
 }
 
 prompt_individual_updates() {
-    local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship bash_completion claude_code)
+    local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -389,7 +400,7 @@ show_update_summary() {
 
     local update_list=()
     local skip_list=()
-    local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship bash_completion claude_code)
+    local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -549,6 +560,49 @@ detect_installed() {
     # starship
     if command_exists starship; then
         ALREADY_INSTALLED[starship]=1
+    fi
+
+    # zsh-autosuggestions
+    case "$PKG_MANAGER" in
+        brew)
+            if command_exists brew && brew list zsh-autosuggestions &>/dev/null; then
+                ALREADY_INSTALLED[zsh_autosuggestions]=1
+            fi
+            ;;
+        apt)
+            if dpkg -l zsh-autosuggestions &>/dev/null 2>&1; then
+                ALREADY_INSTALLED[zsh_autosuggestions]=1
+            fi
+            ;;
+        pacman)
+            if pacman -Qi zsh-autosuggestions &>/dev/null 2>&1; then
+                ALREADY_INSTALLED[zsh_autosuggestions]=1
+            fi
+            ;;
+    esac
+
+    # zsh-syntax-highlighting
+    case "$PKG_MANAGER" in
+        brew)
+            if command_exists brew && brew list zsh-syntax-highlighting &>/dev/null; then
+                ALREADY_INSTALLED[zsh_syntax_highlighting]=1
+            fi
+            ;;
+        apt)
+            if dpkg -l zsh-syntax-highlighting &>/dev/null 2>&1; then
+                ALREADY_INSTALLED[zsh_syntax_highlighting]=1
+            fi
+            ;;
+        pacman)
+            if pacman -Qi zsh-syntax-highlighting &>/dev/null 2>&1; then
+                ALREADY_INSTALLED[zsh_syntax_highlighting]=1
+            fi
+            ;;
+    esac
+
+    # direnv
+    if command_exists direnv; then
+        ALREADY_INSTALLED[direnv]=1
     fi
 
     # bash-completion
@@ -1142,6 +1196,97 @@ prompt_starship() {
     fi
 }
 
+prompt_zsh_autosuggestions() {
+    if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
+        return 0
+    fi
+
+    # Skip on Windows
+    if [[ "$OS_TYPE" == "windows" ]]; then
+        return 0
+    fi
+
+    print_header "zsh-autosuggestions"
+    print_info "履歴ベースのコマンド補完候補を薄い文字で表示"
+    echo
+
+    if [[ ${ALREADY_INSTALLED[zsh_autosuggestions]} -eq 1 ]]; then
+        print_success "インストール済み"
+        INSTALL_DECISIONS[zsh_autosuggestions]=1
+        return 0
+    fi
+
+    print_note "機能:"
+    print_info "   - コマンド入力中に履歴から補完候補を表示"
+    print_info "   - → キーで候補を確定"
+    echo
+    print_note "dotfilesとの関連:"
+    print_info "   - .zshrc で自動読み込み設定あり"
+
+    if ask_yes_no "インストールしますか？"; then
+        INSTALL_DECISIONS[zsh_autosuggestions]=1
+    fi
+}
+
+prompt_zsh_syntax_highlighting() {
+    if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
+        return 0
+    fi
+
+    # Skip on Windows
+    if [[ "$OS_TYPE" == "windows" ]]; then
+        return 0
+    fi
+
+    print_header "zsh-syntax-highlighting"
+    print_info "コマンドラインのリアルタイム構文ハイライト"
+    echo
+
+    if [[ ${ALREADY_INSTALLED[zsh_syntax_highlighting]} -eq 1 ]]; then
+        print_success "インストール済み"
+        INSTALL_DECISIONS[zsh_syntax_highlighting]=1
+        return 0
+    fi
+
+    print_note "機能:"
+    print_info "   - 有効なコマンドは緑、無効なコマンドは赤で表示"
+    print_info "   - タイプミスを即座に検出"
+    echo
+    print_note "dotfilesとの関連:"
+    print_info "   - .zshrc で自動読み込み設定あり（最後に読み込み）"
+
+    if ask_yes_no "インストールしますか？"; then
+        INSTALL_DECISIONS[zsh_syntax_highlighting]=1
+    fi
+}
+
+prompt_direnv() {
+    if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
+        return 0
+    fi
+
+    print_header "direnv"
+    print_info "ディレクトリごとの環境変数自動切り替えツール"
+    echo
+
+    if [[ ${ALREADY_INSTALLED[direnv]} -eq 1 ]]; then
+        print_success "インストール済み"
+        INSTALL_DECISIONS[direnv]=1
+        return 0
+    fi
+
+    print_note "機能:"
+    print_info "   - .envrc ファイルで環境変数を定義"
+    print_info "   - cd するだけで自動的に環境変数をセット/解除"
+    echo
+    print_note "dotfilesとの関連:"
+    print_info "   - .bashrc / .zshrc で direnv hook を設定"
+
+    if ask_yes_no "インストールしますか？"; then
+        INSTALL_DECISIONS[direnv]=1
+    fi
+}
+
 prompt_bash_completion() {
     # Skip if zsh is the default shell
     if [[ "$SHELL" == */zsh ]]; then
@@ -1242,7 +1387,7 @@ show_summary() {
     fi
 
     # Tools
-    for pkg in neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship bash_completion; do
+    for pkg in neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion; do
         # Skip conditions
         [[ "$pkg" == "bash_completion" && "$SHELL" == */zsh ]] && continue
         [[ "$pkg" == "bash_completion" && "$OS_TYPE" == "windows" ]] && continue
@@ -1258,6 +1403,8 @@ show_summary() {
         case "$pkg" in
             bash_completion) display_name="bash-completion" ;;
             font) display_name="UDEV Gothic NFLG" ;;
+            zsh_autosuggestions) display_name="zsh-autosuggestions" ;;
+            zsh_syntax_highlighting) display_name="zsh-syntax-highlighting" ;;
             *) display_name="$pkg" ;;
         esac
 
@@ -1754,7 +1901,7 @@ run_update_mode() {
             fi
 
             # Validate tool name
-            local valid_tools=" pkg_manager neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship bash_completion claude_code "
+            local valid_tools=" pkg_manager neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code "
             if [[ "$valid_tools" != *" $target "* ]]; then
                 print_error "不明なツール: $(tool_display_name "$target")"
                 print_info "使い方: ./install.sh --update [ツール名...]"
@@ -1806,6 +1953,9 @@ run_update_mode() {
     upgrade_package "ghq" "ghq" "ghq" "ghq" "ghq" "" "ghq"
     update_wtp
     upgrade_package "starship" "starship" "" "" "starship" "Starship.Starship" "starship"
+    upgrade_package "zsh_autosuggestions" "zsh-autosuggestions" "zsh-autosuggestions" "" "zsh-autosuggestions" "" ""
+    upgrade_package "zsh_syntax_highlighting" "zsh-syntax-highlighting" "zsh-syntax-highlighting" "" "zsh-syntax-highlighting" "" ""
+    upgrade_package "direnv" "direnv" "direnv" "direnv" "direnv" "direnv.direnv" "direnv"
     upgrade_package "bash_completion" "bash-completion@2" "bash-completion" "bash-completion" "bash-completion" "" ""
     update_claude_code
     update_dotfiles
@@ -1842,6 +1992,9 @@ run_install_mode() {
     prompt_ghq
     prompt_wtp
     prompt_starship
+    prompt_zsh_autosuggestions
+    prompt_zsh_syntax_highlighting
+    prompt_direnv
     prompt_bash_completion
     prompt_claude_code
     prompt_apply_dotfiles
@@ -1879,6 +2032,9 @@ run_install_mode() {
     install_package "ghq" "ghq" "ghq" "ghq" "ghq" "" "ghq"
     install_wtp
     install_package "starship" "starship" "" "" "starship" "Starship.Starship" "starship"
+    install_package "zsh_autosuggestions" "zsh-autosuggestions" "zsh-autosuggestions" "" "zsh-autosuggestions" "" ""
+    install_package "zsh_syntax_highlighting" "zsh-syntax-highlighting" "zsh-syntax-highlighting" "" "zsh-syntax-highlighting" "" ""
+    install_package "direnv" "direnv" "direnv" "direnv" "direnv" "direnv.direnv" "direnv"
     install_package "bash_completion" "bash-completion@2" "bash-completion" "bash-completion" "bash-completion" "" ""
 
     install_claude_code
