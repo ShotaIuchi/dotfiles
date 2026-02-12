@@ -758,6 +758,8 @@ prompt_emacs() {
 
     print_note "dotfilesとの関連:"
     print_info "   - brew install --cask emacs でGUI版をインストール"
+    print_info "   - ~/.emacs.d/early-init.el, init.el に設定ファイルあり"
+    print_info "   - vterm経由でClaude Code統合可能（C-c t）"
 
     if ask_yes_no "インストールしますか？"; then
         INSTALL_DECISIONS[emacs]=1
