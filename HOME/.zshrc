@@ -21,6 +21,7 @@ HISTFILE=~/.zsh_history
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_SAVE_NO_DUPS
+setopt HIST_REDUCE_BLANKS
 setopt SHARE_HISTORY
 setopt APPEND_HISTORY
 
@@ -29,7 +30,10 @@ setopt AUTO_CD
 setopt AUTO_PUSHD
 setopt PUSHD_IGNORE_DUPS
 
-# Correction
+# Misc
+setopt NO_BEEP
+setopt EXTENDED_GLOB
+setopt INTERACTIVE_COMMENTS
 unsetopt CORRECT
 
 # ------------------------------------------------------------------------------
