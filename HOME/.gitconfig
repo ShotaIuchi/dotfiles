@@ -59,8 +59,10 @@
     ; ----------------------------------------------------------
     ; Log
     ; ----------------------------------------------------------
-    l  = log --oneline
-    ll = log --oneline --topo-order
+    l  = log --oneline -20
+    ll = log --oneline
+    lt = log --oneline --topo-order             ; ブランチの流れ順
+    ld = log --oneline --author-date-order      ; 作業した時刻順
 
     ; ----------------------------------------------------------
     ; Status
