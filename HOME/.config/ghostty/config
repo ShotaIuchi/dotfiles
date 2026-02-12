@@ -1,6 +1,17 @@
+# テーマ（tokyonight night: Starship/Neovim と統一）
+theme = TokyoNight Night
+
 # フォント
 font-family = "UDEV Gothic NFLG"
 font-size = 13
+
+# ウィンドウ
+window-padding-x = 4
+window-padding-y = 4
+
+# カーソル
+cursor-style = bar
+cursor-style-blink = false
 
 # macOS: Option キーを Alt として使用（fzf の Alt+C 等に必要）
 macos-option-as-alt = true
