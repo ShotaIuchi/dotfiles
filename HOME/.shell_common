@@ -43,10 +43,12 @@ fi
 # Aliases
 # ------------------------------------------------------------------------------
 
-# ls
-alias ll='ls -la'
-alias la='ls -A'
-alias l='ls -CF'
+# ls (eza)
+alias ls='eza'
+alias ll='eza -la --git --icons'
+alias la='eza -a'
+alias l='eza -1'
+alias lt='eza --tree --level=2'
 
 # Safety
 alias rm='rm -i'
