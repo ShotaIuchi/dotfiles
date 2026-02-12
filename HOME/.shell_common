@@ -126,6 +126,22 @@ git() {
             esac
             ;;
         cb)
+            shift
+            if [[ "$1" == "-b" ]]; then
+                [[ -z "$2" ]] && { echo "usage: git cb -b <new-branch>" >&2; return 1; }
+                command git checkout -b "$2"
+                return
+            fi
+            if [[ -n "$1" ]]; then
+                if command git rev-parse --verify "$1" &>/dev/null; then
+                    command git checkout "$1"
+                elif command git rev-parse --verify "origin/$1" &>/dev/null; then
+                    command git checkout "$1"
+                else
+                    command git checkout -b "$1"
+                fi
+                return
+            fi
             local branch
             branch=$(
                 command git branch --all --sort=-committerdate |
@@ -197,6 +213,12 @@ fbr() {
 # fzf git log
 flog() {
     git log --oneline --color=always | fzf --ansi --preview 'git show --color=always {1}' | awk '{print $1}'
+}
+
+# fzf file search & bat preview
+fcat() {
+    local file
+    file=$(fzf --preview 'bat --color=always --style=numbers --line-range :200 {}') && bat "$file"
 }
 
 # ------------------------------------------------------------------------------
