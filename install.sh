@@ -110,7 +110,7 @@ detect_os() {
 # ------------------------------------------------------------------------------
 
 typeset -A INSTALL_DECISIONS
-INSTALL_DECISIONS[pkg_manager]=0 INSTALL_DECISIONS[neovim]=0
+INSTALL_DECISIONS[pkg_manager]=0 INSTALL_DECISIONS[neovim]=0 INSTALL_DECISIONS[emacs]=0
 INSTALL_DECISIONS[tmux]=0 INSTALL_DECISIONS[zellij]=0 INSTALL_DECISIONS[ghostty]=0
 INSTALL_DECISIONS[font]=0
 INSTALL_DECISIONS[amu]=0 INSTALL_DECISIONS[gh]=0
@@ -122,7 +122,7 @@ INSTALL_DECISIONS[direnv]=0
 INSTALL_DECISIONS[claude_code]=0
 
 typeset -A ALREADY_INSTALLED
-ALREADY_INSTALLED[pkg_manager]=0 ALREADY_INSTALLED[neovim]=0
+ALREADY_INSTALLED[pkg_manager]=0 ALREADY_INSTALLED[neovim]=0 ALREADY_INSTALLED[emacs]=0
 ALREADY_INSTALLED[tmux]=0 ALREADY_INSTALLED[zellij]=0 ALREADY_INSTALLED[ghostty]=0
 ALREADY_INSTALLED[font]=0
 ALREADY_INSTALLED[amu]=0 ALREADY_INSTALLED[gh]=0
@@ -137,7 +137,7 @@ APPLY_DOTFILES=0
 
 # Update mode variables
 typeset -A UPDATE_DECISIONS
-UPDATE_DECISIONS[neovim]=0 UPDATE_DECISIONS[tmux]=0 UPDATE_DECISIONS[zellij]=0
+UPDATE_DECISIONS[neovim]=0 UPDATE_DECISIONS[emacs]=0 UPDATE_DECISIONS[tmux]=0 UPDATE_DECISIONS[zellij]=0
 UPDATE_DECISIONS[ghostty]=0 UPDATE_DECISIONS[font]=0
 UPDATE_DECISIONS[amu]=0
 UPDATE_DECISIONS[gh]=0 UPDATE_DECISIONS[glow]=0
@@ -218,6 +218,7 @@ tool_display_name() {
     case "$1" in
         bash_completion) echo "bash-completion" ;;
         claude_code) echo "Claude Code" ;;
+        emacs) echo "Emacs" ;;
         font) echo "UDEV Gothic NFLG" ;;
         zsh_autosuggestions) echo "zsh-autosuggestions" ;;
         zsh_syntax_highlighting) echo "zsh-syntax-highlighting" ;;
@@ -235,7 +236,7 @@ show_help() {
     echo "  ./install.sh --help                このヘルプを表示"
     echo
     printf "${BOLD}更新可能なツール:${NC}\n"
-    echo "  neovim, tmux, zellij, ghostty, font, amu, gh, glow, fzf, fd, bat, eza,"
+    echo "  neovim, emacs, tmux, zellij, ghostty, font, amu, gh, glow, fzf, fd, bat, eza,"
     echo "  delta, zoxide, ghq, wtp, starship, zsh-autosuggestions,"
     echo "  zsh-syntax-highlighting, direnv, bash-completion, claude-code, dotfiles"
     echo
@@ -312,7 +313,7 @@ show_updatable_tools() {
     echo
 
     local count=0
-    local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+    local tools=(neovim emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -353,7 +354,7 @@ prompt_update_all_or_select() {
     case "$choice" in
         1)
             # Select all installed tools
-            local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+            local tools=(neovim emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
             for tool in "${tools[@]}"; do
                 if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
                     UPDATE_DECISIONS[$tool]=1
@@ -374,7 +375,7 @@ prompt_update_all_or_select() {
 }
 
 prompt_individual_updates() {
-    local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+    local tools=(neovim emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -400,7 +401,7 @@ show_update_summary() {
 
     local update_list=()
     local skip_list=()
-    local tools=(neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+    local tools=(neovim emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -484,6 +485,13 @@ detect_installed() {
     # Zellij
     if command_exists zellij; then
         ALREADY_INSTALLED[zellij]=1
+    fi
+
+    # Emacs (macOS only, cask)
+    if [[ "$OS_TYPE" == "macos" ]]; then
+        if [[ -d "/Applications/Emacs.app" ]]; then
+            ALREADY_INSTALLED[emacs]=1
+        fi
     fi
 
     # Ghostty (macOS only, check app bundle or command)
@@ -725,6 +733,34 @@ prompt_neovim() {
 
     if ask_yes_no "インストールしますか？"; then
         INSTALL_DECISIONS[neovim]=1
+    fi
+}
+
+prompt_emacs() {
+    # Emacs cask is macOS only
+    if [[ "$OS_TYPE" != "macos" ]]; then
+        return 0
+    fi
+
+    if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
+        return 0
+    fi
+
+    print_header "Emacs"
+    print_info "GNU Emacsテキストエディタ（GUI版）"
+    echo
+
+    if [[ ${ALREADY_INSTALLED[emacs]} -eq 1 ]]; then
+        print_success "インストール済み"
+        INSTALL_DECISIONS[emacs]=1
+        return 0
+    fi
+
+    print_note "dotfilesとの関連:"
+    print_info "   - brew install --cask emacs でGUI版をインストール"
+
+    if ask_yes_no "インストールしますか？"; then
+        INSTALL_DECISIONS[emacs]=1
     fi
 }
 
@@ -1387,10 +1423,11 @@ show_summary() {
     fi
 
     # Tools
-    for pkg in neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion; do
+    for pkg in neovim emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion; do
         # Skip conditions
         [[ "$pkg" == "bash_completion" && "$SHELL" == */zsh ]] && continue
         [[ "$pkg" == "bash_completion" && "$OS_TYPE" == "windows" ]] && continue
+        [[ "$pkg" == "emacs" && "$OS_TYPE" != "macos" ]] && continue
         [[ "$pkg" == "ghostty" && "$OS_TYPE" != "macos" ]] && continue
         [[ "$pkg" == "tmux" && "$OS_TYPE" == "windows" ]] && continue
         [[ "$pkg" == "zellij" && "$OS_TYPE" == "windows" ]] && continue
@@ -1402,6 +1439,7 @@ show_summary() {
         local display_name
         case "$pkg" in
             bash_completion) display_name="bash-completion" ;;
+            emacs) display_name="Emacs" ;;
             font) display_name="UDEV Gothic NFLG" ;;
             zsh_autosuggestions) display_name="zsh-autosuggestions" ;;
             zsh_syntax_highlighting) display_name="zsh-syntax-highlighting" ;;
@@ -1901,7 +1939,7 @@ run_update_mode() {
             fi
 
             # Validate tool name
-            local valid_tools=" pkg_manager neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code "
+            local valid_tools=" pkg_manager neovim emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code "
             if [[ "$valid_tools" != *" $target "* ]]; then
                 print_error "不明なツール: $(tool_display_name "$target")"
                 print_info "使い方: ./install.sh --update [ツール名...]"
@@ -1937,6 +1975,7 @@ run_update_mode() {
     print_header "更新実行"
 
     upgrade_package "neovim" "neovim" "neovim" "neovim" "neovim" "Neovim.Neovim" "neovim"
+    upgrade_package "emacs" "emacs" "" "" "" "" "" "true"
     upgrade_package "tmux" "tmux" "tmux" "tmux" "tmux" "" ""
     upgrade_package "zellij" "zellij" "" "" "zellij" "" ""
     upgrade_package "ghostty" "ghostty" "" "" "" "" "" "true"
@@ -1976,6 +2015,7 @@ run_install_mode() {
     # Collect installation decisions
     prompt_pkg_manager
     prompt_neovim
+    prompt_emacs
     prompt_tmux
     prompt_zellij
     prompt_ghostty
@@ -2016,6 +2056,7 @@ run_install_mode() {
 
     # Install packages: key, brew, apt, dnf, pacman, winget, scoop, is_cask
     install_package "neovim" "neovim" "neovim" "neovim" "neovim" "Neovim.Neovim" "neovim"
+    install_package "emacs" "emacs" "" "" "" "" "" "true"  # macOS only
     install_package "tmux" "tmux" "tmux" "tmux" "tmux" "" ""
     install_package "zellij" "zellij" "" "" "zellij" "" ""  # Linux: cargo or manual
     install_package "ghostty" "ghostty" "" "" "" "" "" "true"  # macOS only

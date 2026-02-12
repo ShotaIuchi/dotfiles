@@ -104,7 +104,7 @@ detect_os() {
 # ------------------------------------------------------------------------------
 
 typeset -A UNINSTALL_DECISIONS
-UNINSTALL_DECISIONS[neovim]=0 UNINSTALL_DECISIONS[tmux]=0 UNINSTALL_DECISIONS[zellij]=0
+UNINSTALL_DECISIONS[neovim]=0 UNINSTALL_DECISIONS[emacs]=0 UNINSTALL_DECISIONS[tmux]=0 UNINSTALL_DECISIONS[zellij]=0
 UNINSTALL_DECISIONS[ghostty]=0 UNINSTALL_DECISIONS[font]=0
 UNINSTALL_DECISIONS[amu]=0
 UNINSTALL_DECISIONS[gh]=0 UNINSTALL_DECISIONS[glow]=0
@@ -116,7 +116,7 @@ UNINSTALL_DECISIONS[direnv]=0
 UNINSTALL_DECISIONS[bash_completion]=0 UNINSTALL_DECISIONS[claude_code]=0
 
 typeset -A IS_INSTALLED
-IS_INSTALLED[neovim]=0 IS_INSTALLED[tmux]=0 IS_INSTALLED[zellij]=0
+IS_INSTALLED[neovim]=0 IS_INSTALLED[emacs]=0 IS_INSTALLED[tmux]=0 IS_INSTALLED[zellij]=0
 IS_INSTALLED[ghostty]=0 IS_INSTALLED[font]=0
 IS_INSTALLED[amu]=0
 IS_INSTALLED[gh]=0 IS_INSTALLED[glow]=0
@@ -229,6 +229,13 @@ detect_installed() {
     # Zellij
     if command_exists zellij; then
         IS_INSTALLED[zellij]=1
+    fi
+
+    # Emacs (macOS only, cask)
+    if [[ "$OS_TYPE" == "macos" ]]; then
+        if [[ -d "/Applications/Emacs.app" ]]; then
+            IS_INSTALLED[emacs]=1
+        fi
     fi
 
     # Ghostty (macOS only)
@@ -432,12 +439,13 @@ show_summary() {
         remove_list+=("dotfilesリンク")
     fi
 
-    for pkg in neovim tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code; do
+    for pkg in neovim emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code; do
         if [[ ${UNINSTALL_DECISIONS[$pkg]} -eq 1 ]]; then
             local display_name
             case "$pkg" in
                 bash_completion) display_name="bash-completion" ;;
                 claude_code) display_name="Claude Code" ;;
+                emacs) display_name="Emacs" ;;
                 font) display_name="UDEV Gothic NFLG" ;;
                 zsh_autosuggestions) display_name="zsh-autosuggestions" ;;
                 zsh_syntax_highlighting) display_name="zsh-syntax-highlighting" ;;
@@ -667,6 +675,11 @@ main() {
     # Collect uninstall decisions
     prompt_remove_dotfiles
     prompt_uninstall_tool "neovim" "Neovim" "モダンなVimエディタ"
+
+    if [[ "$OS_TYPE" == "macos" ]]; then
+        prompt_uninstall_tool "emacs" "Emacs" "GNU Emacsテキストエディタ（GUI版）"
+    fi
+
     prompt_uninstall_tool "tmux" "tmux" "ターミナルマルチプレクサ"
     prompt_uninstall_tool "zellij" "Zellij" "ターミナルマルチプレクサ（tmux代替）"
 
@@ -716,6 +729,7 @@ main() {
 
     # Uninstall packages: key, brew, apt, dnf, pacman, winget, scoop, is_cask
     uninstall_package "neovim" "neovim" "neovim" "neovim" "neovim" "Neovim.Neovim" "neovim"
+    uninstall_package "emacs" "emacs" "" "" "" "" "" "true"
     uninstall_package "tmux" "tmux" "tmux" "tmux" "tmux" "" ""
     uninstall_package "zellij" "zellij" "" "" "zellij" "" ""
     uninstall_package "ghostty" "ghostty" "" "" "" "" "" "true"
