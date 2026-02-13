@@ -250,25 +250,30 @@
 ;; ------------------------------------------------------------------------------
 
 (use-package vterm
-  :bind ("C-c t" . vterm)
   :custom
   (vterm-max-scrollback 10000)
   (vterm-shell "/bin/zsh"))
 
-;; Toggle vterm in a bottom window
-(defun my/vterm-toggle ()
-  "Toggle vterm window at the bottom."
-  (interactive)
-  (let ((vterm-buf (get-buffer "vterm")))
-    (if (and vterm-buf (get-buffer-window vterm-buf))
-        (delete-window (get-buffer-window vterm-buf))
-      (let ((win (split-window-below -15)))
-        (select-window win)
-        (if vterm-buf
-            (switch-to-buffer vterm-buf)
-          (vterm))))))
-
-(global-set-key (kbd "C-c C-t") #'my/vterm-toggle)
+(use-package multi-vterm
+  :bind ("C-c t" . multi-vterm)
+  :config
+  (defun my/vterm-split-with-new-term (split-fn)
+    "Split window with SPLIT-FN and open a new vterm in the new window."
+    (select-window (funcall split-fn))
+    (multi-vterm))
+  (defun my/vterm-kill-window ()
+    "Kill current vterm buffer and close its window."
+    (interactive)
+    (let ((buf (current-buffer)))
+      (if (one-window-p)
+          (kill-buffer buf)
+        (delete-window)
+        (kill-buffer buf))))
+  (define-key vterm-mode-map (kbd "C-x 2")
+    (lambda () (interactive) (my/vterm-split-with-new-term #'split-window-below)))
+  (define-key vterm-mode-map (kbd "C-x 3")
+    (lambda () (interactive) (my/vterm-split-with-new-term #'split-window-right)))
+  (define-key vterm-mode-map (kbd "C-x 0") #'my/vterm-kill-window))
 
 ;; ------------------------------------------------------------------------------
 ;; Miscellaneous

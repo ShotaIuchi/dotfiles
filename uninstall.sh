@@ -104,7 +104,7 @@ detect_os() {
 # ------------------------------------------------------------------------------
 
 typeset -A UNINSTALL_DECISIONS
-UNINSTALL_DECISIONS[neovim]=0 UNINSTALL_DECISIONS[emacs]=0 UNINSTALL_DECISIONS[tmux]=0 UNINSTALL_DECISIONS[zellij]=0
+UNINSTALL_DECISIONS[neovim]=0 UNINSTALL_DECISIONS[cmake]=0 UNINSTALL_DECISIONS[libtool]=0 UNINSTALL_DECISIONS[emacs]=0 UNINSTALL_DECISIONS[tmux]=0 UNINSTALL_DECISIONS[zellij]=0
 UNINSTALL_DECISIONS[ghostty]=0 UNINSTALL_DECISIONS[font]=0
 UNINSTALL_DECISIONS[amu]=0
 UNINSTALL_DECISIONS[gh]=0 UNINSTALL_DECISIONS[glow]=0
@@ -116,7 +116,7 @@ UNINSTALL_DECISIONS[direnv]=0
 UNINSTALL_DECISIONS[bash_completion]=0 UNINSTALL_DECISIONS[claude_code]=0
 
 typeset -A IS_INSTALLED
-IS_INSTALLED[neovim]=0 IS_INSTALLED[emacs]=0 IS_INSTALLED[tmux]=0 IS_INSTALLED[zellij]=0
+IS_INSTALLED[neovim]=0 IS_INSTALLED[cmake]=0 IS_INSTALLED[libtool]=0 IS_INSTALLED[emacs]=0 IS_INSTALLED[tmux]=0 IS_INSTALLED[zellij]=0
 IS_INSTALLED[ghostty]=0 IS_INSTALLED[font]=0
 IS_INSTALLED[amu]=0
 IS_INSTALLED[gh]=0 IS_INSTALLED[glow]=0
@@ -220,6 +220,30 @@ detect_installed() {
     if command_exists nvim; then
         IS_INSTALLED[neovim]=1
     fi
+
+    # CMake (build dependency for Emacs vterm)
+    if command_exists cmake; then
+        IS_INSTALLED[cmake]=1
+    fi
+
+    # libtool (build dependency for Emacs vterm)
+    case "$PKG_MANAGER" in
+        brew)
+            if command_exists brew && brew list libtool &>/dev/null; then
+                IS_INSTALLED[libtool]=1
+            fi
+            ;;
+        apt)
+            if dpkg -l libtool &>/dev/null 2>&1; then
+                IS_INSTALLED[libtool]=1
+            fi
+            ;;
+        *)
+            if command_exists libtool || command_exists glibtool; then
+                IS_INSTALLED[libtool]=1
+            fi
+            ;;
+    esac
 
     # tmux
     if command_exists tmux; then
@@ -439,12 +463,13 @@ show_summary() {
         remove_list+=("dotfilesリンク")
     fi
 
-    for pkg in neovim emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code; do
+    for pkg in neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code; do
         if [[ ${UNINSTALL_DECISIONS[$pkg]} -eq 1 ]]; then
             local display_name
             case "$pkg" in
                 bash_completion) display_name="bash-completion" ;;
                 claude_code) display_name="Claude Code" ;;
+                cmake) display_name="CMake" ;;
                 emacs) display_name="Emacs" ;;
                 font) display_name="UDEV Gothic NFLG" ;;
                 zsh_autosuggestions) display_name="zsh-autosuggestions" ;;
@@ -675,6 +700,8 @@ main() {
     # Collect uninstall decisions
     prompt_remove_dotfiles
     prompt_uninstall_tool "neovim" "Neovim" "モダンなVimエディタ"
+    prompt_uninstall_tool "cmake" "CMake" "ビルドシステムツール（Emacs vterm用）"
+    prompt_uninstall_tool "libtool" "libtool" "GNU libtool（Emacs vterm用）"
 
     if [[ "$OS_TYPE" == "macos" ]]; then
         prompt_uninstall_tool "emacs" "Emacs" "GNU Emacsテキストエディタ（GUI版）"
@@ -729,6 +756,8 @@ main() {
 
     # Uninstall packages: key, brew, apt, dnf, pacman, winget, scoop, is_cask
     uninstall_package "neovim" "neovim" "neovim" "neovim" "neovim" "Neovim.Neovim" "neovim"
+    uninstall_package "cmake" "cmake" "cmake" "cmake" "cmake" "Kitware.CMake" "cmake"
+    uninstall_package "libtool" "libtool" "libtool" "libtool" "libtool" "" ""
     uninstall_package "emacs" "emacs" "" "" "" "" "" "true"
     uninstall_package "tmux" "tmux" "tmux" "tmux" "tmux" "" ""
     uninstall_package "zellij" "zellij" "" "" "zellij" "" ""
