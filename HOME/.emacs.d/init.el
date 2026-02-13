@@ -69,6 +69,10 @@
 (define-key key-translation-map (kbd "C-h") (kbd "DEL"))
 (global-set-key (kbd "C-?") 'help-command)
 
+;; Page scroll (M-n / M-p)
+(global-set-key (kbd "M-n") 'scroll-up-command)
+(global-set-key (kbd "M-p") 'scroll-down-command)
+
 ;; General behavior
 (setq-default indent-tabs-mode nil
               tab-width 4)

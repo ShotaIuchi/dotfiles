@@ -187,8 +187,8 @@ export FZF_DEFAULT_OPTS='--height 40% --reverse --border
   --bind "ctrl-k:kill-line"
   --bind "ctrl-n:down,ctrl-p:up"
   --bind "alt-j:down,alt-k:up"
-  --bind "ctrl-v:page-down,alt-v:page-up"
-  --bind "alt-n:preview-down,alt-p:preview-up"'
+  --bind "alt-n:page-down,alt-p:page-up"
+  --bind "ctrl-v:preview-down,alt-v:preview-up"'
 
 # Use fd if available (faster than find)
 if command -v fd &>/dev/null; then
