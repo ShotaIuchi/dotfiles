@@ -106,6 +106,10 @@ amu sync
 
 ## キーバインド
 
+### Emacs
+
+詳細は [README.emacs.md](README.emacs.md) を参照。
+
 ### fzf拡張キーバインド
 
 fzfの標準キーバインドをカスタマイズしています。
