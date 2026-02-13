@@ -48,6 +48,9 @@
 ;; Basic Settings
 ;; ------------------------------------------------------------------------------
 
+;; Start maximized
+(set-frame-parameter nil 'fullscreen 'maximized)
+
 ;; Encoding
 (set-language-environment "UTF-8")
 (prefer-coding-system 'utf-8)
