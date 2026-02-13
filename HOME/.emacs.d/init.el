@@ -249,14 +249,34 @@
 ;; Terminal (vterm) - Claude Code Integration
 ;; ------------------------------------------------------------------------------
 
+;; Window dividers (Tokyo Night - matches tmux pane borders)
+(setq window-divider-default-places t
+      window-divider-default-right-width 3
+      window-divider-default-bottom-width 3)
+(window-divider-mode t)
+(set-face-foreground 'window-divider "#3b4261")
+(set-face-foreground 'window-divider-first-pixel "#7aa2f7")
+(set-face-foreground 'window-divider-last-pixel "#7aa2f7")
+(set-face-background 'child-frame-border "#565f89")
+(set-face-attribute 'header-line nil
+                    :background "#1a1b26"
+                    :foreground "#565f89"
+                    :box nil)
+
 (use-package vterm
   :custom
   (vterm-max-scrollback 10000)
   (vterm-shell "/bin/zsh")
   (vterm-kill-buffer-on-exit t)
+  (vterm-environment '("INSIDE_EMACS=vterm"))
   :hook (vterm-mode . (lambda ()
                         (when-let ((proc (get-buffer-process (current-buffer))))
                           (set-process-query-on-exit-flag proc nil))
+                        (setq header-line-format
+                              '(" "
+                                (:eval (file-name-nondirectory
+                                        (directory-file-name default-directory)))
+                                " "))
                         (add-hook 'kill-buffer-hook #'my/vterm-close-window-on-kill nil t))))
 
 (use-package multi-vterm
@@ -264,8 +284,10 @@
   :config
   (defun my/vterm-split-with-new-term (split-fn)
     "Split window with SPLIT-FN and open a new vterm in the new window."
-    (select-window (funcall split-fn))
-    (multi-vterm))
+    (let ((dir default-directory))
+      (select-window (funcall split-fn))
+      (let ((default-directory dir))
+        (multi-vterm))))
   (defun my/vterm-kill-window ()
     "Kill current vterm buffer and close its window or child frame."
     (interactive)
@@ -284,7 +306,8 @@
             (make-frame-invisible my/vterm-popup-frame)
           (make-frame-visible my/vterm-popup-frame)
           (select-frame-set-input-focus my/vterm-popup-frame))
-      (let* ((parent (selected-frame))
+      (let* ((dir default-directory)
+             (parent (selected-frame))
              (pw (frame-pixel-width parent))
              (ph (frame-pixel-height parent))
              (w (round (* pw 0.8)))
@@ -300,9 +323,11 @@
                  (top . ,(/ (- ph h) 2))
                  (no-other-frame . t)
                  (undecorated . t)
-                 (internal-border-width . 1))))
+                 (internal-border-width . 2)
+                 (background-color . "#1a1b26"))))
         (select-frame-set-input-focus my/vterm-popup-frame)
-        (multi-vterm))))
+        (let ((default-directory dir))
+          (multi-vterm)))))
   (defun my/vterm-close-window-on-kill ()
     "Close the window or child frame showing the vterm buffer being killed."
     (let ((win (get-buffer-window (current-buffer))))
