@@ -252,7 +252,12 @@
 (use-package vterm
   :custom
   (vterm-max-scrollback 10000)
-  (vterm-shell "/bin/zsh"))
+  (vterm-shell "/bin/zsh")
+  (vterm-kill-buffer-on-exit t)
+  :hook (vterm-mode . (lambda ()
+                        (when-let ((proc (get-buffer-process (current-buffer))))
+                          (set-process-query-on-exit-flag proc nil))
+                        (add-hook 'kill-buffer-hook #'my/vterm-close-window-on-kill nil t))))
 
 (use-package multi-vterm
   :bind ("C-c t" . multi-vterm)
@@ -262,18 +267,54 @@
     (select-window (funcall split-fn))
     (multi-vterm))
   (defun my/vterm-kill-window ()
-    "Kill current vterm buffer and close its window."
+    "Kill current vterm buffer and close its window or child frame."
     (interactive)
-    (let ((buf (current-buffer)))
-      (if (one-window-p)
-          (kill-buffer buf)
-        (delete-window)
-        (kill-buffer buf))))
+    (kill-buffer (current-buffer)))
   (define-key vterm-mode-map (kbd "C-x 2")
     (lambda () (interactive) (my/vterm-split-with-new-term #'split-window-below)))
   (define-key vterm-mode-map (kbd "C-x 3")
     (lambda () (interactive) (my/vterm-split-with-new-term #'split-window-right)))
-  (define-key vterm-mode-map (kbd "C-x 0") #'my/vterm-kill-window))
+  (define-key vterm-mode-map (kbd "C-x 0") #'my/vterm-kill-window)
+  (defvar my/vterm-popup-frame nil)
+  (defun my/vterm-popup-toggle ()
+    "Toggle a floating vterm in a centered child frame."
+    (interactive)
+    (if (and my/vterm-popup-frame (frame-live-p my/vterm-popup-frame))
+        (if (frame-visible-p my/vterm-popup-frame)
+            (make-frame-invisible my/vterm-popup-frame)
+          (make-frame-visible my/vterm-popup-frame)
+          (select-frame-set-input-focus my/vterm-popup-frame))
+      (let* ((parent (selected-frame))
+             (pw (frame-pixel-width parent))
+             (ph (frame-pixel-height parent))
+             (w (round (* pw 0.8)))
+             (h (round (* ph 0.8))))
+        (setq my/vterm-popup-frame
+              (make-frame
+               `((name . "vterm-popup")
+                 (parent-frame . ,parent)
+                 (minibuffer . nil)
+                 (width . (text-pixels . ,w))
+                 (height . (text-pixels . ,h))
+                 (left . ,(/ (- pw w) 2))
+                 (top . ,(/ (- ph h) 2))
+                 (no-other-frame . t)
+                 (undecorated . t)
+                 (internal-border-width . 1))))
+        (select-frame-set-input-focus my/vterm-popup-frame)
+        (multi-vterm))))
+  (defun my/vterm-close-window-on-kill ()
+    "Close the window or child frame showing the vterm buffer being killed."
+    (let ((win (get-buffer-window (current-buffer))))
+      (when win
+        (let ((child-frame (frame-parameter (window-frame win) 'parent-frame)))
+          (cond
+           (child-frame
+            (delete-frame (window-frame win)))
+           ((not (one-window-p nil (window-frame win)))
+            (delete-window win)))))))
+  (define-key vterm-mode-map (kbd "C-x 6") #'my/vterm-popup-toggle)
+  (global-set-key (kbd "C-x 6") #'my/vterm-popup-toggle))
 
 ;; ------------------------------------------------------------------------------
 ;; Miscellaneous
