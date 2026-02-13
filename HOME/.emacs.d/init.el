@@ -65,6 +65,10 @@
 (make-directory "~/.emacs.d/backups/" t)
 (make-directory "~/.emacs.d/autosave/" t)
 
+;; C-h as backspace (help moved to C-?)
+(define-key key-translation-map (kbd "C-h") (kbd "DEL"))
+(global-set-key (kbd "C-?") 'help-command)
+
 ;; General behavior
 (setq-default indent-tabs-mode nil
               tab-width 4)
@@ -118,7 +122,7 @@
 
 (use-package doom-themes
   :config
-  (load-theme 'doom-one t)
+  (load-theme 'doom-tokyo-night t)
   (doom-themes-org-config))
 
 (use-package doom-modeline
