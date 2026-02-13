@@ -168,6 +168,25 @@
          ("M-s r"   . consult-ripgrep)
          ("M-s f"   . consult-find)))
 
+(use-package embark
+  :bind (("C-."   . embark-act)
+         ("C-;"   . embark-dwim))
+  :config
+  (setq prefix-help-command #'embark-prefix-help-command))
+
+(use-package embark-consult
+  :after (embark consult)
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
+
+(use-package wgrep)
+
+;; ------------------------------------------------------------------------------
+;; Navigation
+;; ------------------------------------------------------------------------------
+
+(use-package avy
+  :bind ("M-j" . avy-goto-char-timer))
+
 ;; ------------------------------------------------------------------------------
 ;; Keybinding Help
 ;; ------------------------------------------------------------------------------
@@ -195,6 +214,16 @@
   (add-hook 'completion-at-point-functions #'cape-file))
 
 ;; ------------------------------------------------------------------------------
+;; Editing Enhancement
+;; ------------------------------------------------------------------------------
+
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
+
+(use-package vundo
+  :bind ("C-x u" . vundo))
+
+;; ------------------------------------------------------------------------------
 ;; LSP (Eglot - built-in since Emacs 29)
 ;; ------------------------------------------------------------------------------
 
@@ -210,6 +239,13 @@
   :custom
   (eglot-autoshutdown t)
   (eglot-events-buffer-size 0))
+
+(use-package flymake
+  :ensure nil
+  :hook (eglot-managed-mode . flymake-mode)
+  :bind (:map flymake-mode-map
+         ("M-g n" . flymake-goto-next-error)
+         ("M-g p" . flymake-goto-prev-error)))
 
 ;; ------------------------------------------------------------------------------
 ;; Tree-sitter (built-in since Emacs 29)
