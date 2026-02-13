@@ -49,7 +49,7 @@
 ;; ------------------------------------------------------------------------------
 
 ;; Encoding
-(set-language-environment "Japanese")
+(set-language-environment "UTF-8")
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 
@@ -132,7 +132,10 @@
   (doom-modeline-buffer-encoding nil))
 
 ;; Icons (required by doom-modeline)
-(use-package nerd-icons)
+(use-package nerd-icons
+  :config
+  (unless (member "Symbols Nerd Font Mono" (font-family-list))
+    (nerd-icons-install-fonts t)))
 
 ;; ------------------------------------------------------------------------------
 ;; Minibuffer Completion (Vertico Stack)
