@@ -104,11 +104,18 @@ amu rm ~/dot/dotfiles/HOME ~/
 amu sync
 ```
 
+## 各ツールの設定・キーバインド
+
+| ツール | ドキュメント |
+|---|---|
+| Emacs | [README.emacs.md](README.emacs.md) |
+| Neovim | [README.neovim.md](README.neovim.md) |
+| Git | [README.git.md](README.git.md) |
+| Ghostty | [README.ghostty.md](README.ghostty.md) |
+| tmux / Zellij | [README.tmux.md](README.tmux.md) |
+| シェル (bash/zsh) | [README.shell.md](README.shell.md) |
+
 ## キーバインド
-
-### Emacs
-
-詳細は [README.emacs.md](README.emacs.md) を参照。
 
 ### fzf拡張キーバインド
 
