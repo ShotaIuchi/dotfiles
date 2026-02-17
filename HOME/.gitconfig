@@ -122,7 +122,7 @@
     prune = true              ; fetch時に削除済みリモートブランチを自動削除
 
 [rerere]
-    enabled = true            ; コンフリクト解消を記憶して再利用
+    enabled = false           ; コンフリクト解消を記憶して再利用
 
 [rebase]
     autoStash = true          ; rebase前に自動stash、完了後に自動pop
