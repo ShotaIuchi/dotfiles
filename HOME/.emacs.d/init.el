@@ -398,6 +398,10 @@
 ;; Org-mode basics
 (setq org-startup-indented t
       org-hide-leading-stars t)
+
+;; GitHub Flavored Markdown export for Org-mode
+(use-package ox-gfm
+  :after org)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
