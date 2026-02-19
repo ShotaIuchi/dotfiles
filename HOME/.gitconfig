@@ -65,6 +65,12 @@
     ld = log --oneline --author-date-order      ; 作業した時刻順
 
     ; ----------------------------------------------------------
+    ; Reflog
+    ; ----------------------------------------------------------
+    rl  = "!f() { git reflog --color=always --format='%C(auto)%h %C(green)%gd %C(reset)- %gs %C(reset)| %s %C(blue)(%ci)%C(auto)%d%C(reset)' ${1:--20} | perl -pe 'BEGIN{$f=0} if($f){s/(- [^|]*)/\\e[1;32m$1\\e[0m/;$f=0} $f=1 if /rebase \\(start\\)/; s/ \\e\\[m\\|[^\\e]*(?=\\e\\[34m)/ / if /- (?:commit|rebase \\((?:pick|continue)\\)|cherry-pick)/; s/(reset: (?!moving to HEAD )[^|]*)/\\e[1;31m$1\\e[0m/g; s/(rebase \\(fixup\\)[^|]*)/\\e[1;33m$1\\e[0m/g; s/(rebase \\(reword\\)[^|]*)/\\e[1;33m$1\\e[0m/g; s/(rebase \\((?!pick|start|fixup|reword)[^)]*\\)[^|]*)/\\e[1;31m$1\\e[0m/g; s/(merge[^|]*)/\\e[1;35m$1\\e[0m/g; s/(checkout:[^|]*)/\\e[1;36m$1\\e[0m/g'; }; f"
+    rll = "!git reflog --color=always --format='%C(auto)%h %C(green)%gd %C(reset)- %gs %C(reset)| %s %C(blue)(%ci)%C(auto)%d%C(reset)' | perl -pe 'BEGIN{$f=0} if($f){s/(- [^|]*)/\\e[1;32m$1\\e[0m/;$f=0} $f=1 if /rebase \\(start\\)/; s/ \\e\\[m\\|[^\\e]*(?=\\e\\[34m)/ / if /- (?:commit|rebase \\((?:pick|continue)\\)|cherry-pick)/; s/(reset: (?!moving to HEAD )[^|]*)/\\e[1;31m$1\\e[0m/g; s/(rebase \\(fixup\\)[^|]*)/\\e[1;33m$1\\e[0m/g; s/(rebase \\(reword\\)[^|]*)/\\e[1;33m$1\\e[0m/g; s/(rebase \\((?!pick|start|fixup|reword)[^)]*\\)[^|]*)/\\e[1;31m$1\\e[0m/g; s/(merge[^|]*)/\\e[1;35m$1\\e[0m/g; s/(checkout:[^|]*)/\\e[1;36m$1\\e[0m/g' | $(git var GIT_PAGER)"
+
+    ; ----------------------------------------------------------
     ; Status
     ; ----------------------------------------------------------
     s = status
