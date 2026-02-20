@@ -40,6 +40,32 @@ if [[ -z "$TMUX" && -z "$ZELLIJ" && -z "$INSIDE_EMACS" && $- == *i* ]]; then
 fi
 
 # ------------------------------------------------------------------------------
+# Clipboard (cross-platform)
+# ------------------------------------------------------------------------------
+
+if command -v pbcopy &>/dev/null; then
+    export CLIPCOPY_CMD="pbcopy"
+elif command -v wl-copy &>/dev/null; then
+    export CLIPCOPY_CMD="wl-copy"
+elif command -v xclip &>/dev/null; then
+    export CLIPCOPY_CMD="xclip -selection clipboard"
+elif command -v xsel &>/dev/null; then
+    export CLIPCOPY_CMD="xsel --clipboard --input"
+elif command -v clip.exe &>/dev/null; then
+    export CLIPCOPY_CMD="clip.exe"
+else
+    export CLIPCOPY_CMD=""
+fi
+
+clipcopy() {
+    if [[ -n "$CLIPCOPY_CMD" ]]; then
+        eval "$CLIPCOPY_CMD"
+    else
+        return 1
+    fi
+}
+
+# ------------------------------------------------------------------------------
 # Aliases
 # ------------------------------------------------------------------------------
 
@@ -206,6 +232,11 @@ else
     export FZF_CTRL_T_OPTS="--preview 'head -100 {}'"
 fi
 
+# Clipboard auto-copy on selection
+if [[ -n "$CLIPCOPY_CMD" ]]; then
+    export FZF_CTRL_T_OPTS="$FZF_CTRL_T_OPTS --bind 'enter:execute-silent(echo -n {+} | $CLIPCOPY_CMD)+accept'"
+fi
+
 # fzf git branch checkout
 fbr() {
     local branch
@@ -230,6 +261,14 @@ fcat() {
 # mkdir & cd
 mkcd() {
     mkdir -p "$1" && cd "$1"
+}
+
+# pwd with clipboard copy
+pwd() {
+    local dir
+    dir=$(builtin pwd "$@")
+    echo "$dir"
+    printf '%s' "$dir" | clipcopy
 }
 
 # ------------------------------------------------------------------------------
