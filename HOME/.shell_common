@@ -65,6 +65,28 @@ clipcopy() {
     fi
 }
 
+if command -v pbpaste &>/dev/null; then
+    export CLIPPASTE_CMD="pbpaste"
+elif command -v wl-paste &>/dev/null; then
+    export CLIPPASTE_CMD="wl-paste"
+elif command -v xclip &>/dev/null; then
+    export CLIPPASTE_CMD="xclip -selection clipboard -o"
+elif command -v xsel &>/dev/null; then
+    export CLIPPASTE_CMD="xsel --clipboard --output"
+elif command -v powershell.exe &>/dev/null; then
+    export CLIPPASTE_CMD="powershell.exe -noprofile -command Get-Clipboard"
+else
+    export CLIPPASTE_CMD=""
+fi
+
+clippaste() {
+    if [[ -n "$CLIPPASTE_CMD" ]]; then
+        eval "$CLIPPASTE_CMD"
+    else
+        return 1
+    fi
+}
+
 # ------------------------------------------------------------------------------
 # Aliases
 # ------------------------------------------------------------------------------
