@@ -117,6 +117,7 @@
     fback   = !sh -c 'git reset --soft HEAD~${1:-1}' -  ; コミット取り消し(変更は保持)
     fclean  = "!f() { git reset --hard HEAD; git clean --force -d; }; f"
     faclean = "!f() { git reset --hard HEAD; git clean --force -d; git ls-files --others | xargs rm -rf; }; f"
+    fremote = "!f() { git fetch origin && git reset --hard origin/$(git rev-parse --abbrev-ref HEAD); }; f"
 
     ; ----------------------------------------------------------
     ; GitHub PR
