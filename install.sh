@@ -115,7 +115,7 @@ INSTALL_DECISIONS[tmux]=0 INSTALL_DECISIONS[zellij]=0 INSTALL_DECISIONS[ghostty]
 INSTALL_DECISIONS[font]=0
 INSTALL_DECISIONS[amu]=0 INSTALL_DECISIONS[gh]=0
 INSTALL_DECISIONS[glow]=0 INSTALL_DECISIONS[fzf]=0
-INSTALL_DECISIONS[fd]=0 INSTALL_DECISIONS[bat]=0 INSTALL_DECISIONS[eza]=0 INSTALL_DECISIONS[delta]=0 INSTALL_DECISIONS[zoxide]=0 INSTALL_DECISIONS[ghq]=0 INSTALL_DECISIONS[wtp]=0
+INSTALL_DECISIONS[fd]=0 INSTALL_DECISIONS[bat]=0 INSTALL_DECISIONS[eza]=0 INSTALL_DECISIONS[delta]=0 INSTALL_DECISIONS[zoxide]=0 INSTALL_DECISIONS[ghq]=0 INSTALL_DECISIONS[wtp]=0 INSTALL_DECISIONS[cmux]=0
 INSTALL_DECISIONS[starship]=0 INSTALL_DECISIONS[bash_completion]=0
 INSTALL_DECISIONS[zsh_autosuggestions]=0 INSTALL_DECISIONS[zsh_syntax_highlighting]=0
 INSTALL_DECISIONS[direnv]=0
@@ -127,7 +127,7 @@ ALREADY_INSTALLED[tmux]=0 ALREADY_INSTALLED[zellij]=0 ALREADY_INSTALLED[ghostty]
 ALREADY_INSTALLED[font]=0
 ALREADY_INSTALLED[amu]=0 ALREADY_INSTALLED[gh]=0
 ALREADY_INSTALLED[glow]=0 ALREADY_INSTALLED[fzf]=0
-ALREADY_INSTALLED[fd]=0 ALREADY_INSTALLED[bat]=0 ALREADY_INSTALLED[eza]=0 ALREADY_INSTALLED[delta]=0 ALREADY_INSTALLED[zoxide]=0 ALREADY_INSTALLED[ghq]=0 ALREADY_INSTALLED[wtp]=0
+ALREADY_INSTALLED[fd]=0 ALREADY_INSTALLED[bat]=0 ALREADY_INSTALLED[eza]=0 ALREADY_INSTALLED[delta]=0 ALREADY_INSTALLED[zoxide]=0 ALREADY_INSTALLED[ghq]=0 ALREADY_INSTALLED[wtp]=0 ALREADY_INSTALLED[cmux]=0
 ALREADY_INSTALLED[starship]=0 ALREADY_INSTALLED[bash_completion]=0
 ALREADY_INSTALLED[zsh_autosuggestions]=0 ALREADY_INSTALLED[zsh_syntax_highlighting]=0
 ALREADY_INSTALLED[direnv]=0
@@ -142,7 +142,7 @@ UPDATE_DECISIONS[ghostty]=0 UPDATE_DECISIONS[font]=0
 UPDATE_DECISIONS[amu]=0
 UPDATE_DECISIONS[gh]=0 UPDATE_DECISIONS[glow]=0
 UPDATE_DECISIONS[fzf]=0 UPDATE_DECISIONS[fd]=0
-UPDATE_DECISIONS[bat]=0 UPDATE_DECISIONS[eza]=0 UPDATE_DECISIONS[delta]=0 UPDATE_DECISIONS[zoxide]=0 UPDATE_DECISIONS[ghq]=0 UPDATE_DECISIONS[wtp]=0
+UPDATE_DECISIONS[bat]=0 UPDATE_DECISIONS[eza]=0 UPDATE_DECISIONS[delta]=0 UPDATE_DECISIONS[zoxide]=0 UPDATE_DECISIONS[ghq]=0 UPDATE_DECISIONS[wtp]=0 UPDATE_DECISIONS[cmux]=0
 UPDATE_DECISIONS[starship]=0
 UPDATE_DECISIONS[zsh_autosuggestions]=0 UPDATE_DECISIONS[zsh_syntax_highlighting]=0
 UPDATE_DECISIONS[direnv]=0
@@ -238,7 +238,7 @@ show_help() {
     echo
     printf "${BOLD}更新可能なツール:${NC}\n"
     echo "  neovim, cmake, libtool, emacs, tmux, zellij, ghostty, font, amu, gh, glow, fzf, fd, bat, eza,"
-    echo "  delta, zoxide, ghq, wtp, starship, zsh-autosuggestions,"
+    echo "  delta, zoxide, ghq, wtp, cmux, starship, zsh-autosuggestions,"
     echo "  zsh-syntax-highlighting, direnv, bash-completion, claude-code, dotfiles"
     echo
     exit 0
@@ -314,7 +314,7 @@ show_updatable_tools() {
     echo
 
     local count=0
-    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -355,7 +355,7 @@ prompt_update_all_or_select() {
     case "$choice" in
         1)
             # Select all installed tools
-            local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+            local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
             for tool in "${tools[@]}"; do
                 if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
                     UPDATE_DECISIONS[$tool]=1
@@ -376,7 +376,7 @@ prompt_update_all_or_select() {
 }
 
 prompt_individual_updates() {
-    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -402,7 +402,7 @@ show_update_summary() {
 
     local update_list=()
     local skip_list=()
-    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -588,6 +588,11 @@ detect_installed() {
     # wtp
     if command_exists wtp; then
         ALREADY_INSTALLED[wtp]=1
+    fi
+
+    # cmux (macOS only)
+    if [[ "$OS_TYPE" == "macos" ]] && command_exists cmux; then
+        ALREADY_INSTALLED[cmux]=1
     fi
 
     # starship
@@ -1277,6 +1282,37 @@ prompt_wtp() {
     fi
 }
 
+prompt_cmux() {
+    if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
+        return 0
+    fi
+
+    # cmux is macOS only
+    if [[ "$OS_TYPE" != "macos" ]]; then
+        return 0
+    fi
+
+    print_header "cmux"
+    print_info "ターミナルマルチプレクサ"
+    echo
+
+    if [[ ${ALREADY_INSTALLED[cmux]} -eq 1 ]]; then
+        print_success "インストール済み"
+        INSTALL_DECISIONS[cmux]=1
+        return 0
+    fi
+
+    print_note "機能:"
+    print_info "   - tmux風のターミナルマルチプレクサ"
+    echo
+    print_note "インストール元:"
+    print_info "   - brew tap manaflow-ai/cmux"
+
+    if ask_yes_no "インストールしますか？"; then
+        INSTALL_DECISIONS[cmux]=1
+    fi
+}
+
 prompt_starship() {
     if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
         return 0
@@ -1496,7 +1532,7 @@ show_summary() {
     fi
 
     # Tools
-    for pkg in neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion; do
+    for pkg in neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion; do
         # Skip conditions
         [[ "$pkg" == "bash_completion" && "$SHELL" == */zsh ]] && continue
         [[ "$pkg" == "bash_completion" && "$OS_TYPE" == "windows" ]] && continue
@@ -1507,6 +1543,7 @@ show_summary() {
         [[ "$pkg" == "glow" && "$PKG_MANAGER" == "apt" ]] && continue
         [[ "$pkg" == "glow" && "$PKG_MANAGER" == "dnf" ]] && continue
         [[ "$pkg" == "wtp" && "$PKG_MANAGER" != "brew" ]] && continue
+        [[ "$pkg" == "cmux" && "$OS_TYPE" != "macos" ]] && continue
         [[ "$pkg" == "font" && "$PKG_MANAGER" != "brew" ]] && continue
 
         local display_name
@@ -1737,6 +1774,24 @@ install_wtp() {
     fi
 }
 
+install_cmux() {
+    if [[ ${ALREADY_INSTALLED[cmux]} -eq 1 ]]; then
+        return 0
+    fi
+    if [[ ${INSTALL_DECISIONS[cmux]} -eq 0 ]]; then
+        return 0
+    fi
+
+    echo
+    printf " ${CYAN}→${NC} cmux をインストール中...\n"
+
+    if brew tap manaflow-ai/cmux && brew install manaflow-ai/cmux/cmux; then
+        print_success "cmux インストール完了"
+    else
+        print_error "cmux のインストールに失敗しました"
+    fi
+}
+
 install_claude_code() {
     if [[ ${ALREADY_INSTALLED[claude_code]} -eq 1 ]]; then
         return 0
@@ -1948,6 +2003,21 @@ update_wtp() {
     fi
 }
 
+update_cmux() {
+    if [[ ${UPDATE_DECISIONS[cmux]} -eq 0 ]]; then
+        return 0
+    fi
+
+    echo
+    printf " ${CYAN}⟳${NC} cmux を更新中...\n"
+
+    if brew upgrade manaflow-ai/cmux/cmux 2>/dev/null; then
+        print_success "cmux 更新完了"
+    else
+        print_warning "cmux は最新か、更新に失敗しました"
+    fi
+}
+
 update_claude_code() {
     if [[ ${UPDATE_DECISIONS[claude_code]} -eq 0 ]]; then
         return 0
@@ -2013,7 +2083,7 @@ run_update_mode() {
             fi
 
             # Validate tool name
-            local valid_tools=" pkg_manager neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code "
+            local valid_tools=" pkg_manager neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code "
             if [[ "$valid_tools" != *" $target "* ]]; then
                 print_error "不明なツール: $(tool_display_name "$target")"
                 print_info "使い方: ./install.sh --update [ツール名...]"
@@ -2067,6 +2137,7 @@ run_update_mode() {
     upgrade_package "zoxide" "zoxide" "zoxide" "zoxide" "zoxide" "ajeetdsouza.zoxide" "zoxide"
     upgrade_package "ghq" "ghq" "ghq" "ghq" "ghq" "" "ghq"
     update_wtp
+    update_cmux
     upgrade_package "starship" "starship" "" "" "starship" "Starship.Starship" "starship"
     upgrade_package "zsh_autosuggestions" "zsh-autosuggestions" "zsh-autosuggestions" "" "zsh-autosuggestions" "" ""
     upgrade_package "zsh_syntax_highlighting" "zsh-syntax-highlighting" "zsh-syntax-highlighting" "" "zsh-syntax-highlighting" "" ""
@@ -2109,6 +2180,7 @@ run_install_mode() {
     prompt_zoxide
     prompt_ghq
     prompt_wtp
+    prompt_cmux
     prompt_starship
     prompt_zsh_autosuggestions
     prompt_zsh_syntax_highlighting
@@ -2152,6 +2224,7 @@ run_install_mode() {
     install_package "zoxide" "zoxide" "zoxide" "zoxide" "zoxide" "ajeetdsouza.zoxide" "zoxide"
     install_package "ghq" "ghq" "ghq" "ghq" "ghq" "" "ghq"
     install_wtp
+    install_cmux
     install_package "starship" "starship" "" "" "starship" "Starship.Starship" "starship"
     install_package "zsh_autosuggestions" "zsh-autosuggestions" "zsh-autosuggestions" "" "zsh-autosuggestions" "" ""
     install_package "zsh_syntax_highlighting" "zsh-syntax-highlighting" "zsh-syntax-highlighting" "" "zsh-syntax-highlighting" "" ""

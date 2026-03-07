@@ -109,7 +109,7 @@ UNINSTALL_DECISIONS[ghostty]=0 UNINSTALL_DECISIONS[font]=0
 UNINSTALL_DECISIONS[amu]=0
 UNINSTALL_DECISIONS[gh]=0 UNINSTALL_DECISIONS[glow]=0
 UNINSTALL_DECISIONS[fzf]=0 UNINSTALL_DECISIONS[fd]=0
-UNINSTALL_DECISIONS[bat]=0 UNINSTALL_DECISIONS[eza]=0 UNINSTALL_DECISIONS[delta]=0 UNINSTALL_DECISIONS[zoxide]=0 UNINSTALL_DECISIONS[ghq]=0 UNINSTALL_DECISIONS[wtp]=0
+UNINSTALL_DECISIONS[bat]=0 UNINSTALL_DECISIONS[eza]=0 UNINSTALL_DECISIONS[delta]=0 UNINSTALL_DECISIONS[zoxide]=0 UNINSTALL_DECISIONS[ghq]=0 UNINSTALL_DECISIONS[wtp]=0 UNINSTALL_DECISIONS[cmux]=0
 UNINSTALL_DECISIONS[starship]=0
 UNINSTALL_DECISIONS[zsh_autosuggestions]=0 UNINSTALL_DECISIONS[zsh_syntax_highlighting]=0
 UNINSTALL_DECISIONS[direnv]=0
@@ -121,7 +121,7 @@ IS_INSTALLED[ghostty]=0 IS_INSTALLED[font]=0
 IS_INSTALLED[amu]=0
 IS_INSTALLED[gh]=0 IS_INSTALLED[glow]=0
 IS_INSTALLED[fzf]=0 IS_INSTALLED[fd]=0
-IS_INSTALLED[bat]=0 IS_INSTALLED[eza]=0 IS_INSTALLED[delta]=0 IS_INSTALLED[zoxide]=0 IS_INSTALLED[ghq]=0 IS_INSTALLED[wtp]=0
+IS_INSTALLED[bat]=0 IS_INSTALLED[eza]=0 IS_INSTALLED[delta]=0 IS_INSTALLED[zoxide]=0 IS_INSTALLED[ghq]=0 IS_INSTALLED[wtp]=0 IS_INSTALLED[cmux]=0
 IS_INSTALLED[starship]=0
 IS_INSTALLED[zsh_autosuggestions]=0 IS_INSTALLED[zsh_syntax_highlighting]=0
 IS_INSTALLED[direnv]=0
@@ -333,6 +333,11 @@ detect_installed() {
         IS_INSTALLED[wtp]=1
     fi
 
+    # cmux (macOS only)
+    if [[ "$OS_TYPE" == "macos" ]] && command_exists cmux; then
+        IS_INSTALLED[cmux]=1
+    fi
+
     # starship
     if command_exists starship; then
         IS_INSTALLED[starship]=1
@@ -463,7 +468,7 @@ show_summary() {
         remove_list+=("dotfilesリンク")
     fi
 
-    for pkg in neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code; do
+    for pkg in neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code; do
         if [[ ${UNINSTALL_DECISIONS[$pkg]} -eq 1 ]]; then
             local display_name
             case "$pkg" in
@@ -643,6 +648,21 @@ uninstall_wtp() {
     fi
 }
 
+uninstall_cmux() {
+    if [[ ${UNINSTALL_DECISIONS[cmux]} -eq 0 ]]; then
+        return 0
+    fi
+
+    echo
+    printf " ${CYAN}→${NC} cmux をアンインストール中...\n"
+
+    if brew uninstall cmux; then
+        print_success "cmux アンインストール完了"
+    else
+        print_error "cmux のアンインストールに失敗しました"
+    fi
+}
+
 uninstall_claude_code() {
     if [[ ${UNINSTALL_DECISIONS[claude_code]} -eq 0 ]]; then
         return 0
@@ -728,6 +748,7 @@ main() {
     prompt_uninstall_tool "zoxide" "zoxide" "スマートなcd代替コマンド"
     prompt_uninstall_tool "ghq" "ghq" "Gitリポジトリ管理ツール"
     prompt_uninstall_tool "wtp" "wtp" "Git worktree 管理ツール"
+    prompt_uninstall_tool "cmux" "cmux" "ターミナルマルチプレクサ"
     prompt_uninstall_tool "starship" "Starship" "クロスシェルプロンプト"
     prompt_uninstall_tool "zsh_autosuggestions" "zsh-autosuggestions" "履歴ベースのコマンド補完候補表示"
     prompt_uninstall_tool "zsh_syntax_highlighting" "zsh-syntax-highlighting" "コマンドラインのリアルタイム構文ハイライト"
@@ -773,6 +794,7 @@ main() {
     uninstall_package "zoxide" "zoxide" "zoxide" "zoxide" "zoxide" "ajeetdsouza.zoxide" "zoxide"
     uninstall_package "ghq" "ghq" "ghq" "ghq" "ghq" "" "ghq"
     uninstall_wtp
+    uninstall_cmux
     uninstall_package "starship" "starship" "" "" "starship" "Starship.Starship" "starship"
     uninstall_package "zsh_autosuggestions" "zsh-autosuggestions" "zsh-autosuggestions" "" "zsh-autosuggestions" "" ""
     uninstall_package "zsh_syntax_highlighting" "zsh-syntax-highlighting" "zsh-syntax-highlighting" "" "zsh-syntax-highlighting" "" ""
