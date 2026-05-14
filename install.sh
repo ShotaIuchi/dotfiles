@@ -114,7 +114,7 @@ INSTALL_DECISIONS[pkg_manager]=0 INSTALL_DECISIONS[neovim]=0 INSTALL_DECISIONS[c
 INSTALL_DECISIONS[tmux]=0 INSTALL_DECISIONS[zellij]=0 INSTALL_DECISIONS[ghostty]=0
 INSTALL_DECISIONS[font]=0
 INSTALL_DECISIONS[amu]=0 INSTALL_DECISIONS[gh]=0
-INSTALL_DECISIONS[glow]=0 INSTALL_DECISIONS[fzf]=0
+INSTALL_DECISIONS[glow]=0 INSTALL_DECISIONS[mdcat]=0 INSTALL_DECISIONS[fzf]=0
 INSTALL_DECISIONS[fd]=0 INSTALL_DECISIONS[bat]=0 INSTALL_DECISIONS[eza]=0 INSTALL_DECISIONS[delta]=0 INSTALL_DECISIONS[zoxide]=0 INSTALL_DECISIONS[ghq]=0 INSTALL_DECISIONS[wtp]=0 INSTALL_DECISIONS[cmux]=0
 INSTALL_DECISIONS[starship]=0 INSTALL_DECISIONS[bash_completion]=0
 INSTALL_DECISIONS[zsh_autosuggestions]=0 INSTALL_DECISIONS[zsh_syntax_highlighting]=0
@@ -126,7 +126,7 @@ ALREADY_INSTALLED[pkg_manager]=0 ALREADY_INSTALLED[neovim]=0 ALREADY_INSTALLED[c
 ALREADY_INSTALLED[tmux]=0 ALREADY_INSTALLED[zellij]=0 ALREADY_INSTALLED[ghostty]=0
 ALREADY_INSTALLED[font]=0
 ALREADY_INSTALLED[amu]=0 ALREADY_INSTALLED[gh]=0
-ALREADY_INSTALLED[glow]=0 ALREADY_INSTALLED[fzf]=0
+ALREADY_INSTALLED[glow]=0 ALREADY_INSTALLED[mdcat]=0 ALREADY_INSTALLED[fzf]=0
 ALREADY_INSTALLED[fd]=0 ALREADY_INSTALLED[bat]=0 ALREADY_INSTALLED[eza]=0 ALREADY_INSTALLED[delta]=0 ALREADY_INSTALLED[zoxide]=0 ALREADY_INSTALLED[ghq]=0 ALREADY_INSTALLED[wtp]=0 ALREADY_INSTALLED[cmux]=0
 ALREADY_INSTALLED[starship]=0 ALREADY_INSTALLED[bash_completion]=0
 ALREADY_INSTALLED[zsh_autosuggestions]=0 ALREADY_INSTALLED[zsh_syntax_highlighting]=0
@@ -140,7 +140,7 @@ typeset -A UPDATE_DECISIONS
 UPDATE_DECISIONS[neovim]=0 UPDATE_DECISIONS[cmake]=0 UPDATE_DECISIONS[libtool]=0 UPDATE_DECISIONS[emacs]=0 UPDATE_DECISIONS[tmux]=0 UPDATE_DECISIONS[zellij]=0
 UPDATE_DECISIONS[ghostty]=0 UPDATE_DECISIONS[font]=0
 UPDATE_DECISIONS[amu]=0
-UPDATE_DECISIONS[gh]=0 UPDATE_DECISIONS[glow]=0
+UPDATE_DECISIONS[gh]=0 UPDATE_DECISIONS[glow]=0 UPDATE_DECISIONS[mdcat]=0
 UPDATE_DECISIONS[fzf]=0 UPDATE_DECISIONS[fd]=0
 UPDATE_DECISIONS[bat]=0 UPDATE_DECISIONS[eza]=0 UPDATE_DECISIONS[delta]=0 UPDATE_DECISIONS[zoxide]=0 UPDATE_DECISIONS[ghq]=0 UPDATE_DECISIONS[wtp]=0 UPDATE_DECISIONS[cmux]=0
 UPDATE_DECISIONS[starship]=0
@@ -237,7 +237,7 @@ show_help() {
     echo "  ./install.sh --help                このヘルプを表示"
     echo
     printf "${BOLD}更新可能なツール:${NC}\n"
-    echo "  neovim, cmake, libtool, emacs, tmux, zellij, ghostty, font, amu, gh, glow, fzf, fd, bat, eza,"
+    echo "  neovim, cmake, libtool, emacs, tmux, zellij, ghostty, font, amu, gh, glow, mdcat, fzf, fd, bat, eza,"
     echo "  delta, zoxide, ghq, wtp, cmux, starship, zsh-autosuggestions,"
     echo "  zsh-syntax-highlighting, direnv, bash-completion, claude-code, dotfiles"
     echo
@@ -314,7 +314,7 @@ show_updatable_tools() {
     echo
 
     local count=0
-    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow mdcat fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -355,7 +355,7 @@ prompt_update_all_or_select() {
     case "$choice" in
         1)
             # Select all installed tools
-            local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+            local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow mdcat fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
             for tool in "${tools[@]}"; do
                 if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
                     UPDATE_DECISIONS[$tool]=1
@@ -376,7 +376,7 @@ prompt_update_all_or_select() {
 }
 
 prompt_individual_updates() {
-    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow mdcat fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -402,7 +402,7 @@ show_update_summary() {
 
     local update_list=()
     local skip_list=()
-    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow mdcat fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -548,6 +548,11 @@ detect_installed() {
     # glow
     if command_exists glow; then
         ALREADY_INSTALLED[glow]=1
+    fi
+
+    # mdcat
+    if command_exists mdcat; then
+        ALREADY_INSTALLED[mdcat]=1
     fi
 
     # fzf
@@ -1047,6 +1052,38 @@ prompt_glow() {
     fi
 }
 
+prompt_mdcat() {
+    if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
+        return 0
+    fi
+
+    # mdcat is not reliably available on apt/dnf default repos
+    if [[ "$PKG_MANAGER" == "apt" || "$PKG_MANAGER" == "dnf" ]]; then
+        return 0
+    fi
+
+    print_header "mdcat"
+    print_info "ターミナル用Markdownビューア（Rust製）"
+    echo
+
+    if [[ ${ALREADY_INSTALLED[mdcat]} -eq 1 ]]; then
+        print_success "インストール済み"
+        INSTALL_DECISIONS[mdcat]=1
+        return 0
+    fi
+
+    print_note "機能:"
+    print_info "   - Markdownファイルを高速にレンダリング"
+    print_info "   - 画像のインライン表示に対応（kitty/iTerm2/WezTerm）"
+    echo
+    print_note "dotfilesとの関連:"
+    print_info "   - .shell_common で alias md='mdcat -p' として使用"
+
+    if ask_yes_no "インストールしますか？"; then
+        INSTALL_DECISIONS[mdcat]=1
+    fi
+}
+
 prompt_fzf() {
     if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
         return 0
@@ -1532,7 +1569,7 @@ show_summary() {
     fi
 
     # Tools
-    for pkg in neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion; do
+    for pkg in neovim cmake libtool emacs tmux zellij ghostty font amu gh glow mdcat fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion; do
         # Skip conditions
         [[ "$pkg" == "bash_completion" && "$SHELL" == */zsh ]] && continue
         [[ "$pkg" == "bash_completion" && "$OS_TYPE" == "windows" ]] && continue
@@ -1542,6 +1579,8 @@ show_summary() {
         [[ "$pkg" == "zellij" && "$OS_TYPE" == "windows" ]] && continue
         [[ "$pkg" == "glow" && "$PKG_MANAGER" == "apt" ]] && continue
         [[ "$pkg" == "glow" && "$PKG_MANAGER" == "dnf" ]] && continue
+        [[ "$pkg" == "mdcat" && "$PKG_MANAGER" == "apt" ]] && continue
+        [[ "$pkg" == "mdcat" && "$PKG_MANAGER" == "dnf" ]] && continue
         [[ "$pkg" == "wtp" && "$PKG_MANAGER" != "brew" ]] && continue
         [[ "$pkg" == "cmux" && "$OS_TYPE" != "macos" ]] && continue
         [[ "$pkg" == "font" && "$PKG_MANAGER" != "brew" ]] && continue
@@ -1844,6 +1883,7 @@ apply_dotfiles() {
         print_error "amu コマンドが見つかりません"
         print_info "手動でシンボリックリンクを作成してください"
     fi
+
 }
 
 # ------------------------------------------------------------------------------
@@ -2083,7 +2123,7 @@ run_update_mode() {
             fi
 
             # Validate tool name
-            local valid_tools=" pkg_manager neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code "
+            local valid_tools=" pkg_manager neovim cmake libtool emacs tmux zellij ghostty font amu gh glow mdcat fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code "
             if [[ "$valid_tools" != *" $target "* ]]; then
                 print_error "不明なツール: $(tool_display_name "$target")"
                 print_info "使い方: ./install.sh --update [ツール名...]"
@@ -2129,6 +2169,7 @@ run_update_mode() {
     update_amu
     upgrade_package "gh" "gh" "gh" "gh" "github-cli" "GitHub.cli" "gh"
     upgrade_package "glow" "glow" "" "" "glow" "charmbracelet.glow" "glow"
+    upgrade_package "mdcat" "mdcat" "" "" "mdcat" "" "mdcat"
     upgrade_package "fzf" "fzf" "fzf" "fzf" "fzf" "junegunn.fzf" "fzf"
     upgrade_package "fd" "fd" "fd-find" "fd-find" "fd" "sharkdp.fd" "fd"
     upgrade_package "bat" "bat" "bat" "bat" "bat" "sharkdp.bat" "bat"
@@ -2172,6 +2213,7 @@ run_install_mode() {
     prompt_amu
     prompt_gh
     prompt_glow
+    prompt_mdcat
     prompt_fzf
     prompt_fd
     prompt_bat
@@ -2191,6 +2233,33 @@ run_install_mode() {
 
     # Show summary and confirm
     echo
+    # TPM (tmux plugin manager) - install regardless of other tool status
+    if command_exists tmux; then
+        local tpm_dir="$HOME/.tmux/plugins/tpm"
+        local tpm_changed=false
+        if [[ ! -d "$tpm_dir" ]]; then
+            printf " ${CYAN}→${NC} TPM (tmux plugin manager) をインストール中...\n"
+            if git clone https://github.com/tmux-plugins/tpm "$tpm_dir" 2>/dev/null; then
+                print_success "TPM インストール完了"
+                tpm_changed=true
+            else
+                print_error "TPM のインストールに失敗しました"
+            fi
+        fi
+        if [[ -x "$tpm_dir/bin/install_plugins" ]]; then
+            printf " ${CYAN}→${NC} tmux プラグインをインストール中...\n"
+            if "$tpm_dir/bin/install_plugins" 2>/dev/null; then
+                print_success "tmux プラグイン インストール完了"
+                tpm_changed=true
+            else
+                print_error "tmux プラグインのインストールに失敗しました"
+            fi
+        fi
+        if [[ "$tpm_changed" == "false" ]]; then
+            print_success "TPM・tmuxプラグイン インストール済み"
+        fi
+    fi
+
     if ! show_summary; then
         echo
         print_success "全てのツールがインストール済みです"
@@ -2210,28 +2279,13 @@ run_install_mode() {
     install_package "libtool" "libtool" "libtool" "libtool" "libtool" "" ""
     install_package "emacs" "emacs" "" "" "" "" "" "true"  # macOS only
     install_package "tmux" "tmux" "tmux" "tmux" "tmux" "" ""
-
-    # TPM (tmux plugin manager)
-    if [[ ${INSTALL_DECISIONS[tmux]} -eq 1 || ${ALREADY_INSTALLED[tmux]} -eq 1 ]]; then
-        local tpm_dir="$HOME/.tmux/plugins/tpm"
-        if [[ ! -d "$tpm_dir" ]]; then
-            printf " ${CYAN}→${NC} TPM (tmux plugin manager) をインストール中...\n"
-            if git clone https://github.com/tmux-plugins/tpm "$tpm_dir" 2>/dev/null; then
-                print_success "TPM インストール完了"
-                print_note "tmux起動後に prefix + I でプラグインをインストールしてください"
-            else
-                print_error "TPM のインストールに失敗しました"
-            fi
-        else
-            print_success "TPM インストール済み"
-        fi
-    fi
     install_package "zellij" "zellij" "" "" "zellij" "" ""  # Linux: cargo or manual
     install_package "ghostty" "ghostty" "" "" "" "" "" "true"  # macOS only
     install_package "font" "font-udev-gothic-nf" "" "" "" "" "" "true"  # brew cask only
     install_amu
     install_package "gh" "gh" "gh" "gh" "github-cli" "GitHub.cli" "gh"
     install_package "glow" "glow" "" "" "glow" "charmbracelet.glow" "glow"
+    install_package "mdcat" "mdcat" "" "" "mdcat" "" "mdcat"
     install_package "fzf" "fzf" "fzf" "fzf" "fzf" "junegunn.fzf" "fzf"
     install_package "fd" "fd" "fd-find" "fd-find" "fd" "sharkdp.fd" "fd"
     install_package "bat" "bat" "bat" "bat" "bat" "sharkdp.bat" "bat"
