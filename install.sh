@@ -2210,6 +2210,22 @@ run_install_mode() {
     install_package "libtool" "libtool" "libtool" "libtool" "libtool" "" ""
     install_package "emacs" "emacs" "" "" "" "" "" "true"  # macOS only
     install_package "tmux" "tmux" "tmux" "tmux" "tmux" "" ""
+
+    # TPM (tmux plugin manager)
+    if [[ ${INSTALL_DECISIONS[tmux]} -eq 1 || ${ALREADY_INSTALLED[tmux]} -eq 1 ]]; then
+        local tpm_dir="$HOME/.tmux/plugins/tpm"
+        if [[ ! -d "$tpm_dir" ]]; then
+            printf " ${CYAN}→${NC} TPM (tmux plugin manager) をインストール中...\n"
+            if git clone https://github.com/tmux-plugins/tpm "$tpm_dir" 2>/dev/null; then
+                print_success "TPM インストール完了"
+                print_note "tmux起動後に prefix + I でプラグインをインストールしてください"
+            else
+                print_error "TPM のインストールに失敗しました"
+            fi
+        else
+            print_success "TPM インストール済み"
+        fi
+    fi
     install_package "zellij" "zellij" "" "" "zellij" "" ""  # Linux: cargo or manual
     install_package "ghostty" "ghostty" "" "" "" "" "" "true"  # macOS only
     install_package "font" "font-udev-gothic-nf" "" "" "" "" "" "true"  # brew cask only

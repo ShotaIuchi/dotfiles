@@ -59,6 +59,27 @@ tmux を優先使用、未インストール時は Zellij にフォールバッ�
 | ペイン開始番号 | 1 |
 | true color | ghostty 対応 |
 
+## プラグイン
+
+| プラグイン | 機能 |
+|---|---|
+| [tpm](https://github.com/tmux-plugins/tpm) | プラグインマネージャ |
+| [tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect) | セッション保存・復元 |
+| [tmux-continuum](https://github.com/tmux-plugins/tmux-continuum) | 自動保存・自動復元 |
+
+### セッション復元キーバインド
+
+| キー | 機能 |
+|---|---|
+| `prefix + Ctrl-s` | セッション保存 |
+| `prefix + Ctrl-r` | セッション復元 |
+
+### 初回セットアップ
+
+1. tmux を起動
+2. `prefix + I`（大文字 I）でプラグインをインストール
+3. 以降は自動で15分ごとにセッションを保存、tmux起動時に自動復元
+
 ## Zellij キーバインド
 
 tmux と同じ `C-x` プレフィックスで同じ操作体系。
