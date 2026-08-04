@@ -213,6 +213,58 @@ git() {
     esac
 }
 
+# ghq wrapper: clone サブコマンドで別名cloneに対応
+# 使い方: ghq clone <url> [name]  →  ghq root/ホスト/オーナー/name にclone
+ghq() {
+    if [[ "$1" != "clone" ]]; then
+        command ghq "$@"
+        return
+    fi
+    shift
+    local url="$1" name="$2"
+    if [[ -z "$url" ]]; then
+        echo "usage: ghq clone <url> [name]" >&2
+        return 1
+    fi
+    # 別名なしなら ghq get と同じ
+    if [[ -z "$name" ]]; then
+        command ghq get "$url"
+        return
+    fi
+    # URLから ホスト/オーナー を抽出
+    # 注意: zshでは小文字の path は PATH 連動の特殊変数のため使わない
+    local repopath
+    case "$url" in
+        git@*:*)
+            repopath="${url#git@}"
+            repopath="${repopath%%:*}/${url#*:}"
+            ;;
+        *://*)
+            repopath="${url#*://}"
+            repopath="${repopath#*@}"
+            ;;
+        */*)
+            repopath="github.com/$url"
+            url="https://github.com/$url"
+            ;;
+        *)
+            echo "ghq clone: unsupported url: $url" >&2
+            return 1
+            ;;
+    esac
+    repopath="${repopath%.git}"
+    local host="${repopath%%/*}"
+    local rest="${repopath#*/}"
+    local owner="${rest%%/*}"
+    local dest
+    dest="$(command ghq root)/$host/$owner/$name"
+    if [[ -e "$dest" ]]; then
+        echo "ghq clone: already exists: $dest" >&2
+        return 1
+    fi
+    command git clone "$url" "$dest"
+}
+
 # Claude Code
 alias fclaude='claude --dangerously-skip-permissions'
 
