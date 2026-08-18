@@ -114,6 +114,7 @@ amu sync
 | Ghostty | [README.ghostty.md](README.ghostty.md) |
 | tmux / Zellij | [README.tmux.md](README.tmux.md) |
 | シェル (bash/zsh) | [README.shell.md](README.shell.md) |
+| Claude Code | [README.claude.md](README.claude.md) |
 
 ## キーバインド
 
