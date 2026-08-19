@@ -24,14 +24,15 @@ while IFS= read -r line; do vals+=("$line"); done < <(printf '%s' "$input" | jq 
     (.cost.total_cost_usd // ""),
     (.cost.total_lines_added // 0),
     (.cost.total_lines_removed // 0),
-    (.vim.mode // "")
+    (.vim.mode // ""),
+    (.session_id // "")
 ] | .[] | tostring')
 
 session="${vals[0]}"   model="${vals[1]}"    effort="${vals[2]}"
 thinking="${vals[3]}"  fast="${vals[4]}"     ctx_rem="${vals[5]}"
 rl5_used="${vals[6]}"  rl5_reset="${vals[7]}" rl7_used="${vals[8]}"
 cost="${vals[9]}"      added="${vals[10]}"   removed="${vals[11]}"
-vim_mode="${vals[12]}"
+vim_mode="${vals[12]}" session_id="${vals[13]}"
 
 # Tokyo Night
 BLUE=$'\e[38;2;122;162;247m'
@@ -49,7 +50,31 @@ RESET=$'\e[0m'
 color_by_remaining() { [ "$1" -ge 50 ] && echo "$GREEN" || { [ "$1" -ge 20 ] && echo "$YELLOW" || echo "$RED"; }; }
 color_by_used()      { [ "$1" -lt 50 ] && echo "$GRAY"  || { [ "$1" -lt 80 ] && echo "$YELLOW" || echo "$RED"; }; }
 
+# 秒数を "42s" / "3m05s" / "1h02m" に整形
+fmt_dur() {
+    local s=$1
+    if [ "$s" -ge 3600 ]; then printf '%dh%02dm' $((s / 3600)) $((s % 3600 / 60))
+    elif [ "$s" -ge 60 ]; then printf '%dm%02ds' $((s / 60)) $((s % 60))
+    else printf '%ds' "$s"; fi
+}
+
 segs=()
+
+# 実行状態（hooks が書く ~/.claude/state/<session_id> を参照）
+# statusLine.refreshInterval により定期再実行されるため経過時間は動き続ける。
+# 「▶」のまま経過時間だけが異常に伸びていればハングの疑い。
+state_file="$HOME/.claude/state/${session_id}"
+if [ -n "$session_id" ] && [ -f "$state_file" ]; then
+    IFS='|' read -r st st_tool st_ts _ < "$state_file"
+    if [ -n "$st_ts" ]; then
+        st_age=$(fmt_dur $(($(date +%s) - st_ts)))
+        case "$st" in
+            running) segs+=("${GREEN}▶ ${st_tool:-応答中} ${st_age}${RESET}") ;;
+            waiting) segs+=("${RED}⏸ 入力待ち ${st_age}${RESET}") ;;
+            idle)    segs+=("${GRAY}■ 待機${RESET}") ;;
+        esac
+    fi
+fi
 
 # セッション名（/rename や --name 指定時のみ）
 [ -n "$session" ] && segs+=("${BOLD}${BLUE}${session}${RESET}")

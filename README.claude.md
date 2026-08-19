@@ -12,6 +12,7 @@
 | `rules/` | 個別ルール |
 | `skills/` | カスタムスキル |
 | `statusline.sh` | ステータスラインスクリプト |
+| `hooks/state-track.sh` | セッション実行状態の記録（下記参照） |
 
 ## ステータスライン
 
@@ -20,6 +21,7 @@
 
 | セグメント | 内容 | 表示条件 |
 |---|---|---|
+| 実行状態 | `▶ Bash 1m35s`（実行中） / `⏸ 入力待ち` / `■ 待機` | hooks設定時 |
 | セッション名 | `--name` / `/rename` で付けた名前 | 設定時のみ |
 | モデル | 表示名 + effortレベル / think / fast | 常時 |
 | ctx | コンテキストウィンドウ残%（緑≥50 / 黄≥20 / 赤<20） | 常時 |
@@ -32,3 +34,19 @@
 ここでは扱わない（[README.tmux.md](README.tmux.md) 参照）。
 
 テーマは Tokyo Night（tmux と統一）。
+
+## 実行状態の追跡（ハング検知）
+
+「止まっているのか裏で処理中なのか分からない」問題への対策。
+
+- `hooks/state-track.sh` が Claude Code の hooks
+  （UserPromptSubmit / PreToolUse / PostToolUse / PermissionRequest /
+  Notification / Stop / SessionEnd 等）から呼ばれ、
+  `~/.claude/state/<session_id>` に `状態|ツール名|時刻|tmuxペインID` を記録する
+- hooks の設定は `~/.claude/settings.json`（ローカル、リポジトリ外）の `hooks` キー
+- ステータスラインは `statusLine.refreshInterval: 5` により5秒ごとに再実行され、
+  経過時間が動き続ける。`▶` のまま経過時間だけが異常に伸びていればハングの疑い
+- tmux 側でも同じ状態ファイルを `status-claude-state.sh` が読み、
+  status-right にアクティブペインの Claude Code 状態を表示する
+  （tmux は Claude Code 本体がハングしても15秒ごとに再描画されるため、
+  最終的なハング検知はこちらが確実。[README.tmux.md](README.tmux.md) 参照）
