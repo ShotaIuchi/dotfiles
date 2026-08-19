@@ -67,11 +67,19 @@ state_file="$HOME/.claude/state/${session_id}"
 if [ -n "$session_id" ] && [ -f "$state_file" ]; then
     IFS='|' read -r st st_tool st_ts _ < "$state_file"
     if [ -n "$st_ts" ]; then
-        st_age=$(fmt_dur $(($(date +%s) - st_ts)))
+        st_sec=$(($(date +%s) - st_ts))
+        st_age=$(fmt_dur "$st_sec")
         case "$st" in
             running) segs+=("${GREEN}▶ ${st_tool:-応答中} ${st_age}${RESET}") ;;
             waiting) segs+=("${RED}⏸ 入力待ち ${st_age}${RESET}") ;;
-            idle)    segs+=("${GRAY}■ 待機${RESET}") ;;
+            idle)
+                # tmux側(status-claude-state.sh)と同じ基準: 完了直後(5分以内)は「完了」
+                if [ "$st_sec" -lt 300 ]; then
+                    segs+=("${GREEN}■ 完了 ${st_age}${RESET}")
+                else
+                    segs+=("${GRAY}■ 待機${RESET}")
+                fi
+                ;;
         esac
     fi
 fi

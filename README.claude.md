@@ -21,7 +21,7 @@
 
 | セグメント | 内容 | 表示条件 |
 |---|---|---|
-| 実行状態 | `▶ Bash 1m35s`（実行中） / `⏸ 入力待ち` / `■ 待機` | hooks設定時 |
+| 実行状態 | `▶ Bash 1m35s`（実行中） / `⏸ 入力待ち` / `■ 完了`（5分以内） / `■ 待機` | hooks設定時 |
 | セッション名 | `--name` / `/rename` で付けた名前 | 設定時のみ |
 | モデル | 表示名 + effortレベル / think / fast | 常時 |
 | ctx | コンテキストウィンドウ残%（緑≥50 / 黄≥20 / 赤<20） | 常時 |
@@ -46,7 +46,5 @@
 - hooks の設定は `~/.claude/settings.json`（ローカル、リポジトリ外）の `hooks` キー
 - ステータスラインは `statusLine.refreshInterval: 5` により5秒ごとに再実行され、
   経過時間が動き続ける。`▶` のまま経過時間だけが異常に伸びていればハングの疑い
-- tmux 側でも同じ状態ファイルを `status-claude-state.sh` が読み、
-  status-right にアクティブペインの Claude Code 状態を表示する
-  （tmux は Claude Code 本体がハングしても15秒ごとに再描画されるため、
-  最終的なハング検知はこちらが確実。[README.tmux.md](README.tmux.md) 参照）
+- 状態ファイルには tmux ペインIDも記録しているため、
+  必要になれば tmux 側からも同じ状態を読める（現在は Claude Code 側のみで表示）
