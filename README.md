@@ -115,6 +115,7 @@ amu sync
 | tmux / Zellij | [README.tmux.md](README.tmux.md) |
 | シェル (bash/zsh) | [README.shell.md](README.shell.md) |
 | Claude Code | [README.claude.md](README.claude.md) |
+| Codex CLI | [README.codex.md](README.codex.md) |
 
 ## キーバインド
 
