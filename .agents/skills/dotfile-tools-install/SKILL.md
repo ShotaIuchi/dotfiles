@@ -1,7 +1,6 @@
 ---
 name: dotfile-tools-install
 description: dotfiles install.sh / uninstall.sh の更新・メンテナンス
-argument-hint: "[add <tool>] [update] [list] [test]"
 ---
 
 # /dotfile-tools-install
@@ -18,7 +17,7 @@ dotfilesのインストール/アンインストールスクリプトを管理�
 ## 使い方
 
 ```
-/dotfile-tools-install [コマンド] [オプション]
+dotfile-tools-install [コマンド] [オプション]
 ```
 
 ## コマンド
@@ -28,7 +27,7 @@ dotfilesのインストール/アンインストールスクリプトを管理�
 install.sh / uninstall.sh に含まれる全ツールとOS対応状況を表示。
 
 ```
-/dotfile-tools-install list
+dotfile-tools-install list
 ```
 
 ### add <tool>
@@ -36,7 +35,7 @@ install.sh / uninstall.sh に含まれる全ツールとOS対応状況を表示�
 新しいツールを install.sh / uninstall.sh の両方に対話式で追加。
 
 ```
-/dotfile-tools-install add <ツール名>
+dotfile-tools-install add <ツール名>
 ```
 
 入力項目:
@@ -48,14 +47,14 @@ install.sh / uninstall.sh に含まれる全ツールとOS対応状況を表示�
 ### update
 
 install.sh / uninstall.sh をレビュー・更新:
-- インストールURL/スクリプトの最新確認（Homebrew、Codex等）
+- インストールURL/スクリプトの最新確認（Homebrew、Claude Code等）
 - 古いパッケージ名のチェック
 - パッケージマネージャーコマンドの更新
 - 不足しているOS対応の追加
 - install.sh と uninstall.sh の整合性チェック
 
 ```
-/dotfile-tools-install update
+dotfile-tools-install update
 ```
 
 ### test
@@ -63,7 +62,7 @@ install.sh / uninstall.sh をレビュー・更新:
 install.sh / uninstall.sh 両方の構文チェックとドライランテストを実行。
 
 ```
-/dotfile-tools-install test
+dotfile-tools-install test
 ```
 
 ## 処理内容
@@ -131,16 +130,16 @@ install.sh / uninstall.sh 両方の構文チェックとドライランテスト
 
 ```bash
 # 対応ツール一覧
-/dotfile-tools-install list
+dotfile-tools-install list
 
 # ripgrep を追加
-/dotfile-tools-install add ripgrep
+dotfile-tools-install add ripgrep
 
 # install.sh を更新
-/dotfile-tools-install update
+dotfile-tools-install update
 
 # install.sh をテスト
-/dotfile-tools-install test
+dotfile-tools-install test
 ```
 
 ## 注意事項
