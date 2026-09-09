@@ -95,7 +95,7 @@ clippaste() {
 
 # ls (eza)
 alias ls='eza'
-alias ll='eza -la --git --icons'
+alias ll='eza -la --git --icons=auto'
 alias la='eza -a'
 alias l='eza -1'
 alias lt='eza --tree --level=2'
