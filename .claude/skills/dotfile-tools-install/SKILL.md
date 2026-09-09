@@ -105,9 +105,9 @@ install.sh / uninstall.sh 両方の構文チェックとドライランテスト
 
 1. 現在の install.sh を読み込む
 2. インストールURL/スクリプトの最新確認:
-   - Homebrew: `https://raw.githubusercontent.com/Homebrew/dotfile-tools-install/HEAD/dotfile-tools-install.sh`
-   - Claude Code (macOS/Linux): `https://claude.ai/dotfile-tools-install.sh`
-   - Claude Code (Windows): `https://claude.ai/dotfile-tools-install.ps1`
+   - Homebrew: `https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh`
+   - Claude Code (macOS/Linux): `https://claude.ai/install.sh`
+   - Claude Code (Windows): `https://claude.ai/install.ps1`
    - Scoop: `irm get.scoop.sh | iex`
 3. 各ツールのパッケージ可用性をチェック
 4. パッケージ名変更があれば更新を提案
@@ -123,8 +123,8 @@ install.sh / uninstall.sh 両方の構文チェックとドライランテスト
 ## ファイル場所
 
 ```
-~/dot/dotfiles/install.sh
-~/dot/dotfiles/uninstall.sh
+~/ghq/github.com/ShotaIuchi/dotfiles/install.sh
+~/ghq/github.com/ShotaIuchi/dotfiles/uninstall.sh
 ```
 
 ## 使用例
