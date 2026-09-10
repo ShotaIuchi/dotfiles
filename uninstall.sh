@@ -113,7 +113,7 @@ UNINSTALL_DECISIONS[bat]=0 UNINSTALL_DECISIONS[eza]=0 UNINSTALL_DECISIONS[delta]
 UNINSTALL_DECISIONS[starship]=0
 UNINSTALL_DECISIONS[zsh_autosuggestions]=0 UNINSTALL_DECISIONS[zsh_syntax_highlighting]=0
 UNINSTALL_DECISIONS[direnv]=0
-UNINSTALL_DECISIONS[bash_completion]=0 UNINSTALL_DECISIONS[claude_code]=0
+UNINSTALL_DECISIONS[bash_completion]=0 UNINSTALL_DECISIONS[claude_code]=0 UNINSTALL_DECISIONS[codex]=0
 
 typeset -A IS_INSTALLED
 IS_INSTALLED[neovim]=0 IS_INSTALLED[cmake]=0 IS_INSTALLED[libtool]=0 IS_INSTALLED[emacs]=0 IS_INSTALLED[tmux]=0 IS_INSTALLED[zellij]=0
@@ -125,7 +125,7 @@ IS_INSTALLED[bat]=0 IS_INSTALLED[eza]=0 IS_INSTALLED[delta]=0 IS_INSTALLED[zoxid
 IS_INSTALLED[starship]=0
 IS_INSTALLED[zsh_autosuggestions]=0 IS_INSTALLED[zsh_syntax_highlighting]=0
 IS_INSTALLED[direnv]=0
-IS_INSTALLED[bash_completion]=0 IS_INSTALLED[claude_code]=0
+IS_INSTALLED[bash_completion]=0 IS_INSTALLED[claude_code]=0 IS_INSTALLED[codex]=0
 
 REMOVE_DOTFILES=0
 
@@ -409,6 +409,11 @@ detect_installed() {
     if command_exists claude; then
         IS_INSTALLED[claude_code]=1
     fi
+
+    # Codex CLI
+    if command_exists codex; then
+        IS_INSTALLED[codex]=1
+    fi
 }
 
 # ------------------------------------------------------------------------------
@@ -468,12 +473,13 @@ show_summary() {
         remove_list+=("dotfilesリンク")
     fi
 
-    for pkg in neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code; do
+    for pkg in neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex; do
         if [[ ${UNINSTALL_DECISIONS[$pkg]} -eq 1 ]]; then
             local display_name
             case "$pkg" in
                 bash_completion) display_name="bash-completion" ;;
                 claude_code) display_name="Claude Code" ;;
+                codex) display_name="Codex CLI" ;;
                 cmake) display_name="CMake" ;;
                 emacs) display_name="Emacs" ;;
                 font) display_name="UDEV Gothic NFLG" ;;
@@ -692,6 +698,70 @@ uninstall_claude_code() {
     fi
 }
 
+uninstall_codex() {
+    if [[ ${UNINSTALL_DECISIONS[codex]} -eq 0 ]]; then
+        return 0
+    fi
+
+    echo
+    printf " ${CYAN}→${NC} Codex CLI をアンインストール中...\n"
+
+    local codex_path
+    local codex_target=""
+    local standalone_root="${CODEX_HOME:-$HOME/.codex}/packages/standalone"
+    codex_path="$(command -v codex 2>/dev/null || true)"
+
+    # Remove only binaries and packages owned by the official standalone installer.
+    if [[ -n "$codex_path" && -L "$codex_path" ]]; then
+        codex_target="$(readlink "$codex_path" 2>/dev/null || true)"
+    fi
+
+    case "$codex_target" in
+        "$standalone_root"/current/*)
+            local bin_dir
+            local code_mode_host
+            local code_mode_target=""
+            bin_dir="$(dirname "$codex_path")"
+            code_mode_host="$bin_dir/codex-code-mode-host"
+
+            if [[ -L "$code_mode_host" ]]; then
+                code_mode_target="$(readlink "$code_mode_host" 2>/dev/null || true)"
+                case "$code_mode_target" in
+                    "$standalone_root"/current/*) rm -f "$code_mode_host" ;;
+                esac
+            fi
+
+            rm -f "$codex_path"
+            rm -rf "$standalone_root"
+            print_success "Codex CLI アンインストール完了"
+            print_info "設定・認証・履歴（${CODEX_HOME:-$HOME/.codex}）は保持しました"
+            return 0
+            ;;
+    esac
+
+    if command_exists npm && npm list -g --depth=0 @openai/codex &>/dev/null; then
+        if npm uninstall -g @openai/codex; then
+            print_success "Codex CLI アンインストール完了"
+            return 0
+        fi
+    fi
+
+    if command_exists brew && brew list --cask codex &>/dev/null; then
+        if brew uninstall --cask codex; then
+            print_success "Codex CLI アンインストール完了"
+            return 0
+        fi
+    fi
+
+    if [[ -n "$codex_path" ]]; then
+        print_warning "Codex CLI のインストール元を特定できません"
+        print_info "   Codex CLI のパス: $codex_path"
+        print_info "   設定・認証・履歴は ${CODEX_HOME:-$HOME/.codex} に保持されています"
+    else
+        print_warning "Codex CLI の場所が特定できません"
+    fi
+}
+
 # ------------------------------------------------------------------------------
 # Main
 # ------------------------------------------------------------------------------
@@ -755,6 +825,7 @@ main() {
     prompt_uninstall_tool "direnv" "direnv" "ディレクトリごとの環境変数自動切り替え"
     prompt_uninstall_tool "bash_completion" "bash-completion" "bashのタブ補完強化"
     prompt_uninstall_tool "claude_code" "Claude Code" "Anthropic AI CLI"
+    prompt_uninstall_tool "codex" "Codex CLI" "OpenAI coding agent CLI"
 
     # amu is last because it's needed for removing dotfiles
     prompt_uninstall_tool "amu" "amu" "シンボリックリンク管理ツール"
@@ -802,6 +873,7 @@ main() {
     uninstall_package "bash_completion" "bash-completion@2" "bash-completion" "bash-completion" "bash-completion" "" ""
 
     uninstall_claude_code
+    uninstall_codex
     uninstall_amu  # Last, after dotfiles removal
 
     # Done

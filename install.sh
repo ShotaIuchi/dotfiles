@@ -53,6 +53,7 @@ readonly NC=$'\033[0m' # No Color
 
 readonly LINE='━'
 readonly BOX_WIDTH=60
+readonly CODEX_INSTALL_URL='https://chatgpt.com/codex/install.sh'
 
 # ------------------------------------------------------------------------------
 # OS Detection
@@ -119,7 +120,7 @@ INSTALL_DECISIONS[fd]=0 INSTALL_DECISIONS[bat]=0 INSTALL_DECISIONS[eza]=0 INSTAL
 INSTALL_DECISIONS[starship]=0 INSTALL_DECISIONS[bash_completion]=0
 INSTALL_DECISIONS[zsh_autosuggestions]=0 INSTALL_DECISIONS[zsh_syntax_highlighting]=0
 INSTALL_DECISIONS[direnv]=0
-INSTALL_DECISIONS[claude_code]=0
+INSTALL_DECISIONS[claude_code]=0 INSTALL_DECISIONS[codex]=0
 
 typeset -A ALREADY_INSTALLED
 ALREADY_INSTALLED[pkg_manager]=0 ALREADY_INSTALLED[neovim]=0 ALREADY_INSTALLED[cmake]=0 ALREADY_INSTALLED[libtool]=0 ALREADY_INSTALLED[emacs]=0
@@ -131,7 +132,7 @@ ALREADY_INSTALLED[fd]=0 ALREADY_INSTALLED[bat]=0 ALREADY_INSTALLED[eza]=0 ALREAD
 ALREADY_INSTALLED[starship]=0 ALREADY_INSTALLED[bash_completion]=0
 ALREADY_INSTALLED[zsh_autosuggestions]=0 ALREADY_INSTALLED[zsh_syntax_highlighting]=0
 ALREADY_INSTALLED[direnv]=0
-ALREADY_INSTALLED[claude_code]=0
+ALREADY_INSTALLED[claude_code]=0 ALREADY_INSTALLED[codex]=0
 
 APPLY_DOTFILES=0
 
@@ -146,7 +147,7 @@ UPDATE_DECISIONS[bat]=0 UPDATE_DECISIONS[eza]=0 UPDATE_DECISIONS[delta]=0 UPDATE
 UPDATE_DECISIONS[starship]=0
 UPDATE_DECISIONS[zsh_autosuggestions]=0 UPDATE_DECISIONS[zsh_syntax_highlighting]=0
 UPDATE_DECISIONS[direnv]=0
-UPDATE_DECISIONS[bash_completion]=0 UPDATE_DECISIONS[claude_code]=0
+UPDATE_DECISIONS[bash_completion]=0 UPDATE_DECISIONS[claude_code]=0 UPDATE_DECISIONS[codex]=0
 UPDATE_MODE=0
 UPDATE_TARGETS=()
 UPDATE_DOTFILES=0
@@ -218,6 +219,7 @@ tool_display_name() {
     case "$1" in
         bash_completion) echo "bash-completion" ;;
         claude_code) echo "Claude Code" ;;
+        codex) echo "Codex CLI" ;;
         cmake) echo "CMake" ;;
         emacs) echo "Emacs" ;;
         font) echo "UDEV Gothic NFLG" ;;
@@ -239,7 +241,7 @@ show_help() {
     printf "${BOLD}更新可能なツール:${NC}\n"
     echo "  neovim, cmake, libtool, emacs, tmux, zellij, ghostty, font, amu, gh, glow, fzf, fd, bat, eza,"
     echo "  delta, zoxide, ghq, wtp, cmux, starship, zsh-autosuggestions,"
-    echo "  zsh-syntax-highlighting, direnv, bash-completion, claude-code, dotfiles"
+    echo "  zsh-syntax-highlighting, direnv, bash-completion, claude-code, codex, dotfiles"
     echo
     exit 0
 }
@@ -266,6 +268,7 @@ normalize_tool_name() {
     case "$1" in
         bash-completion) echo "bash_completion" ;;
         claude-code|claude_code|claude) echo "claude_code" ;;
+        codex-cli|codex_cli) echo "codex" ;;
         font|udev-gothic) echo "font" ;;
         zsh-autosuggestions) echo "zsh_autosuggestions" ;;
         zsh-syntax-highlighting) echo "zsh_syntax_highlighting" ;;
@@ -314,7 +317,7 @@ show_updatable_tools() {
     echo
 
     local count=0
-    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -355,7 +358,7 @@ prompt_update_all_or_select() {
     case "$choice" in
         1)
             # Select all installed tools
-            local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+            local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
             for tool in "${tools[@]}"; do
                 if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
                     UPDATE_DECISIONS[$tool]=1
@@ -376,7 +379,7 @@ prompt_update_all_or_select() {
 }
 
 prompt_individual_updates() {
-    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -402,7 +405,7 @@ show_update_summary() {
 
     local update_list=()
     local skip_list=()
-    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code)
+    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -666,6 +669,11 @@ detect_installed() {
     # Claude Code
     if command_exists claude; then
         ALREADY_INSTALLED[claude_code]=1
+    fi
+
+    # Codex CLI
+    if command_exists codex; then
+        ALREADY_INSTALLED[codex]=1
     fi
 }
 
@@ -1489,6 +1497,29 @@ prompt_claude_code() {
     fi
 }
 
+prompt_codex() {
+    print_header "Codex CLI"
+    print_info "OpenAI coding agent CLI"
+    echo
+
+    if [[ ${ALREADY_INSTALLED[codex]} -eq 1 ]]; then
+        print_success "インストール済み"
+        INSTALL_DECISIONS[codex]=1
+        return 0
+    fi
+
+    print_note "dotfilesとの関連:"
+    print_info "   - README.codex.md に設定内容を記録"
+    print_info "   - macOS/Linuxでは公式スタンドアロンインストーラーを使用"
+    if [[ "$OS_TYPE" == "windows" ]]; then
+        print_info "   - Windowsではnpmを使用（Node.jsが必要）"
+    fi
+
+    if ask_yes_no "インストールしますか？"; then
+        INSTALL_DECISIONS[codex]=1
+    fi
+}
+
 prompt_apply_dotfiles() {
     print_header "dotfilesの適用"
 
@@ -1573,6 +1604,15 @@ show_summary() {
         install_list+=("Claude Code")
     else
         skip_list+=("Claude Code")
+    fi
+
+    # Codex CLI
+    if [[ ${ALREADY_INSTALLED[codex]} -eq 1 ]]; then
+        : # Already installed
+    elif [[ ${INSTALL_DECISIONS[codex]} -eq 1 ]]; then
+        install_list+=("Codex CLI")
+    else
+        skip_list+=("Codex CLI")
     fi
 
     # Show lists
@@ -1812,6 +1852,43 @@ install_claude_code() {
     fi
 }
 
+install_codex() {
+    if [[ ${ALREADY_INSTALLED[codex]} -eq 1 ]]; then
+        return 0
+    fi
+    if [[ ${INSTALL_DECISIONS[codex]} -eq 0 ]]; then
+        return 0
+    fi
+
+    print_header "Codex CLI をインストール中..."
+
+    if [[ "$OS_TYPE" == "windows" ]]; then
+        if ! command_exists npm; then
+            print_error "Codex CLIのインストールにはNode.js (npm) が必要です"
+            print_info "   npm install -g @openai/codex"
+            return 0
+        fi
+
+        if npm install -g @openai/codex; then
+            print_success "Codex CLI インストール完了"
+        else
+            print_error "Codex CLI のインストールに失敗しました"
+        fi
+        return 0
+    fi
+
+    if ! command_exists curl; then
+        print_error "Codex CLIのインストールにはcurlが必要です"
+        return 0
+    fi
+
+    if curl -fsSL "$CODEX_INSTALL_URL" | CODEX_NON_INTERACTIVE=true sh; then
+        print_success "Codex CLI インストール完了"
+    else
+        print_error "Codex CLI のインストールに失敗しました"
+    fi
+}
+
 apply_dotfiles() {
     if [[ $APPLY_DOTFILES -eq 0 ]]; then
         return 0
@@ -2036,6 +2113,34 @@ update_claude_code() {
     fi
 }
 
+update_codex() {
+    if [[ ${UPDATE_DECISIONS[codex]} -eq 0 ]]; then
+        return 0
+    fi
+
+    echo
+    printf " ${CYAN}⟳${NC} Codex CLI を更新中...\n"
+
+    if codex update; then
+        print_success "Codex CLI 更新完了"
+        return 0
+    fi
+
+    if [[ "$OS_TYPE" != "windows" ]] && command_exists curl; then
+        if curl -fsSL "$CODEX_INSTALL_URL" | CODEX_NON_INTERACTIVE=true sh; then
+            print_success "Codex CLI 更新完了"
+            return 0
+        fi
+    elif command_exists npm; then
+        if npm install -g @openai/codex@latest; then
+            print_success "Codex CLI 更新完了"
+            return 0
+        fi
+    fi
+
+    print_error "Codex CLI の更新に失敗しました"
+}
+
 update_dotfiles() {
     if [[ $UPDATE_DOTFILES -eq 0 ]]; then
         return 0
@@ -2083,7 +2188,7 @@ run_update_mode() {
             fi
 
             # Validate tool name
-            local valid_tools=" pkg_manager neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code "
+            local valid_tools=" pkg_manager neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex "
             if [[ "$valid_tools" != *" $target "* ]]; then
                 print_error "不明なツール: $(tool_display_name "$target")"
                 print_info "使い方: ./install.sh --update [ツール名...]"
@@ -2144,6 +2249,7 @@ run_update_mode() {
     upgrade_package "direnv" "direnv" "direnv" "direnv" "direnv" "direnv.direnv" "direnv"
     upgrade_package "bash_completion" "bash-completion@2" "bash-completion" "bash-completion" "bash-completion" "" ""
     update_claude_code
+    update_codex
     update_dotfiles
 
     # Done
@@ -2187,6 +2293,7 @@ run_install_mode() {
     prompt_direnv
     prompt_bash_completion
     prompt_claude_code
+    prompt_codex
     prompt_apply_dotfiles
 
     # Show summary and confirm
@@ -2248,6 +2355,7 @@ run_install_mode() {
     install_package "bash_completion" "bash-completion@2" "bash-completion" "bash-completion" "bash-completion" "" ""
 
     install_claude_code
+    install_codex
     apply_dotfiles
     setup_git_user
 

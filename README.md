@@ -52,6 +52,7 @@ cd ~/dot/dotfiles
 | gh | GitHub CLI |
 | bash-completion | タブ補完強化 |
 | Claude Code | Anthropic AI CLI |
+| Codex CLI | OpenAI coding agent CLI |
 
 ### 手動セットアップ
 

@@ -4,6 +4,23 @@
 リポジトリでは管理しない（Claude Code の `~/.claude/settings.json` と同じ扱い）。
 ここには手動で追加した設定のみ記録する。
 
+## インストール
+
+リポジトリの対話式インストーラーから Codex CLI を選択できる。
+
+```bash
+./install.sh
+```
+
+個別に更新する場合:
+
+```bash
+./install.sh --update codex
+```
+
+macOS/Linux では[公式スタンドアロンインストーラー](https://developers.openai.com/codex/cli/)を使用する。
+Windows（Git Bash）では Node.js が導入済みの場合に npm でインストールする。
+
 ## ステータスライン
 
 Codex は Claude Code のような外部スクリプト実行には非対応で、
