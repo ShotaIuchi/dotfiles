@@ -21,6 +21,18 @@
 macOS/Linux では[公式スタンドアロンインストーラー](https://developers.openai.com/codex/cli/)を使用する。
 Windows（Git Bash）では Node.js が導入済みの場合に npm でインストールする。
 
+## エイリアス
+
+`fcodex`で承認とサンドボックスを無効化したCodex CLIを起動する。
+
+```bash
+fcodex
+```
+
+実体は`codex --dangerously-bypass-approvals-and-sandbox`。
+OSのroot権限へ自動昇格はしないが、実行ユーザーがアクセス可能なファイルとネットワークに
+確認なしでアクセスできるため、信頼できるリポジトリでのみ使用する。
+
 ## ステータスライン
 
 Codex は Claude Code のような外部スクリプト実行には非対応で、

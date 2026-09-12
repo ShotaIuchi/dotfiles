@@ -268,6 +268,9 @@ ghq() {
 # Claude Code
 alias fclaude='claude --dangerously-skip-permissions'
 
+# Codex CLI
+alias fcodex='codex --dangerously-bypass-approvals-and-sandbox'
+
 # cat (bat with syntax highlight)
 cat() {
     if [[ "$1" == -* ]]; then

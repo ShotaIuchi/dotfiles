@@ -1510,6 +1510,7 @@ prompt_codex() {
 
     print_note "dotfilesとの関連:"
     print_info "   - README.codex.md に設定内容を記録"
+    print_info "   - fcodex エイリアスが設定されています（承認・サンドボックス無効）"
     print_info "   - macOS/Linuxでは公式スタンドアロンインストーラーを使用"
     if [[ "$OS_TYPE" == "windows" ]]; then
         print_info "   - Windowsではnpmを使用（Node.jsが必要）"

@@ -8,6 +8,8 @@ readonly INSTALL_SCRIPT="$REPO_DIR/install.sh"
 readonly UNINSTALL_SCRIPT="$REPO_DIR/uninstall.sh"
 readonly README_FILE="$REPO_DIR/README.md"
 readonly CODEX_README_FILE="$REPO_DIR/README.codex.md"
+readonly SHELL_COMMON_FILE="$REPO_DIR/HOME/.shell_common"
+readonly SHELL_README_FILE="$REPO_DIR/README.shell.md"
 
 assert_contains() {
     file="$1"
@@ -31,6 +33,7 @@ assert_contains "$INSTALL_SCRIPT" 'install_codex() {'
 assert_contains "$INSTALL_SCRIPT" 'update_codex() {'
 assert_contains "$INSTALL_SCRIPT" 'curl -fsSL "$CODEX_INSTALL_URL" | CODEX_NON_INTERACTIVE=true sh'
 assert_contains "$INSTALL_SCRIPT" 'codex update'
+assert_contains "$INSTALL_SCRIPT" 'fcodex エイリアスが設定されています'
 
 assert_contains "$UNINSTALL_SCRIPT" 'UNINSTALL_DECISIONS[codex]=0'
 assert_contains "$UNINSTALL_SCRIPT" 'IS_INSTALLED[codex]=0'
@@ -43,5 +46,7 @@ assert_contains "$UNINSTALL_SCRIPT" 'rm -rf "$standalone_root"'
 
 assert_contains "$README_FILE" '| Codex CLI | OpenAI coding agent CLI |'
 assert_contains "$CODEX_README_FILE" './install.sh'
+assert_contains "$SHELL_COMMON_FILE" "alias fcodex='codex --dangerously-bypass-approvals-and-sandbox'"
+assert_contains "$SHELL_README_FILE" '| `fcodex` | Codex CLI（承認・サンドボックス無効モード） |'
 
 printf 'PASS: Codex install definitions are wired correctly.\n'

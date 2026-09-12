@@ -55,6 +55,7 @@ bash/zsh 共通設定（`.shell_common`）。インタラクティブシェル�
 | エイリアス | 説明 |
 |---|---|
 | `fclaude` | Claude Code（権限スキップモード） |
+| `fcodex` | Codex CLI（承認・サンドボックス無効モード） |
 
 ## 関数
 
