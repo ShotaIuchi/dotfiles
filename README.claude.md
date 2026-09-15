@@ -11,9 +11,18 @@
 | `CONSTITUTION.md` | ファイル追加・変更時の絶対ルール |
 | `rules/` | 個別ルール |
 | `skills/` | カスタムスキル |
+| `settings.json` | ユーザー設定（hooks / statusLine / プラグイン等、下記参照） |
 | `statusline.sh` | ステータスラインスクリプト |
 | `hooks/state-track.sh` | セッション実行状態の記録（下記参照） |
 | `hooks/cmux-state.sh` | cmuxのタブへの実行状態・通知の表示（下記参照） |
+
+## settings.json
+
+hooks・statusLine・プラグイン等のユーザー設定。全マシンで共通になる。
+
+- Claude Code はユーザー設定に限り symlink を辿って実体へ書き込むため、
+  `/config` やプラグイン追加などの変更はリポジトリ側に差分として現れる（必要に応じてコミットする）
+- hooks のコマンドは `~/.claude/hooks/...` で指定し、マシン固有の絶対パスを書かない
 
 ## ステータスライン
 
@@ -44,7 +53,7 @@
   （UserPromptSubmit / PreToolUse / PostToolUse / PermissionRequest /
   Notification / Stop / SessionEnd 等）から呼ばれ、
   `~/.claude/state/<session_id>` に `状態|ツール名|時刻|tmuxペインID` を記録する
-- hooks の設定は `~/.claude/settings.json`（ローカル、リポジトリ外）の `hooks` キー
+- hooks の設定は `settings.json` の `hooks` キー
 - ステータスラインは `statusLine.refreshInterval: 5` により5秒ごとに再実行され、
   経過時間が動き続ける。`▶` のまま経過時間だけが異常に伸びていればハングの疑い
 - 状態ファイルには tmux ペインIDも記録しているため、
