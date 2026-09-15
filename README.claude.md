@@ -13,6 +13,7 @@
 | `skills/` | カスタムスキル |
 | `statusline.sh` | ステータスラインスクリプト |
 | `hooks/state-track.sh` | セッション実行状態の記録（下記参照） |
+| `hooks/cmux-state.sh` | cmuxのタブへの実行状態・通知の表示（下記参照） |
 
 ## ステータスライン
 
@@ -48,5 +49,17 @@
   経過時間が動き続ける。`▶` のまま経過時間だけが異常に伸びていればハングの疑い
 - 状態ファイルには tmux ペインIDも記録しているため、
   必要になれば tmux 側からも同じ状態を読める（現在は Claude Code 側のみで表示）
-- cmux内ではcmux同梱のClaudeラッパーが SessionStart / Stop / Notification hookを追加し、
-  タブの実行状態と通知をcmux側にも表示する
+
+## cmux連携
+
+`hooks/cmux-state.sh` が SessionStart / Stop / Notification hook から
+`cmux claude-hook` を呼び、cmuxのタブに実行中・入力待ちと通知を表示する。
+cmux外では何もしない。hooks の設定は `~/.claude/settings.json` の `hooks` キー。
+
+- cmux同梱の `claude` ラッパーも同じhookを差し込むが、PATHで `~/.local/bin` の `claude` が
+  先に見つかるため経由しない。そのため自前で設定している
+- tmux内で使う場合は、cmuxのSettingsで **Socket Control Mode** を `automation` にする
+  （既定の `cmux processes only` ではtmuxサーバー配下のhookが拒否される）
+- tmuxのペインは tmux サーバーを起動したタブの `CMUX_WORKSPACE_ID` / `CMUX_SURFACE_ID` を引き継ぐため、
+  ペインのsessionにattachしているtmuxクライアントの環境変数から実際のタブを特定する
+  （Codex側の `hooks/cmux-state.sh` と同じ方式、[README.codex.md](README.codex.md) 参照）
