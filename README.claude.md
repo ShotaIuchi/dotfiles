@@ -48,3 +48,5 @@
   経過時間が動き続ける。`▶` のまま経過時間だけが異常に伸びていればハングの疑い
 - 状態ファイルには tmux ペインIDも記録しているため、
   必要になれば tmux 側からも同じ状態を読める（現在は Claude Code 側のみで表示）
+- cmux内ではcmux同梱のClaudeラッパーが SessionStart / Stop / Notification hookを追加し、
+  タブの実行状態と通知をcmux側にも表示する

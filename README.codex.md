@@ -3,6 +3,7 @@
 `~/.codex/config.toml` は API キー・trusted プロジェクト一覧を含み Codex 自身が書き換えるため、
 リポジトリでは管理しない（Claude Code の `~/.claude/settings.json` と同じ扱い）。
 ここには手動で追加した設定のみ記録する。
+`hooks.json` とhookスクリプトは、秘密情報を含まないため `HOME/.codex/` で管理する。
 
 ## インストール
 
@@ -32,6 +33,25 @@ fcodex
 実体は`codex --dangerously-bypass-approvals-and-sandbox`。
 OSのroot権限へ自動昇格はしないが、実行ユーザーがアクセス可能なファイルとネットワークに
 確認なしでアクセスできるため、信頼できるリポジトリでのみ使用する。
+
+## cmux連携
+
+cmux内でCodexを実行すると、`hooks/cmux-state.sh` がライフサイクルイベントを受け取り、
+ワークスペースのステータスに実行中・承認待ち・完了・中断を表示する。
+承認待ち・ターン完了・中断時にはcmuxの通知も送る。cmux外では何もしない。
+ステータスはタブ（surface）単位で分けるため、同じワークスペースで複数のCodexを実行しても干渉しない。
+
+Codex初回起動時にhookの信頼確認が表示された場合は、内容を確認して許可する。
+
+### tmux内で使う場合
+
+cmuxのソケットは既定（`cmux processes only`）では、cmuxのターミナルから起動したプロセスしか接続できない。
+tmux内のhookはtmuxサーバー配下で動くため拒否される。
+cmuxのSettingsで **Socket Control Mode** を `automation`（同じmacOSユーザーのプロセスを許可）に変更する。
+
+また、tmuxのペインは tmux サーバーを起動したタブの `CMUX_WORKSPACE_ID` / `CMUX_SURFACE_ID` を引き継ぐため、
+hookはペインのsessionにattachしているtmuxクライアント（最後に操作されたもの）の環境変数から
+実際のタブを特定する。sessionがどのタブにもattachされていない場合は何もしない。
 
 ## ステータスライン
 
