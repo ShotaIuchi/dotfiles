@@ -342,8 +342,11 @@ mkcd() {
     mkdir -p "$1" && cd "$1"
 }
 
-# pwd with clipboard copy
-pwd() {
+# pwd with clipboard copy (explicit command only)
+# NOTE: pwd 自体は上書きしない。Claude Code の Bash ツールはシェル関数を
+#       スナップショットに取り込み、毎回のコマンド後に内部で pwd を呼ぶため、
+#       上書きするとツール実行のたびにクリップボードが書き換わる
+cpwd() {
     local dir
     dir=$(builtin pwd "$@")
     echo "$dir"
