@@ -90,31 +90,9 @@ bindkey -e
 bindkey '^P' history-search-backward
 bindkey '^N' history-search-forward
 
-# Clipboard-synced kill/yank (readline kill ring ↔ OS clipboard)
-clip-kill-line() {
-    zle kill-line
-    printf '%s' "$CUTBUFFER" | clipcopy
-}
-clip-backward-kill-line() {
-    zle backward-kill-line
-    printf '%s' "$CUTBUFFER" | clipcopy
-}
-clip-backward-kill-word() {
-    zle backward-kill-word
-    printf '%s' "$CUTBUFFER" | clipcopy
-}
-clip-yank() {
-    CUTBUFFER=$(clippaste)
-    zle yank
-}
-zle -N clip-kill-line
-zle -N clip-backward-kill-line
-zle -N clip-backward-kill-word
-zle -N clip-yank
-bindkey '^K' clip-kill-line
-bindkey '^U' clip-backward-kill-line
-bindkey '^W' clip-backward-kill-word
-bindkey '^Y' clip-yank
+# NOTE: C-k / C-u / C-w の kill を OS クリップボードへ同期する設定は廃止。
+#       コマンドラインを消すたびにクリップボードが上書きされ、意図しない
+#       コピーの原因になっていたため。kill ring は zsh 標準（C-y で yank）のまま
 
 # ------------------------------------------------------------------------------
 # fzf Key Bindings
