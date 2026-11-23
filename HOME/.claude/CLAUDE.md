@@ -3,7 +3,7 @@
 ## Project Overview
 
 A workflow management system for Claude Code and humans to work while viewing the same state and deliverables.
-Use by creating a symlink from `dotclaude/` folder to `~/.claude`.
+The files live in the dotfiles repo (`HOME/.claude/`) and are symlinked into `~/.claude`.
 
 ## Principles (PRINCIPLES.md)
 
