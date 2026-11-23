@@ -16,18 +16,7 @@ Always read `PRINCIPLES.md` at the start of a session.
 
 ## Feature Development Workflow
 
-### feature-dev Plugin (Required)
+Use the `dev` plugin from the personal marketplace [ShotaIuchi/ip](https://github.com/ShotaIuchi/ip) (the feature-dev plugin is no longer required).
 
-Install the **feature-dev** plugin from the marketplace for structured feature development:
-
-```
-/plugin install feature-dev@claude-plugins-official
-```
-
-This provides a 7-phase workflow (Discovery, Exploration, Clarifying Questions, Architecture, Implementation, Review, Summary) with three specialized agents: `code-explorer`, `code-architect`, and `code-reviewer`.
-
-Use `/feature-dev <description>` to start the interactive workflow.
-
-### feature-auto Skill
-
-Use `/feature-auto <description>` to run the full feature-dev 7-phase workflow without human intervention. All human-in-the-loop checkpoints are overridden with autonomous decision-making.
+- `/dev:spec <what to build>` — pin down the details with the user and write an approved `SPEC.md`
+- `/dev:build [<SPEC.md>]` — implement from the spec, then check / match the spec / review / fix until clean (max 3 rounds). Asks only when it would deviate from the spec
