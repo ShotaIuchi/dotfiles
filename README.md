@@ -18,8 +18,8 @@ dotfiles/
 ## クイックスタート
 
 ```bash
-git clone https://github.com/yourname/dotfiles ~/dot/dotfiles
-cd ~/dot/dotfiles
+git clone https://github.com/ShotaIuchi/dotfiles ~/ghq/github.com/ShotaIuchi/dotfiles
+cd ~/ghq/github.com/ShotaIuchi/dotfiles
 ./install.sh
 ```
 
@@ -73,13 +73,13 @@ curl -fsSL https://raw.githubusercontent.com/ShotaIuchi/amu/main/install.sh | sh
 
 ```bash
 # HOMEディレクトリの内容を~/にリンク
-amu add ~/dot/dotfiles/HOME ~/
+amu add ~/ghq/github.com/ShotaIuchi/dotfiles/HOME ~/
 
 # 状態確認
 amu status
 
 # プレビュー（実際には適用しない）
-amu add ~/dot/dotfiles/HOME ~/ --dry-run
+amu add ~/ghq/github.com/ShotaIuchi/dotfiles/HOME ~/ --dry-run
 ```
 
 ## アンインストール
@@ -100,7 +100,7 @@ amu add ~/dot/dotfiles/HOME ~/ --dry-run
 
 ```bash
 # amuでリンク解除
-amu rm ~/dot/dotfiles/HOME ~/
+amu rm ~/ghq/github.com/ShotaIuchi/dotfiles/HOME ~/
 
 # 設定更新後の再適用
 amu sync

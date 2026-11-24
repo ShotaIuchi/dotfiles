@@ -52,6 +52,16 @@ readonly NC=$'\033[0m' # No Color
 readonly LINE='━'
 readonly BOX_WIDTH=60
 
+# Where this repository is cloned, shown in messages ("~" instead of $HOME)
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+readonly DOTFILES_DIR
+if [[ "$DOTFILES_DIR" == "$HOME"/* ]]; then
+    DOTFILES_DIR_DISPLAY="~${DOTFILES_DIR#"$HOME"}"
+else
+    DOTFILES_DIR_DISPLAY="$DOTFILES_DIR"
+fi
+readonly DOTFILES_DIR_DISPLAY
+
 # ------------------------------------------------------------------------------
 # OS Detection
 # ------------------------------------------------------------------------------
@@ -435,7 +445,7 @@ prompt_remove_dotfiles() {
     fi
 
     print_info "amuで作成したシンボリックリンクを削除します"
-    print_info "   コマンド: amu rm ~/dot/dotfiles/HOME ~/"
+    print_info "   コマンド: amu rm ${DOTFILES_DIR_DISPLAY}/HOME ~/"
     echo
     print_warning "元の設定ファイルは復元されません"
 

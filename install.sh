@@ -55,6 +55,16 @@ readonly LINE='━'
 readonly BOX_WIDTH=60
 readonly CODEX_INSTALL_URL='https://chatgpt.com/codex/install.sh'
 
+# Where this repository is cloned, shown in messages ("~" instead of $HOME)
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+readonly DOTFILES_DIR
+if [[ "$DOTFILES_DIR" == "$HOME"/* ]]; then
+    DOTFILES_DIR_DISPLAY="~${DOTFILES_DIR#"$HOME"}"
+else
+    DOTFILES_DIR_DISPLAY="$DOTFILES_DIR"
+fi
+readonly DOTFILES_DIR_DISPLAY
+
 # ------------------------------------------------------------------------------
 # OS Detection
 # ------------------------------------------------------------------------------
@@ -990,7 +1000,7 @@ prompt_amu() {
 
     print_note "dotfilesとの関連:"
     print_info "   - dotfilesの適用（シンボリックリンク作成）に必要"
-    print_info "   - amu add ~/dot/dotfiles/HOME ~/ で設定を反映"
+    print_info "   - amu add ${DOTFILES_DIR_DISPLAY}/HOME ~/ で設定を反映"
 
     # Show install method based on OS
     case "$PKG_MANAGER" in
@@ -1557,12 +1567,12 @@ prompt_apply_dotfiles() {
     if [[ ${INSTALL_DECISIONS[amu]} -eq 0 && ${ALREADY_INSTALLED[amu]} -eq 0 ]]; then
         print_warning "amuがインストールされないため、手動でリンクする必要があります"
         print_info "   手動コマンド例:"
-        print_info "   ln -s ~/dot/dotfiles/HOME/.bashrc ~/.bashrc"
+        print_info "   ln -s ${DOTFILES_DIR_DISPLAY}/HOME/.bashrc ~/.bashrc"
         return 0
     fi
 
     print_info "amuを使用してdotfilesをホームディレクトリにリンクします"
-    print_info "   コマンド: amu add ~/dot/dotfiles/HOME ~/"
+    print_info "   コマンド: amu add ${DOTFILES_DIR_DISPLAY}/HOME ~/"
     echo
     print_warning "既存ファイルは上書きされる可能性があります"
 

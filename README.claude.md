@@ -9,7 +9,6 @@
 | `CLAUDE.md` | 全プロジェクト共通の指示 |
 | `PRINCIPLES.md` | 基本原則（全ルールに優先） |
 | `CONSTITUTION.md` | ファイル追加・変更時の絶対ルール |
-| `skills/` | カスタムスキル |
 | `settings.json` | ユーザー設定（hooks / statusLine / プラグイン等、下記参照） |
 | `statusline.sh` | ステータスラインスクリプト |
 | `hooks/state-track.sh` | セッション実行状態の記録（下記参照） |
