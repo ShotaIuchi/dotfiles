@@ -131,7 +131,21 @@
   },
   "enabledPlugins": {
     "swift-lsp@claude-plugins-official": true,
-    "rust-analyzer-lsp@claude-plugins-official": true
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "read@ip": true,
+    "review@ip": true,
+    "git-kit@ip": true,
+    "dev@ip": true,
+    "design@ip": true,
+    "rules@ip": true
+  },
+  "extraKnownMarketplaces": {
+    "ip": {
+      "source": {
+        "source": "github",
+        "repo": "ShotaIuchi/ip"
+      }
+    }
   },
   "language": "日本語",
   "tui": "fullscreen",
