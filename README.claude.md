@@ -22,6 +22,11 @@ hooks・statusLine・プラグイン等のユーザー設定。全マシンで�
 - Claude Code はユーザー設定に限り symlink を辿って実体へ書き込むため、
   `/config` やプラグイン追加などの変更はリポジトリ側に差分として現れる（必要に応じてコミットする）
 - hooks のコマンドは `~/.claude/hooks/...` で指定し、マシン固有の絶対パスを書かない
+- `model`（`/model`）と `modelSettings`（`/effort`・`/autocompact`）はマシンごとの好みとして管理しない。
+  `.gitattributes` の clean フィルタ `dropmodel` が git に入る前に jq で取り除く（実ファイルには残る）。
+  フィルタの定義は `HOME/.gitconfig` にあり、settings.json と一緒にリンクされるので、
+  Claude Code がリポジトリへ書き込める状態なら必ず効く（要 jq。`required` にしてあるので、
+  jq が無いと `git add` が失敗し、キーが黙ってコミットされることはない）
 
 ## ステータスライン
 
