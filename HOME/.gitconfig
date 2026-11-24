@@ -152,6 +152,7 @@
 ; マシンごとの設定（/model, /effort）を git に入れる前に取り除く（実ファイルには残る）
 [filter "dropmodel"]
     clean = jq 'del(.model, .modelSettings)'
+    smudge = cat            ; required のときは smudge も要る（未定義だと checkout が失敗してファイルが消える）
     required = true         ; jq が無ければ素通りさせずに失敗させる
 
 # ============================================================

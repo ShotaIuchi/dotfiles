@@ -27,6 +27,8 @@ hooks・statusLine・プラグイン等のユーザー設定。全マシンで�
   フィルタの定義は `HOME/.gitconfig` にあり、settings.json と一緒にリンクされるので、
   Claude Code がリポジトリへ書き込める状態なら必ず効く（要 jq。`required` にしてあるので、
   jq が無いと `git add` が失敗し、キーが黙ってコミットされることはない）
+  書き出し側の smudge は `cat`（素通し）。`required` のフィルタは smudge が未定義だと失敗扱いになり、
+  pull・checkout・stash の適用で settings.json が書き出されずに消えるため、定義が要る
 
 ## ステータスライン
 
