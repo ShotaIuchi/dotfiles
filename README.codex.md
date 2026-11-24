@@ -22,6 +22,25 @@
 macOS/Linux では[公式スタンドアロンインストーラー](https://developers.openai.com/codex/cli/)を使用する。
 Windows（Git Bash）では Node.js が導入済みの場合に npm でインストールする。
 
+## プラグイン
+
+個人用マーケットプレイス [ShotaIuchi/ip](https://github.com/ShotaIuchi/ip) のプラグインを使う。
+Claude Code 側は `HOME/.claude/settings.json` で管理しているが、
+Codex 側は `config.toml` に書き込まれるため、マシンごとに以下を実行する。
+
+```bash
+codex plugin marketplace add ShotaIuchi/ip
+codex plugin add design@ip
+codex plugin add dev@ip
+codex plugin add git-kit@ip
+codex plugin add read@ip
+codex plugin add review@ip
+codex plugin add rules@ip
+```
+
+rules はフックで動くため、Codex 内で `/hooks` を一度実行してフックを信頼する。
+入ったかどうかは `codex plugin list | grep @ip` で確認する（0.171.0 で確認）。
+
 ## エイリアス
 
 `fcodex`で承認とサンドボックスを無効化したCodex CLIを起動する。
