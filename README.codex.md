@@ -5,6 +5,9 @@
 ここには手動で追加した設定のみ記録する。
 `hooks.json` とhookスクリプトは、秘密情報を含まないため `HOME/.codex/` で管理する。
 
+`AGENTS.md` は Codex 全体に効く指示で、`HOME/.codex/AGENTS.md` で管理する（Claude Code の `HOME/.claude/CLAUDE.md` の Codex 版）。
+Codex はリポジトリの root より上の `AGENTS.md` を読まないため、`~/AGENTS.md` には置かない。
+
 ## インストール
 
 リポジトリの対話式インストーラーから Codex CLI を選択できる。
