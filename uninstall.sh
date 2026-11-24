@@ -108,7 +108,7 @@ UNINSTALL_DECISIONS[neovim]=0 UNINSTALL_DECISIONS[cmake]=0 UNINSTALL_DECISIONS[l
 UNINSTALL_DECISIONS[ghostty]=0 UNINSTALL_DECISIONS[font]=0
 UNINSTALL_DECISIONS[amu]=0
 UNINSTALL_DECISIONS[gh]=0 UNINSTALL_DECISIONS[glow]=0
-UNINSTALL_DECISIONS[fzf]=0 UNINSTALL_DECISIONS[fd]=0
+UNINSTALL_DECISIONS[fzf]=0 UNINSTALL_DECISIONS[fd]=0 UNINSTALL_DECISIONS[jq]=0
 UNINSTALL_DECISIONS[bat]=0 UNINSTALL_DECISIONS[eza]=0 UNINSTALL_DECISIONS[delta]=0 UNINSTALL_DECISIONS[zoxide]=0 UNINSTALL_DECISIONS[ghq]=0 UNINSTALL_DECISIONS[wtp]=0 UNINSTALL_DECISIONS[cmux]=0
 UNINSTALL_DECISIONS[starship]=0
 UNINSTALL_DECISIONS[zsh_autosuggestions]=0 UNINSTALL_DECISIONS[zsh_syntax_highlighting]=0
@@ -120,7 +120,7 @@ IS_INSTALLED[neovim]=0 IS_INSTALLED[cmake]=0 IS_INSTALLED[libtool]=0 IS_INSTALLE
 IS_INSTALLED[ghostty]=0 IS_INSTALLED[font]=0
 IS_INSTALLED[amu]=0
 IS_INSTALLED[gh]=0 IS_INSTALLED[glow]=0
-IS_INSTALLED[fzf]=0 IS_INSTALLED[fd]=0
+IS_INSTALLED[fzf]=0 IS_INSTALLED[fd]=0 IS_INSTALLED[jq]=0
 IS_INSTALLED[bat]=0 IS_INSTALLED[eza]=0 IS_INSTALLED[delta]=0 IS_INSTALLED[zoxide]=0 IS_INSTALLED[ghq]=0 IS_INSTALLED[wtp]=0 IS_INSTALLED[cmux]=0
 IS_INSTALLED[starship]=0
 IS_INSTALLED[zsh_autosuggestions]=0 IS_INSTALLED[zsh_syntax_highlighting]=0
@@ -303,6 +303,11 @@ detect_installed() {
         IS_INSTALLED[fd]=1
     fi
 
+    # jq (the macOS system /usr/bin/jq cannot be removed, so it is not a target)
+    if command_exists jq && [[ "$(command -v jq)" != "/usr/bin/jq" || "$OS_TYPE" != "macos" ]]; then
+        IS_INSTALLED[jq]=1
+    fi
+
     # bat (batcat on Debian/Ubuntu)
     if command_exists bat || command_exists batcat; then
         IS_INSTALLED[bat]=1
@@ -473,7 +478,7 @@ show_summary() {
         remove_list+=("dotfilesリンク")
     fi
 
-    for pkg in neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex; do
+    for pkg in neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex; do
         if [[ ${UNINSTALL_DECISIONS[$pkg]} -eq 1 ]]; then
             local display_name
             case "$pkg" in
@@ -812,6 +817,7 @@ main() {
     prompt_uninstall_tool "glow" "glow" "ターミナル用Markdownビューア"
     prompt_uninstall_tool "fzf" "fzf" "コマンドラインファジーファインダー"
     prompt_uninstall_tool "fd" "fd" "高速なfind代替コマンド"
+    prompt_uninstall_tool "jq" "jq" "JSONプロセッサ（ステータスライン・hook・settings.jsonのgitフィルタが使用）"
     prompt_uninstall_tool "bat" "bat" "シンタックスハイライト付きcat代替コマンド"
     prompt_uninstall_tool "eza" "eza" "モダンなls代替コマンド"
     prompt_uninstall_tool "delta" "delta" "シンタックスハイライト付きgit diffビューア"
@@ -859,6 +865,7 @@ main() {
     uninstall_package "glow" "glow" "" "" "glow" "charmbracelet.glow" "glow"
     uninstall_package "fzf" "fzf" "fzf" "fzf" "fzf" "junegunn.fzf" "fzf"
     uninstall_package "fd" "fd" "fd-find" "fd-find" "fd" "sharkdp.fd" "fd"
+    uninstall_package "jq" "jq" "jq" "jq" "jq" "jqlang.jq" "jq"
     uninstall_package "bat" "bat" "bat" "bat" "bat" "sharkdp.bat" "bat"
     uninstall_package "eza" "eza" "eza" "eza" "eza" "eza-community.eza" "eza"
     uninstall_package "delta" "git-delta" "" "" "git-delta" "dandavison.delta" "delta"

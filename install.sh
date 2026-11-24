@@ -116,7 +116,7 @@ INSTALL_DECISIONS[tmux]=0 INSTALL_DECISIONS[zellij]=0 INSTALL_DECISIONS[ghostty]
 INSTALL_DECISIONS[font]=0
 INSTALL_DECISIONS[amu]=0 INSTALL_DECISIONS[gh]=0
 INSTALL_DECISIONS[glow]=0 INSTALL_DECISIONS[fzf]=0
-INSTALL_DECISIONS[fd]=0 INSTALL_DECISIONS[bat]=0 INSTALL_DECISIONS[eza]=0 INSTALL_DECISIONS[delta]=0 INSTALL_DECISIONS[zoxide]=0 INSTALL_DECISIONS[ghq]=0 INSTALL_DECISIONS[wtp]=0 INSTALL_DECISIONS[cmux]=0
+INSTALL_DECISIONS[fd]=0 INSTALL_DECISIONS[jq]=0 INSTALL_DECISIONS[bat]=0 INSTALL_DECISIONS[eza]=0 INSTALL_DECISIONS[delta]=0 INSTALL_DECISIONS[zoxide]=0 INSTALL_DECISIONS[ghq]=0 INSTALL_DECISIONS[wtp]=0 INSTALL_DECISIONS[cmux]=0
 INSTALL_DECISIONS[starship]=0 INSTALL_DECISIONS[bash_completion]=0
 INSTALL_DECISIONS[zsh_autosuggestions]=0 INSTALL_DECISIONS[zsh_syntax_highlighting]=0
 INSTALL_DECISIONS[direnv]=0
@@ -128,7 +128,7 @@ ALREADY_INSTALLED[tmux]=0 ALREADY_INSTALLED[zellij]=0 ALREADY_INSTALLED[ghostty]
 ALREADY_INSTALLED[font]=0
 ALREADY_INSTALLED[amu]=0 ALREADY_INSTALLED[gh]=0
 ALREADY_INSTALLED[glow]=0 ALREADY_INSTALLED[fzf]=0
-ALREADY_INSTALLED[fd]=0 ALREADY_INSTALLED[bat]=0 ALREADY_INSTALLED[eza]=0 ALREADY_INSTALLED[delta]=0 ALREADY_INSTALLED[zoxide]=0 ALREADY_INSTALLED[ghq]=0 ALREADY_INSTALLED[wtp]=0 ALREADY_INSTALLED[cmux]=0
+ALREADY_INSTALLED[fd]=0 ALREADY_INSTALLED[jq]=0 ALREADY_INSTALLED[bat]=0 ALREADY_INSTALLED[eza]=0 ALREADY_INSTALLED[delta]=0 ALREADY_INSTALLED[zoxide]=0 ALREADY_INSTALLED[ghq]=0 ALREADY_INSTALLED[wtp]=0 ALREADY_INSTALLED[cmux]=0
 ALREADY_INSTALLED[starship]=0 ALREADY_INSTALLED[bash_completion]=0
 ALREADY_INSTALLED[zsh_autosuggestions]=0 ALREADY_INSTALLED[zsh_syntax_highlighting]=0
 ALREADY_INSTALLED[direnv]=0
@@ -142,7 +142,7 @@ UPDATE_DECISIONS[neovim]=0 UPDATE_DECISIONS[cmake]=0 UPDATE_DECISIONS[libtool]=0
 UPDATE_DECISIONS[ghostty]=0 UPDATE_DECISIONS[font]=0
 UPDATE_DECISIONS[amu]=0
 UPDATE_DECISIONS[gh]=0 UPDATE_DECISIONS[glow]=0
-UPDATE_DECISIONS[fzf]=0 UPDATE_DECISIONS[fd]=0
+UPDATE_DECISIONS[fzf]=0 UPDATE_DECISIONS[fd]=0 UPDATE_DECISIONS[jq]=0
 UPDATE_DECISIONS[bat]=0 UPDATE_DECISIONS[eza]=0 UPDATE_DECISIONS[delta]=0 UPDATE_DECISIONS[zoxide]=0 UPDATE_DECISIONS[ghq]=0 UPDATE_DECISIONS[wtp]=0 UPDATE_DECISIONS[cmux]=0
 UPDATE_DECISIONS[starship]=0
 UPDATE_DECISIONS[zsh_autosuggestions]=0 UPDATE_DECISIONS[zsh_syntax_highlighting]=0
@@ -239,7 +239,7 @@ show_help() {
     echo "  ./install.sh --help                このヘルプを表示"
     echo
     printf "${BOLD}更新可能なツール:${NC}\n"
-    echo "  neovim, cmake, libtool, emacs, tmux, zellij, ghostty, font, amu, gh, glow, fzf, fd, bat, eza,"
+    echo "  neovim, cmake, libtool, emacs, tmux, zellij, ghostty, font, amu, gh, glow, fzf, fd, jq, bat, eza,"
     echo "  delta, zoxide, ghq, wtp, cmux, starship, zsh-autosuggestions,"
     echo "  zsh-syntax-highlighting, direnv, bash-completion, claude-code, codex, dotfiles"
     echo
@@ -317,7 +317,7 @@ show_updatable_tools() {
     echo
 
     local count=0
-    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
+    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -358,7 +358,7 @@ prompt_update_all_or_select() {
     case "$choice" in
         1)
             # Select all installed tools
-            local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
+            local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
             for tool in "${tools[@]}"; do
                 if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
                     UPDATE_DECISIONS[$tool]=1
@@ -379,7 +379,7 @@ prompt_update_all_or_select() {
 }
 
 prompt_individual_updates() {
-    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
+    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -405,7 +405,7 @@ show_update_summary() {
 
     local update_list=()
     local skip_list=()
-    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
+    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -561,6 +561,11 @@ detect_installed() {
     # fd (fd-find on Debian/Ubuntu)
     if command_exists fd || command_exists fdfind; then
         ALREADY_INSTALLED[fd]=1
+    fi
+
+    # jq (macOS 15+ ships /usr/bin/jq)
+    if command_exists jq; then
+        ALREADY_INSTALLED[jq]=1
     fi
 
     # bat (batcat on Debian/Ubuntu)
@@ -1113,6 +1118,31 @@ prompt_fd() {
     fi
 }
 
+prompt_jq() {
+    if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
+        return 0
+    fi
+
+    print_header "jq"
+    print_info "コマンドライン用JSONプロセッサ"
+    echo
+
+    if [[ ${ALREADY_INSTALLED[jq]} -eq 1 ]]; then
+        print_success "インストール済み"
+        INSTALL_DECISIONS[jq]=1
+        return 0
+    fi
+
+    print_note "dotfilesとの関連:"
+    print_info "   - Claude Code のステータスラインと実行状態のhook"
+    print_info "   - Claude Code / Codex の cmux 連携hook"
+    print_info "   - settings.json から model / modelSettings を除く git フィルタ（無いと git add が失敗）"
+
+    if ask_yes_no "インストールしますか？"; then
+        INSTALL_DECISIONS[jq]=1
+    fi
+}
+
 prompt_bat() {
     if [[ ${INSTALL_DECISIONS[pkg_manager]} -eq 0 && ${ALREADY_INSTALLED[pkg_manager]} -eq 0 ]]; then
         return 0
@@ -1564,7 +1594,7 @@ show_summary() {
     fi
 
     # Tools
-    for pkg in neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion; do
+    for pkg in neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion; do
         # Skip conditions
         [[ "$pkg" == "bash_completion" && "$SHELL" == */zsh ]] && continue
         [[ "$pkg" == "bash_completion" && "$OS_TYPE" == "windows" ]] && continue
@@ -2189,7 +2219,7 @@ run_update_mode() {
             fi
 
             # Validate tool name
-            local valid_tools=" pkg_manager neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex "
+            local valid_tools=" pkg_manager neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex "
             if [[ "$valid_tools" != *" $target "* ]]; then
                 print_error "不明なツール: $(tool_display_name "$target")"
                 print_info "使い方: ./install.sh --update [ツール名...]"
@@ -2237,6 +2267,7 @@ run_update_mode() {
     upgrade_package "glow" "glow" "" "" "glow" "charmbracelet.glow" "glow"
     upgrade_package "fzf" "fzf" "fzf" "fzf" "fzf" "junegunn.fzf" "fzf"
     upgrade_package "fd" "fd" "fd-find" "fd-find" "fd" "sharkdp.fd" "fd"
+    upgrade_package "jq" "jq" "jq" "jq" "jq" "jqlang.jq" "jq"
     upgrade_package "bat" "bat" "bat" "bat" "bat" "sharkdp.bat" "bat"
     upgrade_package "eza" "eza" "eza" "eza" "eza" "eza-community.eza" "eza"
     upgrade_package "delta" "git-delta" "" "" "git-delta" "dandavison.delta" "delta"
@@ -2281,6 +2312,7 @@ run_install_mode() {
     prompt_glow
     prompt_fzf
     prompt_fd
+    prompt_jq
     prompt_bat
     prompt_eza
     prompt_delta
@@ -2342,6 +2374,7 @@ run_install_mode() {
     install_package "glow" "glow" "" "" "glow" "charmbracelet.glow" "glow"
     install_package "fzf" "fzf" "fzf" "fzf" "fzf" "junegunn.fzf" "fzf"
     install_package "fd" "fd" "fd-find" "fd-find" "fd" "sharkdp.fd" "fd"
+    install_package "jq" "jq" "jq" "jq" "jq" "jqlang.jq" "jq"
     install_package "bat" "bat" "bat" "bat" "bat" "sharkdp.bat" "bat"
     install_package "eza" "eza" "eza" "eza" "eza" "eza-community.eza" "eza"
     install_package "delta" "git-delta" "" "" "git-delta" "dandavison.delta" "delta"

@@ -50,6 +50,7 @@ cd ~/dot/dotfiles
 | Ghostty | 高速ターミナルエミュレータ（macOS） |
 | amu | シンボリックリンク管理 |
 | gh | GitHub CLI |
+| jq | JSONプロセッサ（Claude Codeのステータスライン・hook、settings.jsonのgitフィルタで必須。macOS 15以降は標準で入っている） |
 | bash-completion | タブ補完強化 |
 | Claude Code | Anthropic AI CLI |
 | Codex CLI | OpenAI coding agent CLI |
