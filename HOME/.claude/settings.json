@@ -137,7 +137,9 @@
     "git-kit@ip": true,
     "dev@ip": true,
     "design@ip": true,
-    "rules@ip": true
+    "rules@ip": true,
+    "quick@ip": true,
+    "tracker@ip": true
   },
   "extraKnownMarketplaces": {
     "ip": {
