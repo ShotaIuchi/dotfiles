@@ -54,6 +54,19 @@ readonly NC=$'\033[0m' # No Color
 readonly LINE='━'
 readonly BOX_WIDTH=60
 readonly CODEX_INSTALL_URL='https://chatgpt.com/codex/install.sh'
+readonly GWSCLI_INSTALL_URL='https://dl.google.com/workspace-cli/install.sh'
+readonly GWSCLI_INSTALL_URL_WINDOWS='https://dl.google.com/workspace-cli/install.ps1'
+# The official installer's default; ~/.local/bin is added to PATH by HOME/.shell_common
+readonly GWSCLI_BIN_DIR="$HOME/.local/bin"
+# Agent skills: the files live in ~/.claude/skills (Claude Code) and
+# ~/.agents/skills (Codex) holds relative links to them, like the other skills there
+readonly CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
+readonly AGENTS_SKILLS_DIR="$HOME/.agents/skills"
+# gwscli always ships a top-level skill with this name; used to tell if its skills are installed
+readonly GWSCLI_ANCHOR_SKILL="gwscli"
+
+# Whether to install gwscli's agent skills (install mode)
+GWSCLI_SKILLS=0
 
 # Where this repository is cloned, shown in messages ("~" instead of $HOME)
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
@@ -130,7 +143,7 @@ INSTALL_DECISIONS[fd]=0 INSTALL_DECISIONS[jq]=0 INSTALL_DECISIONS[bat]=0 INSTALL
 INSTALL_DECISIONS[starship]=0 INSTALL_DECISIONS[bash_completion]=0
 INSTALL_DECISIONS[zsh_autosuggestions]=0 INSTALL_DECISIONS[zsh_syntax_highlighting]=0
 INSTALL_DECISIONS[direnv]=0
-INSTALL_DECISIONS[claude_code]=0 INSTALL_DECISIONS[codex]=0
+INSTALL_DECISIONS[claude_code]=0 INSTALL_DECISIONS[codex]=0 INSTALL_DECISIONS[gwscli]=0
 
 typeset -A ALREADY_INSTALLED
 ALREADY_INSTALLED[pkg_manager]=0 ALREADY_INSTALLED[neovim]=0 ALREADY_INSTALLED[cmake]=0 ALREADY_INSTALLED[libtool]=0 ALREADY_INSTALLED[emacs]=0
@@ -142,7 +155,7 @@ ALREADY_INSTALLED[fd]=0 ALREADY_INSTALLED[jq]=0 ALREADY_INSTALLED[bat]=0 ALREADY
 ALREADY_INSTALLED[starship]=0 ALREADY_INSTALLED[bash_completion]=0
 ALREADY_INSTALLED[zsh_autosuggestions]=0 ALREADY_INSTALLED[zsh_syntax_highlighting]=0
 ALREADY_INSTALLED[direnv]=0
-ALREADY_INSTALLED[claude_code]=0 ALREADY_INSTALLED[codex]=0
+ALREADY_INSTALLED[claude_code]=0 ALREADY_INSTALLED[codex]=0 ALREADY_INSTALLED[gwscli]=0
 
 APPLY_DOTFILES=0
 
@@ -157,7 +170,7 @@ UPDATE_DECISIONS[bat]=0 UPDATE_DECISIONS[eza]=0 UPDATE_DECISIONS[delta]=0 UPDATE
 UPDATE_DECISIONS[starship]=0
 UPDATE_DECISIONS[zsh_autosuggestions]=0 UPDATE_DECISIONS[zsh_syntax_highlighting]=0
 UPDATE_DECISIONS[direnv]=0
-UPDATE_DECISIONS[bash_completion]=0 UPDATE_DECISIONS[claude_code]=0 UPDATE_DECISIONS[codex]=0
+UPDATE_DECISIONS[bash_completion]=0 UPDATE_DECISIONS[claude_code]=0 UPDATE_DECISIONS[codex]=0 UPDATE_DECISIONS[gwscli]=0
 UPDATE_MODE=0
 UPDATE_TARGETS=()
 UPDATE_DOTFILES=0
@@ -230,6 +243,7 @@ tool_display_name() {
         bash_completion) echo "bash-completion" ;;
         claude_code) echo "Claude Code" ;;
         codex) echo "Codex CLI" ;;
+        gwscli) echo "Google Workspace CLI" ;;
         cmake) echo "CMake" ;;
         emacs) echo "Emacs" ;;
         font) echo "UDEV Gothic NFLG" ;;
@@ -251,7 +265,7 @@ show_help() {
     printf "${BOLD}更新可能なツール:${NC}\n"
     echo "  neovim, cmake, libtool, emacs, tmux, zellij, ghostty, font, amu, gh, glow, fzf, fd, jq, bat, eza,"
     echo "  delta, zoxide, ghq, wtp, cmux, starship, zsh-autosuggestions,"
-    echo "  zsh-syntax-highlighting, direnv, bash-completion, claude-code, codex, dotfiles"
+    echo "  zsh-syntax-highlighting, direnv, bash-completion, claude-code, codex, gwscli, dotfiles"
     echo
     exit 0
 }
@@ -279,6 +293,7 @@ normalize_tool_name() {
         bash-completion) echo "bash_completion" ;;
         claude-code|claude_code|claude) echo "claude_code" ;;
         codex-cli|codex_cli) echo "codex" ;;
+        workspace-cli|google-workspace-cli) echo "gwscli" ;;
         font|udev-gothic) echo "font" ;;
         zsh-autosuggestions) echo "zsh_autosuggestions" ;;
         zsh-syntax-highlighting) echo "zsh_syntax_highlighting" ;;
@@ -327,7 +342,7 @@ show_updatable_tools() {
     echo
 
     local count=0
-    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
+    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex gwscli)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -368,7 +383,7 @@ prompt_update_all_or_select() {
     case "$choice" in
         1)
             # Select all installed tools
-            local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
+            local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex gwscli)
             for tool in "${tools[@]}"; do
                 if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
                     UPDATE_DECISIONS[$tool]=1
@@ -389,7 +404,7 @@ prompt_update_all_or_select() {
 }
 
 prompt_individual_updates() {
-    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
+    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex gwscli)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -415,7 +430,7 @@ show_update_summary() {
 
     local update_list=()
     local skip_list=()
-    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex)
+    local tools=(neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex gwscli)
 
     for tool in "${tools[@]}"; do
         if [[ ${ALREADY_INSTALLED[$tool]} -eq 1 ]]; then
@@ -689,6 +704,11 @@ detect_installed() {
     # Codex CLI
     if command_exists codex; then
         ALREADY_INSTALLED[codex]=1
+    fi
+
+    # Google Workspace CLI (also checks the installer's dir, which may not be on PATH yet)
+    if gwscli_path >/dev/null; then
+        ALREADY_INSTALLED[gwscli]=1
     fi
 }
 
@@ -1561,6 +1581,46 @@ prompt_codex() {
     fi
 }
 
+prompt_gwscli() {
+    print_header "Google Workspace CLI (gwscli)"
+    print_info "Google公式のWorkspace CLI（Gmail, Drive, Calendar, Docs, Sheets等）"
+    echo
+
+    if [[ ${ALREADY_INSTALLED[gwscli]} -eq 1 ]]; then
+        print_success "インストール済み"
+        INSTALL_DECISIONS[gwscli]=1
+    else
+        print_note "dotfilesとの関連:"
+        print_info "   - Claude Code / Codex からWorkspaceを操作するために使う"
+        print_info "   - macOS/Linuxでは公式インストーラーで ~/.local/bin に配置（PATHは.shell_commonで設定済み）"
+        print_info "   - 認証（gwscli auth setup / login）はインストール後に手動で行う"
+        if [[ "$OS_TYPE" == "windows" ]]; then
+            print_info "   - Windowsでは自動インストールできないため、PowerShellでの手順を表示"
+        fi
+
+        if ask_yes_no "インストールしますか？"; then
+            INSTALL_DECISIONS[gwscli]=1
+        fi
+    fi
+
+    # Agent skills (not on Windows, where gwscli itself is installed by hand)
+    if [[ ${INSTALL_DECISIONS[gwscli]} -eq 0 || "$OS_TYPE" == "windows" ]]; then
+        return 0
+    fi
+    if gwscli_skills_installed; then
+        print_success "エージェント用スキル: インストール済み"
+        return 0
+    fi
+
+    echo
+    print_note "エージェント用スキル:"
+    print_info "   - gwscli の使い方・安全上の注意をまとめた公式スキル"
+    print_info "   - ~/.claude/skills に置き、~/.agents/skills からリンク（Claude Code / Codex の両方で使える）"
+    if ask_yes_no "エージェント用スキルもインストールしますか？"; then
+        GWSCLI_SKILLS=1
+    fi
+}
+
 prompt_apply_dotfiles() {
     print_header "dotfilesの適用"
 
@@ -1654,6 +1714,18 @@ show_summary() {
         install_list+=("Codex CLI")
     else
         skip_list+=("Codex CLI")
+    fi
+
+    # Google Workspace CLI
+    if [[ ${ALREADY_INSTALLED[gwscli]} -eq 1 ]]; then
+        : # Already installed
+    elif [[ ${INSTALL_DECISIONS[gwscli]} -eq 1 ]]; then
+        install_list+=("Google Workspace CLI")
+    else
+        skip_list+=("Google Workspace CLI")
+    fi
+    if [[ $GWSCLI_SKILLS -eq 1 ]]; then
+        install_list+=("Google Workspace CLI のエージェント用スキル")
     fi
 
     # Show lists
@@ -1930,6 +2002,139 @@ install_codex() {
     fi
 }
 
+# Show how to run the official PowerShell installer (cannot be run from this script)
+print_gwscli_windows_steps() {
+    print_info "Windows版のインストール方法（PowerShellで実行）:"
+    print_info "   curl.exe -fsSLO ${GWSCLI_INSTALL_URL_WINDOWS}"
+    print_info "   powershell -ExecutionPolicy Bypass -File .\\install.ps1"
+}
+
+# Run the official installer; it also replaces an existing binary, so it is used for updates too
+run_gwscli_installer() {
+    if ! command_exists curl; then
+        print_error "Google Workspace CLIのインストールにはcurlが必要です"
+        return 1
+    fi
+    curl -fsSL "$GWSCLI_INSTALL_URL" | GWSCLI_INSTALL_DIR="$GWSCLI_BIN_DIR" bash
+}
+
+# Print the gwscli path (it may not be on PATH yet right after installing)
+gwscli_path() {
+    if command_exists gwscli; then
+        command -v gwscli
+    elif [[ -x "$GWSCLI_BIN_DIR/gwscli" ]]; then
+        echo "$GWSCLI_BIN_DIR/gwscli"
+    else
+        return 1
+    fi
+}
+
+gwscli_skills_installed() {
+    [[ -e "$CLAUDE_SKILLS_DIR/$GWSCLI_ANCHOR_SKILL" ]]
+}
+
+# Link ~/.agents/skills/<name> to ~/.claude/skills/<name> so Codex sees the skill too
+link_agents_skill() {
+    local name="$1"
+    local link="$AGENTS_SKILLS_DIR/$name"
+    local target="../../.claude/skills/$name"
+
+    if [[ -L "$link" ]]; then
+        if [[ "$(readlink "$link")" != "$target" ]]; then
+            print_warning "${link} は別の場所へのリンクのため、変更しませんでした"
+        fi
+        return 0
+    fi
+    if [[ -e "$link" ]]; then
+        print_warning "${link} が既にあるため、リンクを作りませんでした"
+        return 0
+    fi
+    mkdir -p "$AGENTS_SKILLS_DIR"
+    ln -s "$target" "$link"
+}
+
+# Install gwscli's skills, or bring them up to date. The official README says not to
+# overwrite skills blindly (they may have local changes), so show the diff and ask first.
+sync_gwscli_skills() {
+    local bin
+    if ! bin="$(gwscli_path)"; then
+        print_error "gwscli が見つからないため、スキルをインストールできません"
+        return 1
+    fi
+
+    local tmp
+    tmp="$(mktemp -d)"
+    local out
+    if ! out="$("$bin" skills install --dir "$tmp" 2>&1)"; then
+        print_error "gwscli のスキルの取得に失敗しました"
+        printf "%s\n" "$out"
+        rm -rf "$tmp"
+        return 1
+    fi
+
+    mkdir -p "$CLAUDE_SKILLS_DIR"
+    local name dest
+    for name in $(command ls -1 "$tmp"); do
+        dest="$CLAUDE_SKILLS_DIR/$name"
+        if [[ ! -e "$dest" ]]; then
+            cp -R "$tmp/$name" "$dest"
+            print_success "スキル ${name} をインストールしました"
+        elif diff -r "$dest" "$tmp/$name" >/dev/null 2>&1; then
+            print_success "スキル ${name} は最新です"
+        else
+            print_note "スキル ${name} に差分があります（- 今の内容 / + 新しい内容）:"
+            diff -ru "$dest" "$tmp/$name" || true
+            if ask_yes_no "スキル ${name} を新しい内容で上書きしますか？（ローカルの変更は失われます）"; then
+                rm -rf "$dest"
+                cp -R "$tmp/$name" "$dest"
+                print_success "スキル ${name} を更新しました"
+            else
+                print_skip "スキル ${name} の更新をスキップしました"
+            fi
+        fi
+        link_agents_skill "$name"
+    done
+
+    rm -rf "$tmp"
+}
+
+install_gwscli_skills() {
+    if [[ $GWSCLI_SKILLS -eq 0 ]]; then
+        return 0
+    fi
+
+    echo
+    printf " ${CYAN}→${NC} Google Workspace CLI のエージェント用スキルをインストール中...\n"
+    sync_gwscli_skills || true
+}
+
+install_gwscli() {
+    if [[ ${ALREADY_INSTALLED[gwscli]} -eq 1 ]]; then
+        return 0
+    fi
+    if [[ ${INSTALL_DECISIONS[gwscli]} -eq 0 ]]; then
+        return 0
+    fi
+
+    print_header "Google Workspace CLI をインストール中..."
+
+    if [[ "$OS_TYPE" == "windows" ]]; then
+        print_gwscli_windows_steps
+        print_warning "このスクリプトからは自動インストールできません"
+        return 0
+    fi
+
+    if run_gwscli_installer; then
+        print_success "Google Workspace CLI インストール完了"
+        print_note "認証は手動で行ってください（ブラウザでのログインが必要）:"
+        print_info "   gwscli auth setup             # 自分のOAuthクライアントを登録"
+        print_info "   gwscli auth login drive gmail # 使うサービスを指定してログイン"
+        print_info "   手順の詳細: ~/.gwscli/README.md"
+    else
+        print_error "Google Workspace CLI のインストールに失敗しました"
+    fi
+}
+
 apply_dotfiles() {
     if [[ $APPLY_DOTFILES -eq 0 ]]; then
         return 0
@@ -2182,6 +2387,31 @@ update_codex() {
     print_error "Codex CLI の更新に失敗しました"
 }
 
+update_gwscli() {
+    if [[ ${UPDATE_DECISIONS[gwscli]} -eq 0 ]]; then
+        return 0
+    fi
+
+    echo
+    printf " ${CYAN}⟳${NC} Google Workspace CLI を更新中...\n"
+
+    if [[ "$OS_TYPE" == "windows" ]]; then
+        print_gwscli_windows_steps
+        print_warning "このスクリプトからは自動更新できません"
+        return 0
+    fi
+
+    if run_gwscli_installer; then
+        print_success "Google Workspace CLI 更新完了"
+        # The README asks to check for skill updates after updating gwscli
+        if gwscli_skills_installed; then
+            sync_gwscli_skills || true
+        fi
+    else
+        print_error "Google Workspace CLI の更新に失敗しました"
+    fi
+}
+
 update_dotfiles() {
     if [[ $UPDATE_DOTFILES -eq 0 ]]; then
         return 0
@@ -2229,7 +2459,7 @@ run_update_mode() {
             fi
 
             # Validate tool name
-            local valid_tools=" pkg_manager neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex "
+            local valid_tools=" pkg_manager neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex gwscli "
             if [[ "$valid_tools" != *" $target "* ]]; then
                 print_error "不明なツール: $(tool_display_name "$target")"
                 print_info "使い方: ./install.sh --update [ツール名...]"
@@ -2292,6 +2522,7 @@ run_update_mode() {
     upgrade_package "bash_completion" "bash-completion@2" "bash-completion" "bash-completion" "bash-completion" "" ""
     update_claude_code
     update_codex
+    update_gwscli
     update_dotfiles
 
     # Done
@@ -2337,6 +2568,7 @@ run_install_mode() {
     prompt_bash_completion
     prompt_claude_code
     prompt_codex
+    prompt_gwscli
     prompt_apply_dotfiles
 
     # Show summary and confirm
@@ -2400,6 +2632,8 @@ run_install_mode() {
 
     install_claude_code
     install_codex
+    install_gwscli
+    install_gwscli_skills
     apply_dotfiles
     setup_git_user
 

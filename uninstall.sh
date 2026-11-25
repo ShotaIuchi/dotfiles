@@ -51,6 +51,13 @@ readonly NC=$'\033[0m' # No Color
 
 readonly LINE='━'
 readonly BOX_WIDTH=60
+# Where install.sh puts gwscli (the official installer's default)
+readonly GWSCLI_BIN_DIR="$HOME/.local/bin"
+# Where install.sh puts gwscli's agent skills (files) and the links to them (for Codex)
+readonly CLAUDE_SKILLS_DIR="$HOME/.claude/skills"
+readonly AGENTS_SKILLS_DIR="$HOME/.agents/skills"
+# gwscli always ships a top-level skill with this name; used to tell if its skills are installed
+readonly GWSCLI_ANCHOR_SKILL="gwscli"
 
 # Where this repository is cloned, shown in messages ("~" instead of $HOME)
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
@@ -123,7 +130,7 @@ UNINSTALL_DECISIONS[bat]=0 UNINSTALL_DECISIONS[eza]=0 UNINSTALL_DECISIONS[delta]
 UNINSTALL_DECISIONS[starship]=0
 UNINSTALL_DECISIONS[zsh_autosuggestions]=0 UNINSTALL_DECISIONS[zsh_syntax_highlighting]=0
 UNINSTALL_DECISIONS[direnv]=0
-UNINSTALL_DECISIONS[bash_completion]=0 UNINSTALL_DECISIONS[claude_code]=0 UNINSTALL_DECISIONS[codex]=0
+UNINSTALL_DECISIONS[bash_completion]=0 UNINSTALL_DECISIONS[claude_code]=0 UNINSTALL_DECISIONS[codex]=0 UNINSTALL_DECISIONS[gwscli]=0
 
 typeset -A IS_INSTALLED
 IS_INSTALLED[neovim]=0 IS_INSTALLED[cmake]=0 IS_INSTALLED[libtool]=0 IS_INSTALLED[emacs]=0 IS_INSTALLED[tmux]=0 IS_INSTALLED[zellij]=0
@@ -135,9 +142,13 @@ IS_INSTALLED[bat]=0 IS_INSTALLED[eza]=0 IS_INSTALLED[delta]=0 IS_INSTALLED[zoxid
 IS_INSTALLED[starship]=0
 IS_INSTALLED[zsh_autosuggestions]=0 IS_INSTALLED[zsh_syntax_highlighting]=0
 IS_INSTALLED[direnv]=0
-IS_INSTALLED[bash_completion]=0 IS_INSTALLED[claude_code]=0 IS_INSTALLED[codex]=0
+IS_INSTALLED[bash_completion]=0 IS_INSTALLED[claude_code]=0 IS_INSTALLED[codex]=0 IS_INSTALLED[gwscli]=0
 
 REMOVE_DOTFILES=0
+# Run "gwscli auth reset" before removing gwscli (logs out and deletes the OAuth client)
+GWSCLI_AUTH_RESET=0
+# Remove gwscli's agent skills along with gwscli
+GWSCLI_REMOVE_SKILLS=0
 
 # ------------------------------------------------------------------------------
 # Utility Functions
@@ -429,6 +440,11 @@ detect_installed() {
     if command_exists codex; then
         IS_INSTALLED[codex]=1
     fi
+
+    # Google Workspace CLI (also checks the installer's dir, which may not be on PATH yet)
+    if command_exists gwscli || [[ -x "$GWSCLI_BIN_DIR/gwscli" ]]; then
+        IS_INSTALLED[gwscli]=1
+    fi
 }
 
 # ------------------------------------------------------------------------------
@@ -474,6 +490,26 @@ prompt_uninstall_tool() {
     fi
 }
 
+# Credentials and the list of skills come from gwscli itself, so decide these before it is removed
+prompt_gwscli_extras() {
+    if [[ ${UNINSTALL_DECISIONS[gwscli]} -eq 0 ]]; then
+        return 0
+    fi
+
+    print_info "ログアウトし、gwscli auth setup で登録したOAuthクライアントも削除できます"
+    print_info "   コマンド: gwscli auth reset"
+    if ask_yes_no "認証情報も削除しますか？" "n"; then
+        GWSCLI_AUTH_RESET=1
+    fi
+
+    if [[ -e "$CLAUDE_SKILLS_DIR/$GWSCLI_ANCHOR_SKILL" ]]; then
+        print_info "gwscli のエージェント用スキル（~/.claude/skills と ~/.agents/skills のリンク）も削除できます"
+        if ask_yes_no "エージェント用スキルも削除しますか？" "y"; then
+            GWSCLI_REMOVE_SKILLS=1
+        fi
+    fi
+}
+
 # ------------------------------------------------------------------------------
 # Confirmation
 # ------------------------------------------------------------------------------
@@ -488,13 +524,14 @@ show_summary() {
         remove_list+=("dotfilesリンク")
     fi
 
-    for pkg in neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex; do
+    for pkg in neovim cmake libtool emacs tmux zellij ghostty font amu gh glow fzf fd jq bat eza delta zoxide ghq wtp cmux starship zsh_autosuggestions zsh_syntax_highlighting direnv bash_completion claude_code codex gwscli; do
         if [[ ${UNINSTALL_DECISIONS[$pkg]} -eq 1 ]]; then
             local display_name
             case "$pkg" in
                 bash_completion) display_name="bash-completion" ;;
                 claude_code) display_name="Claude Code" ;;
                 codex) display_name="Codex CLI" ;;
+                gwscli) display_name="Google Workspace CLI" ;;
                 cmake) display_name="CMake" ;;
                 emacs) display_name="Emacs" ;;
                 font) display_name="UDEV Gothic NFLG" ;;
@@ -505,6 +542,13 @@ show_summary() {
             remove_list+=("$display_name")
         fi
     done
+
+    if [[ $GWSCLI_AUTH_RESET -eq 1 ]]; then
+        remove_list+=("Google Workspace CLI の認証情報（gwscli auth reset）")
+    fi
+    if [[ $GWSCLI_REMOVE_SKILLS -eq 1 ]]; then
+        remove_list+=("Google Workspace CLI のエージェント用スキル")
+    fi
 
     if [[ ${#remove_list[@]} -eq 0 ]]; then
         print_info "削除する項目がありません"
@@ -777,6 +821,83 @@ uninstall_codex() {
     fi
 }
 
+# Remove the skills install.sh put in place. The names come from gwscli itself, and a link
+# in ~/.agents/skills is removed only if it points at the copy in ~/.claude/skills.
+remove_gwscli_skills() {
+    local bin="$1"
+    local tmp
+    tmp="$(mktemp -d)"
+    local out
+    if ! out="$("$bin" skills install --dir "$tmp" 2>&1)"; then
+        print_error "gwscli のスキル一覧を取得できないため、スキルは削除しませんでした"
+        printf "%s\n" "$out"
+        rm -rf "$tmp"
+        return 0
+    fi
+
+    local name link
+    for name in $(command ls -1 "$tmp"); do
+        link="$AGENTS_SKILLS_DIR/$name"
+        if [[ -L "$link" && "$(readlink "$link")" == "../../.claude/skills/$name" ]]; then
+            rm -f "$link"
+        fi
+        if [[ -e "$CLAUDE_SKILLS_DIR/$name" ]]; then
+            rm -rf "${CLAUDE_SKILLS_DIR:?}/$name"
+            print_success "スキル ${name} を削除しました"
+        fi
+    done
+
+    rm -rf "$tmp"
+}
+
+uninstall_gwscli() {
+    if [[ ${UNINSTALL_DECISIONS[gwscli]} -eq 0 ]]; then
+        return 0
+    fi
+
+    echo
+    printf " ${CYAN}→${NC} Google Workspace CLI をアンインストール中...\n"
+
+    local gwscli_path
+    gwscli_path="$(command -v gwscli 2>/dev/null || true)"
+    if [[ -z "$gwscli_path" && -x "$GWSCLI_BIN_DIR/gwscli" ]]; then
+        gwscli_path="$GWSCLI_BIN_DIR/gwscli"
+    fi
+
+    if [[ -z "$gwscli_path" ]]; then
+        print_warning "Google Workspace CLI の場所が特定できません"
+        return 0
+    fi
+
+    if [[ $GWSCLI_AUTH_RESET -eq 1 ]]; then
+        if "$gwscli_path" auth reset; then
+            print_success "Google Workspace CLI の認証情報を削除しました"
+        else
+            print_error "認証情報の削除に失敗したため、アンインストールを中止しました"
+            print_info "   手動で実行してください: $gwscli_path auth reset"
+            return 0
+        fi
+    fi
+
+    if [[ $GWSCLI_REMOVE_SKILLS -eq 1 ]]; then
+        remove_gwscli_skills "$gwscli_path"
+    fi
+
+    # The official installer places a single binary plus README/NOTICES in ~/.gwscli.
+    # Remove only those; leave anything else (e.g. credentials) untouched.
+    if rm -f "$gwscli_path"; then
+        rm -f "$HOME/.gwscli/README.md" "$HOME/.gwscli/NOTICES.txt"
+        rmdir "$HOME/.gwscli" 2>/dev/null || true
+        print_success "Google Workspace CLI アンインストール完了"
+        if [[ $GWSCLI_AUTH_RESET -eq 0 ]]; then
+            print_info "   認証情報は保持しました"
+        fi
+    else
+        print_error "Google Workspace CLI のアンインストールに失敗しました"
+        print_info "   Google Workspace CLI のパス: $gwscli_path"
+    fi
+}
+
 # ------------------------------------------------------------------------------
 # Main
 # ------------------------------------------------------------------------------
@@ -842,6 +963,8 @@ main() {
     prompt_uninstall_tool "bash_completion" "bash-completion" "bashのタブ補完強化"
     prompt_uninstall_tool "claude_code" "Claude Code" "Anthropic AI CLI"
     prompt_uninstall_tool "codex" "Codex CLI" "OpenAI coding agent CLI"
+    prompt_uninstall_tool "gwscli" "Google Workspace CLI" "Google公式のWorkspace CLI (gwscli)"
+    prompt_gwscli_extras
 
     # amu is last because it's needed for removing dotfiles
     prompt_uninstall_tool "amu" "amu" "シンボリックリンク管理ツール"
@@ -891,6 +1014,7 @@ main() {
 
     uninstall_claude_code
     uninstall_codex
+    uninstall_gwscli
     uninstall_amu  # Last, after dotfiles removal
 
     # Done

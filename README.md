@@ -54,6 +54,7 @@ cd ~/ghq/github.com/ShotaIuchi/dotfiles
 | bash-completion | タブ補完強化 |
 | Claude Code | Anthropic AI CLI |
 | Codex CLI | OpenAI coding agent CLI |
+| Google Workspace CLI (gwscli) | Google公式のWorkspace CLI。公式インストーラーで `~/.local/bin` に入る。認証（`gwscli auth setup` / `gwscli auth login`）は手動。公式のエージェント用スキルも選べば `~/.claude/skills` に入り、`~/.agents/skills` からリンクする（Claude Code / Codex の両方で使える）。`--update` ではスキルの差分を見せてから上書きを確認する |
 
 ### 手動セットアップ
 
